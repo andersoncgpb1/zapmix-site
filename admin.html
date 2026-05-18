@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Admin - ZapMix</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: #f1f5f9;
+  padding: 20px;
+}
+.header {
+  background: white;
+  border-radius: 24px;
+  padding: 20px 30px;
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.logo-area { display: flex; align-items: center; gap: 15px; }
+.logo-img { height: 45px; }
+.app-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #1e293b, #90d105);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+.stats { display: flex; gap: 20px; }
+.stat-card {
+  background: #f8fafc;
+  border-radius: 16px;
+  padding: 10px 20px;
+  text-align: center;
+  border: 1px solid #e2e8f0;
+}
+.stat-number { font-size: 1.8rem; font-weight: 800; color: #0f172a; }
+.stat-label { font-size: 0.7rem; color: #64748b; }
+.filters {
+  background: white;
+  border-radius: 20px;
+  padding: 15px 20px;
+  margin-bottom: 20px;
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  align-items: center;
+  border: 1px solid #e2e8f0;
+}
+.filters input, .filters select {
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid #cbd5e1;
+  font-size: 0.85rem;
+  outline: none;
+}
+.btn-filter {
+  background: #90d105;
+  color: #0f2e00;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.btn-clear {
+  background: #e2e8f0;
+  color: #475569;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+.table-container {
+  background: white;
+  border-radius: 24px;
+  padding: 20px;
+  overflow-x: auto;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  border: 1px solid #e2e8f0;
+}
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+th { background: #f8fafc; font-weight: 700; }
+tr:hover { background: #f8fafc; }
+.status-ativa {
+  background: #dcfce7;
+  color: #15803d;
+  padding: 4px 12px;
+  border-radius: 30px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  display: inline-block;
+}
+.status-inativa {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 4px 12px;
+  border-radius: 30px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  display: inline-block;
+}
+.actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin: 0 5px;
+  font-size: 1rem;
+  padding: 5px;
+}
+.btn-desativar { color: #ef4444; }
+.btn-ativar { color: #10b981; }
+.btn-deletar { color: #991b1b; }
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+.pagination button {
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  background: white;
+  cursor: pointer;
+}
+.pagination button.active {
+  background: #90d105;
+  color: #0f2e00;
+}
+.refresh-btn {
+  background: #90d105;
+  color: #0f2e00;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.modal-content {
+  background: white;
+  border-radius: 24px;
+  padding: 30px;
+  max-width: 500px;
+  width: 90%;
+}
+.modal-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  justify-content: flex-end;
+}
+.btn-confirm { background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 12px; cursor: pointer; }
+.btn-cancel { background: #e2e8f0; border: none; padding: 8px 16px; border-radius: 12px; cursor: pointer; }
+.erro-msg {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 12px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  display: none;
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="logo-area">
+    <img class="logo-img" src="/assets/logo.png" alt="ZapMix" onerror="this.style.display='none'">
+    <div>
+      <div class="app-title">ZapMix - Painel Administrativo</div>
+      <div style="font-size: 0.7rem; color: #64748b;">Gerenciamento de Licenças</div>
+    </div>
+  </div>
+  <div class="stats" id="stats">
+    <div class="stat-card">
+      <div class="stat-number" id="total-licencas">0</div>
+      <div class="stat-label">Total de Licenças</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" id="licencas-ativas">0</div>
+      <div class="stat-label">Licenças Ativas</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" id="licencas-inativas">0</div>
+      <div class="stat-label">Licenças Inativas</div>
+    </div>
+  </div>
+  <button class="refresh-btn" onclick="carregarLicencas()"><i class="fas fa-sync-alt"></i> Atualizar</button>
+</div>
+
+<div id="erroMsg" class="erro-msg"></div>
+
+<div class="filters">
+  <input type="text" id="filter-search" placeholder="Buscar por nome, e-mail ou chave..." style="flex: 2;">
+  <select id="filter-status">
+    <option value="">Todos os status</option>
+    <option value="ativa">Ativas</option>
+    <option value="inativa">Inativas</option>
+  </select>
+  <button class="btn-filter" onclick="aplicarFiltros()"><i class="fas fa-search"></i> Filtrar</button>
+  <button class="btn-clear" onclick="limparFiltros()"><i class="fas fa-times"></i> Limpar</button>
+</div>
+
+<div class="table-container">
+  <table>
+    <thead>
+      <tr><th>Chave</th><th>Titular</th><th>E-mail</th><th>Status</th><th>Computadores</th><th>Criação</th><th>Expiração</th><th>Ações</th></tr>
+    </thead>
+    <tbody id="licencas-table"><tr><td colspan="8" style="text-align: center;">Carregando...</td></tr></tbody>
+  </table>
+</div>
+<div class="pagination" id="pagination"></div>
+
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <h3 id="modal-title">Confirmar</h3>
+    <p id="modal-message"></p>
+    <div class="modal-buttons">
+      <button class="btn-cancel" onclick="fecharModal()">Cancelar</button>
+      <button class="btn-confirm" id="modal-confirm-btn">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API_URL = 'https://zapmix.onrender.com';
+let todasLicencas = [];
+let licencasFiltradas = [];
+let paginaAtual = 1;
+const itemsPorPagina = 20;
+
+async function carregarLicencas() {
+  const tbody = document.getElementById('licencas-table');
+  tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">Carregando...</td></tr>';
+  
+  try {
+    const response = await fetch(`${API_URL}/api/admin/licencas`);
+    const data = await response.json();
+    
+    if (data.error) {
+      mostrarErro(data.error);
+      return;
+    }
+    
+    if (data.licencas && Array.isArray(data.licencas)) {
+      todasLicencas = data.licencas;
+      licencasFiltradas = [...todasLicencas];
+      atualizarEstatisticas();
+      aplicarFiltros();
+    } else {
+      mostrarErro('Erro ao carregar licenças: formato inválido');
+    }
+  } catch (error) {
+    console.error('Erro:', error);
+    mostrarErro('Erro de conexão com o servidor. Verifique se a API está online.');
+  }
+}
+
+function mostrarErro(msg) {
+  const erroDiv = document.getElementById('erroMsg');
+  erroDiv.innerHTML = msg;
+  erroDiv.style.display = 'block';
+  setTimeout(() => { erroDiv.style.display = 'none'; }, 5000);
+}
+
+function atualizarEstatisticas() {
+  const total = todasLicencas.length;
+  const ativas = todasLicencas.filter(l => l.ativa === true).length;
+  const inativas = total - ativas;
+  document.getElementById('total-licencas').innerText = total;
+  document.getElementById('licencas-ativas').innerText = ativas;
+  document.getElementById('licencas-inativas').innerText = inativas;
+}
+
+function aplicarFiltros() {
+  const searchTerm = document.getElementById('filter-search').value.toLowerCase();
+  const statusFilter = document.getElementById('filter-status').value;
+  
+  licencasFiltradas = todasLicencas.filter(lic => {
+    let match = true;
+    if (searchTerm) {
+      match = match && (
+        (lic.chave || '').toLowerCase().includes(searchTerm) ||
+        (lic.titular || '').toLowerCase().includes(searchTerm) ||
+        (lic.email || '').toLowerCase().includes(searchTerm)
+      );
+    }
+    if (statusFilter) {
+      match = match && (statusFilter === 'ativa' ? lic.ativa === true : lic.ativa === false);
+    }
+    return match;
+  });
+  
+  paginaAtual = 1;
+  renderizarTabela();
+}
+
+function limparFiltros() {
+  document.getElementById('filter-search').value = '';
+  document.getElementById('filter-status').value = '';
+  licencasFiltradas = [...todasLicencas];
+  paginaAtual = 1;
+  renderizarTabela();
+}
+
+function renderizarTabela() {
+  const start = (paginaAtual - 1) * itemsPorPagina;
+  const end = start + itemsPorPagina;
+  const paginaLicencas = licencasFiltradas.slice(start, end);
+  const tbody = document.getElementById('licencas-table');
+  
+  if (paginaLicencas.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">Nenhuma licença encontrada</td></tr>';
+    document.getElementById('pagination').innerHTML = '';
+    return;
+  }
+  
+  tbody.innerHTML = paginaLicencas.map(lic => `
+    <tr>
+      <td><code style="font-size: 0.7rem;">${escapeHtml(lic.chave)}</code></td>
+      <td><strong>${escapeHtml(lic.titular)}</strong></td>
+      <td>${escapeHtml(lic.email || '-')}</td>
+      <td><span class="${lic.ativa ? 'status-ativa' : 'status-inativa'}">${lic.ativa ? 'ATIVA' : 'INATIVA'}</span></td>
+      <td>${lic.computadores?.length || 0}/${lic.maxComputadores || 1}</td>
+      <td>${formatarData(lic.dataCriacao)}</td>
+      <td>${formatarData(lic.expiracao)}</td>
+      <td class="actions">
+        ${lic.ativa ? 
+          `<button class="btn-desativar" onclick="confirmarAcao('desativar', '${lic.chave}')" title="Desativar"><i class="fas fa-ban"></i></button>` :
+          `<button class="btn-ativar" onclick="confirmarAcao('ativar', '${lic.chave}')" title="Ativar"><i class="fas fa-check-circle"></i></button>`
+        }
+        <button class="btn-deletar" onclick="confirmarAcao('deletar', '${lic.chave}')" title="Excluir"><i class="fas fa-trash"></i></button>
+      </td>
+    </tr>
+  `).join('');
+  
+  renderizarPaginacao();
+}
+
+function renderizarPaginacao() {
+  const totalPaginas = Math.ceil(licencasFiltradas.length / itemsPorPagina);
+  const paginationDiv = document.getElementById('pagination');
+  if (totalPaginas <= 1) { paginationDiv.innerHTML = ''; return; }
+  
+  let html = '';
+  if (paginaAtual > 1) html += `<button onclick="irParaPagina(${paginaAtual - 1})">« Anterior</button>`;
+  for (let i = 1; i <= Math.min(totalPaginas, 5); i++) {
+    html += `<button class="${i === paginaAtual ? 'active' : ''}" onclick="irParaPagina(${i})">${i}</button>`;
+  }
+  if (paginaAtual < totalPaginas) html += `<button onclick="irParaPagina(${paginaAtual + 1})">Próximo »</button>`;
+  paginationDiv.innerHTML = html;
+}
+
+function irParaPagina(pagina) {
+  paginaAtual = pagina;
+  renderizarTabela();
+}
+
+function formatarData(data) {
+  if (!data) return '-';
+  return new Date(data).toLocaleDateString('pt-BR');
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m] || m));
+}
+
+function confirmarAcao(acao, chave) {
+  const modal = document.getElementById('modal');
+  document.getElementById('modal-title').innerHTML = acao === 'desativar' ? 'Desativar Licença' : (acao === 'ativar' ? 'Ativar Licença' : 'Excluir Licença');
+  document.getElementById('modal-message').innerHTML = `Tem certeza que deseja ${acao === 'desativar' ? 'desativar' : (acao === 'ativar' ? 'ativar' : 'excluir')} a licença <strong>${chave}</strong>?`;
+  document.getElementById('modal-confirm-btn').onclick = () => executarAcao(acao, chave);
+  modal.style.display = 'flex';
+}
+
+function fecharModal() { document.getElementById('modal').style.display = 'none'; }
+
+async function executarAcao(acao, chave) {
+  fecharModal();
+  try {
+    const response = await fetch(`${API_URL}/api/admin/licencas/acao`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ acao, chave })
+    });
+    const data = await response.json();
+    if (data.sucesso) {
+      alert(`✅ Licença ${acao} com sucesso!`);
+      carregarLicencas();
+    } else {
+      alert(`❌ Erro: ${data.erro}`);
+    }
+  } catch (error) {
+    alert('❌ Erro ao executar ação');
+  }
+}
+
+carregarLicencas();
+setInterval(carregarLicencas, 30000);
+</script>
+</body>
+</html>

@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZapMix — Gestão Inteligente para TV</title>
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="shortcut icon" href="/assets/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: #0f172a;
+  color: #e2e8f0;
+  line-height: 1.5;
+}
+
+/* Header */
+.header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  padding: 15px 0;
+  border-bottom: 1px solid rgba(144, 209, 5, 0.2);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.header .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo img {
+  height: 40px;
+}
+
+.logo span {
+  font-size: 1.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ffffff, #90d105);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.nav {
+  display: flex;
+  gap: 30px;
+}
+
+.nav a {
+  color: #cbd5e1;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.nav a:hover {
+  color: #90d105;
+}
+
+.btn-download-header {
+  background: #90d105;
+  color: #0f2e00;
+  padding: 8px 24px;
+  border-radius: 40px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+.btn-download-header:hover {
+  background: #a0e015;
+  transform: translateY(-2px);
+}
+
+/* Hero Section */
+.hero {
+  padding: 140px 0 80px;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+
+.hero .container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 50px;
+  align-items: center;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #90d105, #c4ff66);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.hero p {
+  font-size: 1.1rem;
+  color: #94a3b8;
+  margin-bottom: 30px;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  background: #90d105;
+  color: #0f2e00;
+  padding: 14px 32px;
+  border-radius: 40px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.3s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-primary:hover {
+  background: #a0e015;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(144,209,5,0.3);
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 2px solid #90d105;
+  color: #90d105;
+  padding: 12px 30px;
+  border-radius: 40px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+.btn-secondary:hover {
+  background: rgba(144,209,5,0.1);
+  transform: translateY(-2px);
+}
+
+.hero-stats {
+  display: flex;
+  gap: 30px;
+  margin-top: 40px;
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stat i {
+  font-size: 1.5rem;
+  color: #90d105;
+}
+
+.stat span {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.hero-image img {
+  width: 100%;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  border: 1px solid #334155;
+}
+
+/* NDI Badge */
+.ndi-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #1a3a2e, #0f2e00);
+  padding: 6px 16px;
+  border-radius: 40px;
+  margin-top: 15px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid #90d105;
+  width: fit-content;
+}
+
+.ndi-badge i {
+  color: #90d105;
+  font-size: 1rem;
+}
+
+.ndi-badge span {
+  color: #c4ff66;
+}
+
+/* Features */
+.features {
+  padding: 80px 0;
+  background: #1e293b;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 15px;
+}
+
+.section-subtitle {
+  text-align: center;
+  color: #94a3b8;
+  margin-bottom: 50px;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+}
+
+.feature-card {
+  background: #0f172a;
+  padding: 30px;
+  border-radius: 24px;
+  text-align: center;
+  transition: transform 0.3s;
+  border: 1px solid #334155;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  border-color: #90d105;
+}
+
+.feature-card i {
+  font-size: 3rem;
+  color: #90d105;
+  margin-bottom: 20px;
+}
+
+.feature-card h3 {
+  margin-bottom: 15px;
+}
+
+.feature-card p {
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+/* Como funciona */
+.how-it-works {
+  padding: 80px 0;
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  margin-top: 50px;
+}
+
+.step {
+  text-align: center;
+}
+
+.step-number {
+  width: 50px;
+  height: 50px;
+  background: #90d105;
+  color: #0f2e00;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin: 0 auto 20px;
+}
+
+.step i {
+  font-size: 2rem;
+  color: #90d105;
+  margin: 20px 0;
+}
+
+.step h3 {
+  margin-bottom: 10px;
+}
+
+.step p {
+  color: #94a3b8;
+}
+
+/* Screens */
+.screens {
+  padding: 80px 0;
+  background: #1e293b;
+}
+
+.screens-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+}
+
+.screen-card {
+  background: #0f172a;
+  padding: 20px;
+  border-radius: 20px;
+  text-align: center;
+  border: 1px solid #334155;
+}
+
+.screen-card img {
+  width: 100%;
+  border-radius: 12px;
+  margin-bottom: 15px;
+}
+
+.screen-card h4 {
+  margin-bottom: 8px;
+}
+
+.screen-card code {
+  background: #1e293b;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  color: #90d105;
+  display: inline-block;
+}
+
+/* Testimonials */
+.testimonials {
+  padding: 80px 0;
+  background: #1e293b;
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  margin-top: 40px;
+}
+
+.testimonial-card {
+  background: #0f172a;
+  padding: 25px;
+  border-radius: 20px;
+  border: 1px solid #334155;
+}
+
+.testimonial-card .stars {
+  color: #fbbf24;
+  margin-bottom: 15px;
+}
+
+.testimonial-card p {
+  margin-bottom: 20px;
+  font-style: italic;
+}
+
+.testimonial-author {
+  font-weight: 700;
+}
+
+.testimonial-author span {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  display: block;
+}
+
+/* FAQ */
+.faq {
+  padding: 80px 0;
+}
+
+.faq-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.faq-item {
+  background: #1e293b;
+  padding: 20px;
+  border-radius: 16px;
+}
+
+.faq-item h4 {
+  margin-bottom: 10px;
+  color: #90d105;
+}
+
+.faq-item p {
+  color: #94a3b8;
+  font-size: 0.85rem;
+}
+
+/* CTA */
+.cta {
+  padding: 80px 0;
+  text-align: center;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+}
+
+.cta h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.cta p {
+  color: #94a3b8;
+  margin-bottom: 30px;
+}
+
+/* Footer */
+.footer {
+  background: #020617;
+  padding: 50px 0 20px;
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.footer-logo p {
+  color: #64748b;
+  margin-top: 10px;
+  font-size: 0.8rem;
+}
+
+.footer-links h4, .footer-contact h4 {
+  margin-bottom: 15px;
+}
+
+.footer-links a {
+  display: block;
+  color: #94a3b8;
+  text-decoration: none;
+  margin-bottom: 10px;
+  font-size: 0.85rem;
+}
+
+.footer-links a:hover {
+  color: #90d105;
+}
+
+.footer-contact p {
+  margin-bottom: 10px;
+  font-size: 0.85rem;
+  color: #94a3b8;
+}
+
+.footer-contact i {
+  margin-right: 8px;
+  color: #90d105;
+}
+
+.footer-bottom {
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid #334155;
+  font-size: 0.7rem;
+  color: #64748b;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .header .container {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .nav {
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .hero .container {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  
+  .hero-buttons {
+    justify-content: center;
+  }
+  
+  .hero-stats {
+    justify-content: center;
+  }
+  
+  .steps {
+    grid-template-columns: 1fr;
+  }
+  
+  .screens-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .testimonials-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .faq-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  h1 {
+    font-size: 2rem;
+  }
+
+  .ndi-badge {
+    margin: 15px auto 0;
+  }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="container">
+    <div class="logo">
+      <img src="assets/logo.png" alt="ZapMix" onerror="this.style.display='none'">
+      <span>ZapMix</span>
+    </div>
+    <nav class="nav">
+      <a href="#home">Início</a>
+      <a href="#features">Funcionalidades</a>
+      <a href="#como-funciona">Como funciona</a>
+    </nav>
+    <a href="#download" class="btn-download-header">📥 Download</a>
+  </div>
+</header>
+
+<main>
+  <!-- Hero Section -->
+  <section id="home" class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <h1>Transforme sua <span class="gradient-text">produção ao vivo</span> com WhatsApp</h1>
+        <p>Integre o WhatsApp com o vMix, crie enquetes interativas e exiba mensagens, fotos, vídeos e áudios em tempo real.</p>
+        <div class="hero-buttons">
+          <a href="#download" class="btn-primary"><i class="fas fa-download"></i> Baixar Agora</a>
+          <a href="#como-funciona" class="btn-secondary"><i class="fas fa-play"></i> Ver Demonstração</a>
+        </div>
+        <div class="ndi-badge">
+          <i class="fas fa-broadcast-tower"></i>
+          <span>✅ Suporte a NDI incluso!</span>
+          <i class="fas fa-check-circle" style="color:#90d105; font-size:0.8rem;"></i>
+        </div>
+        <div class="hero-stats">
+          <div class="stat">
+            <i class="fas fa-download"></i>
+            <span>500+ Downloads</span>
+          </div>
+          <div class="stat">
+            <i class="fas fa-star"></i>
+            <span>4.9/5 Avaliações</span>
+          </div>
+          <div class="stat">
+            <i class="fas fa-users"></i>
+            <span>100+ Produtores</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-image">
+        <img src="assets/screenshot-dashboard.png" alt="ZapMix Dashboard" onerror="this.style.display='none'">
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section id="features" class="features">
+    <div class="container">
+      <h2 class="section-title">Funcionalidades</h2>
+      <p class="section-subtitle">Tudo que você precisa para sua produção</p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <i class="fab fa-whatsapp"></i>
+          <h3>WhatsApp Integrado</h3>
+          <p>Receba mensagens, fotos, vídeos e áudios em tempo real</p>
+        </div>
+        <div class="feature-card">
+          <i class="fas fa-chart-bar"></i>
+          <h3>Enquete Interativa</h3>
+          <p>Crie enquetes personalizadas com até 6 opções</p>
+        </div>
+        <div class="feature-card">
+          <i class="fas fa-tv"></i>
+          <h3>Compatível com vMix</h3>
+          <p>Telas otimizadas para exibição ao vivo</p>
+        </div>
+        <div class="feature-card">
+          <i class="fas fa-video"></i>
+          <h3>Suporte a Mídias</h3>
+          <p>Vídeos, áudios e imagens enviados pelo WhatsApp</p>
+        </div>
+        <div class="feature-card">
+          <i class="fas fa-mobile-alt"></i>
+          <h3>Fácil de Usar</h3>
+          <p>Conecte com QR Code em segundos</p>
+        </div>
+        <div class="feature-card">
+          <i class="fas fa-broadcast-tower"></i>
+          <h3>NDI Integration</h3>
+          <p>Saída NDI nativa para integração profissional</p>
+        </div>
+        <div class="feature-card">
+          <i class="fas fa-windows"></i>
+          <h3>Aplicativo Desktop</h3>
+          <p>Executável para Windows, não precisa instalar dependências</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Como funciona -->
+  <section id="como-funciona" class="how-it-works">
+    <div class="container">
+      <h2 class="section-title">Como funciona</h2>
+      <p class="section-subtitle">3 passos simples para começar</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <i class="fas fa-download"></i>
+          <h3>Baixe e instale</h3>
+          <p>Baixe o instalador e execute no seu computador</p>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <i class="fab fa-whatsapp"></i>
+          <h3>Conecte o WhatsApp</h3>
+          <p>Escaneie o QR Code com seu WhatsApp</p>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <i class="fas fa-tv"></i>
+          <h3>Use no vMix ou NDI</h3>
+          <p>Adicione as URLs no Web Browser do vMix ou receba via NDI</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Telas para vMix -->
+  <section class="screens">
+    <div class="container">
+      <h2 class="section-title">Telas otimizadas para vMix & NDI</h2>
+      <p class="section-subtitle">Layouts prontos para sua produção</p>
+      <div class="screens-grid">
+        <div class="screen-card">
+          <img src="assets/screen-enquete.png" alt="Tela da Enquete" onerror="this.style.display='none'">
+          <h4>📊 Tela da Enquete</h4>
+          <p>Exibe as opções com barras de porcentagem ao vivo</p>
+          <code>/vmix.html</code>
+        </div>
+        <div class="screen-card">
+          <img src="assets/screen-gt.png" alt="Tela do GT" onerror="this.style.display='none'">
+          <h4>🎙️ Tela do GT</h4>
+          <p>Exibe mensagem, foto e mídias em destaque</p>
+          <code>/vmix-gt.html</code>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Depoimentos -->
+  <section class="testimonials">
+    <div class="container">
+      <h2 class="section-title">O que dizem nossos clientes</h2>
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <div class="stars">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+          </div>
+          <p>"O ZapMix transformou minha produção! Agora interajo com o público em tempo real de forma simples e profissional."</p>
+          <div class="testimonial-author">Carlos Silva <span>Produtor de TV</span></div>
+        </div>
+        <div class="testimonial-card">
+          <div class="stars">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+          </div>
+          <p>"Integração perfeita com o vMix. A enquete ao vivo é um sucesso! Recomendo para todos que fazem live."</p>
+          <div class="testimonial-author">Mariana Costa <span>Streamer</span></div>
+        </div>
+        <div class="testimonial-card">
+          <div class="stars">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+          </div>
+          <p>"Fácil de configurar e funciona perfeitamente. O melhor investimento que fiz para minha igreja!"</p>
+          <div class="testimonial-author">Ricardo Almeida <span>Comunicador</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq">
+    <div class="container">
+      <h2 class="section-title">Perguntas Frequentes</h2>
+      <div class="faq-grid">
+        <div class="faq-item">
+          <h4>Precisa instalar Node.js?</h4>
+          <p>Não! O ZapMix é um executável autossuficiente para Windows.</p>
+        </div>
+        <div class="faq-item">
+          <h4>Funciona com vMix?</h4>
+          <p>Sim! O ZapMix foi desenvolvido especialmente para vMix.</p>
+        </div>
+        <div class="faq-item">
+          <h4>O que é o suporte a NDI?</h4>
+          <p>O ZapMix agora possui saída NDI nativa, permitindo capturar o sinal diretamente em softwares compatíveis.</p>
+        </div>
+        <div class="faq-item">
+          <h4>Precisa de internet?</h4>
+          <p>Sim, para conectar o WhatsApp e receber mensagens.</p>
+        </div>
+        <div class="faq-item">
+          <h4>Precisa de Chrome?</h4>
+          <p>Sim, o WhatsApp Web precisa. O Edge já vem instalado no Windows.</p>
+        </div>
+        <div class="faq-item">
+          <h4>Como recebo o produto?</h4>
+          <p>Após o download, você tem o executável pronto para usar.</p>
+        </div>
+        <div class="faq-item">
+          <h4>Tem garantia?</h4>
+          <p>Sim, garantia de funcionamento. Entre em contato se precisar de suporte.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Final -->
+  <section id="download" class="cta">
+    <div class="container">
+      <h2>Pronto para transformar sua produção?</h2>
+      <p>Baixe agora e comece a interagir com seu público em tempo real</p>
+      <a href="https://github.com/andersoncgpb1/zapmix/releases/download/v1.0.0/ZapMix_Setup.exe" class="btn-primary" style="font-size: 1.2rem; padding: 16px 40px;">
+        <i class="fas fa-download"></i> Baixar ZapMix
+      </a>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-logo">
+        <img src="assets/logo.png" alt="ZapMix" style="height: 40px;" onerror="this.style.display='none'">
+        <p>Gestão Inteligente para TV</p>
+      </div>
+      <div class="footer-links">
+        <h4>Links</h4>
+        <a href="#home">Início</a>
+        <a href="#features">Funcionalidades</a>
+        <a href="#como-funciona">Como funciona</a>
+      </div>
+      <div class="footer-contact">
+        <h4>Contato</h4>
+        <p><i class="fab fa-whatsapp"></i> (83) 98628-0769</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 ZapMix - Todos os direitos reservados. Desenvolvido por Anderson Souza</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Smooth scroll para links âncora
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function(e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+});
+
+// Animação ao scroll
+const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.opacity = '1';
+      entry.target.style.transform = 'translateY(0)';
+    }
+  });
+}, observerOptions);
+
+document.querySelectorAll('.feature-card, .step, .screen-card, .testimonial-card, .faq-item').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(30px)';
+  el.style.transition = 'all 0.5s ease';
+  observer.observe(el);
+});
+</script>
+</body>
+</html>

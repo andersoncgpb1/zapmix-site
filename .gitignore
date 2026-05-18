@@ -1,0 +1,22 @@
+echo # Arquivos de dependencias > .gitignore
+echo node_modules/ >> .gitignore
+echo # Builds e executaveis >> .gitignore
+echo release/ >> .gitignore
+echo dist/ >> .gitignore
+echo installer/ >> .gitignore
+echo *.exe >> .gitignore
+echo *.zip >> .gitignore
+echo *.7z >> .gitignore
+echo # Dados locais >> .gitignore
+echo .wwebjs_auth/ >> .gitignore
+echo zapmix-data/ >> .gitignore
+echo licenca_ativa.json >> .gitignore
+echo licencas.json >> .gitignore
+echo # Logs >> .gitignore
+echo *.log >> .gitignore
+echo npm-debug.log* >> .gitignore
+echo # Sistema >> .gitignore
+echo .DS_Store >> .gitignore
+echo Thumbs.db >> .gitignore
+echo .spotlight/ >> .gitignore
+echo .trashes/ >> .gitignore
