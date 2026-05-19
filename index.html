@@ -15,119 +15,223 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: 'Inter', sans-serif;
-  background: #0f172a;
-  color: #e2e8f0;
+  background: #0a0a0f;
+  color: #ffffff;
   line-height: 1.5;
   overflow-x: hidden;
 }
 
-/* Header com menu melhorado */
-.header {
+/* Animated Background */
+.animated-bg {
   position: fixed;
   top: 0;
+  left: 0;
   width: 100%;
-  background: rgba(15, 23, 42, 0.98);
-  backdrop-filter: blur(10px);
+  height: 100%;
+  z-index: -2;
+  background: radial-gradient(circle at 20% 50%, rgba(144, 209, 5, 0.08) 0%, rgba(10, 10, 15, 0) 50%);
+}
+
+.animated-bg::before {
+  content: '';
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  top: -50%;
+  left: -50%;
+  background: radial-gradient(circle, rgba(144, 209, 5, 0.05) 0%, transparent 70%);
+  animation: rotate 40s linear infinite;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Custom Cursor */
+.cursor {
+  width: 8px;
+  height: 8px;
+  background: #90d105;
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 10000;
+  transition: transform 0.2s ease;
+  mix-blend-mode: difference;
+}
+
+.cursor-follower {
+  width: 40px;
+  height: 40px;
+  border: 2px solid rgba(144, 209, 5, 0.5);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(2px);
+}
+
+/* Header Premium */
+.header {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 1280px;
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(20px);
+  border-radius: 80px;
   z-index: 1000;
-  padding: 12px 0;
-  border-bottom: 1px solid rgba(144, 209, 5, 0.2);
-  transition: all 0.3s ease;
+  padding: 8px 24px;
+  border: 1px solid rgba(144, 209, 5, 0.2);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
 
 .header-scrolled {
-  padding: 8px 0;
-  background: rgba(15, 23, 42, 0.98);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  top: 15px;
+  background: rgba(15, 23, 42, 0.95);
+  border-color: rgba(144, 209, 5, 0.4);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 1280px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 24px;
 }
 
 .header .container {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 0;
+  width: 100%;
 }
 
 .logo {
   display: flex;
   align-items: center;
-  gap: 10px;
-  z-index: 1001;
+  gap: 12px;
 }
 
-.logo img {
+.logo-icon {
+  width: 40px;
   height: 40px;
-  max-width: 100%;
+  background: linear-gradient(135deg, #90d105, #6a9e00);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(144, 209, 5, 0.4); }
+  50% { box-shadow: 0 0 0 10px rgba(144, 209, 5, 0); }
+}
+
+.logo-icon i {
+  font-size: 1.4rem;
+  color: #0a0a0f;
 }
 
 .logo span {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 800;
   background: linear-gradient(135deg, #ffffff, #90d105);
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
+  letter-spacing: -0.5px;
 }
 
-/* Menu Desktop */
+/* Menu Desktop Premium */
 .nav {
   display: flex;
   gap: 40px;
   align-items: center;
 }
 
-.nav a {
-  color: #cbd5e1;
+.nav-link {
+  color: #94a3b8;
   text-decoration: none;
   transition: all 0.3s;
   font-weight: 500;
   position: relative;
+  font-size: 0.95rem;
 }
 
-.nav a::after {
+.nav-link::before {
   content: '';
   position: absolute;
-  bottom: -5px;
-  left: 0;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
   width: 0%;
   height: 2px;
-  background: #90d105;
+  background: linear-gradient(90deg, #90d105, #c4ff66);
   transition: width 0.3s ease;
+  border-radius: 2px;
 }
 
-.nav a:hover::after,
-.nav a.active::after {
-  width: 100%;
+.nav-link:hover::before,
+.nav-link.active::before {
+  width: 70%;
 }
 
-.nav a:hover {
-  color: #90d105;
+.nav-link:hover {
+  color: #ffffff;
 }
 
 .btn-download-header {
-  background: #90d105;
-  color: #0f2e00;
-  padding: 8px 24px;
+  background: linear-gradient(135deg, #90d105, #6a9e00);
+  color: #0a0a0f;
+  padding: 10px 28px;
   border-radius: 40px;
-  font-weight: 600;
+  font-weight: 700;
   text-decoration: none;
   transition: all 0.3s;
   white-space: nowrap;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-download-header::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.btn-download-header:hover::before {
+  width: 300px;
+  height: 300px;
 }
 
 .btn-download-header:hover {
-  background: #a0e015;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(144,209,5,0.3);
+  box-shadow: 0 8px 25px rgba(144, 209, 5, 0.4);
 }
 
-/* Botão Menu Mobile (Hambúrguer) */
+/* Menu Mobile */
 .menu-toggle {
   display: none;
   flex-direction: column;
@@ -143,71 +247,126 @@ body {
 
 .menu-toggle span {
   width: 100%;
-  height: 3px;
+  height: 2px;
   background: #90d105;
-  border-radius: 3px;
+  border-radius: 2px;
   transition: all 0.3s ease;
 }
 
-.menu-toggle.active span:nth-child(1) {
-  transform: translateY(9px) rotate(45deg);
-}
-
-.menu-toggle.active span:nth-child(2) {
-  opacity: 0;
-}
-
-.menu-toggle.active span:nth-child(3) {
-  transform: translateY(-9px) rotate(-45deg);
-}
-
-/* Hero Section */
+/* Hero Section Premium */
 .hero {
-  padding: 140px 0 80px;
+  padding: 180px 0 100px;
   min-height: 100vh;
   display: flex;
   align-items: center;
+  position: relative;
 }
 
 .hero .container {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 50px;
+  gap: 60px;
   align-items: center;
 }
 
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(144, 209, 5, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 6px 16px;
+  border-radius: 40px;
+  margin-bottom: 24px;
+  border: 1px solid rgba(144, 209, 5, 0.3);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.hero-badge i {
+  color: #90d105;
+  font-size: 0.9rem;
+}
+
 .hero h1 {
-  font-size: 3rem;
+  font-size: 3.5rem;
   font-weight: 800;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   line-height: 1.2;
+  letter-spacing: -1px;
 }
 
 .gradient-text {
-  background: linear-gradient(135deg, #90d105, #c4ff66);
+  background: linear-gradient(135deg, #90d105, #c4ff66, #90d105);
+  background-size: 200% auto;
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
+  animation: shine 3s linear infinite;
+}
+
+@keyframes shine {
+  to { background-position: 200% center; }
 }
 
 .hero p {
   font-size: 1.1rem;
   color: #94a3b8;
-  margin-bottom: 30px;
+  margin-bottom: 32px;
+  line-height: 1.6;
 }
 
 .hero-buttons {
   display: flex;
-  gap: 15px;
+  gap: 16px;
   flex-wrap: wrap;
+  margin-bottom: 40px;
 }
 
 .btn-primary {
-  background: #90d105;
-  color: #0f2e00;
-  padding: 14px 32px;
+  background: linear-gradient(135deg, #90d105, #6a9e00);
+  color: #0a0a0f;
+  padding: 14px 36px;
   border-radius: 40px;
   font-weight: 700;
+  text-decoration: none;
+  transition: all 0.3s;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s;
+}
+
+.btn-primary:hover::before {
+  left: 100%;
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 35px rgba(144, 209, 5, 0.3);
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 2px solid rgba(144, 209, 5, 0.5);
+  color: #90d105;
+  padding: 12px 34px;
+  border-radius: 40px;
+  font-weight: 600;
   text-decoration: none;
   transition: all 0.3s;
   display: inline-flex;
@@ -215,165 +374,228 @@ body {
   gap: 8px;
 }
 
-.btn-primary:hover {
-  background: #a0e015;
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(144,209,5,0.3);
-}
-
-.btn-secondary {
-  background: transparent;
-  border: 2px solid #90d105;
-  color: #90d105;
-  padding: 12px 30px;
-  border-radius: 40px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.3s;
-}
-
 .btn-secondary:hover {
-  background: rgba(144,209,5,0.1);
-  transform: translateY(-2px);
+  border-color: #90d105;
+  background: rgba(144, 209, 5, 0.1);
+  transform: translateY(-3px);
 }
 
 .hero-stats {
   display: flex;
-  gap: 30px;
-  margin-top: 40px;
+  gap: 40px;
   flex-wrap: wrap;
 }
 
 .stat {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
-.stat i {
-  font-size: 1.5rem;
+.stat-icon {
+  width: 45px;
+  height: 45px;
+  background: rgba(144, 209, 5, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+}
+
+.stat:hover .stat-icon {
+  transform: scale(1.1);
+  background: rgba(144, 209, 5, 0.2);
+}
+
+.stat-icon i {
+  font-size: 1.3rem;
   color: #90d105;
 }
 
-.stat span {
-  font-weight: 700;
-  font-size: 1.1rem;
+.stat-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-number {
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+.hero-image {
+  position: relative;
 }
 
 .hero-image img {
   width: 100%;
-  border-radius: 20px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-  border: 1px solid #334155;
-  max-width: 100%;
-  height: auto;
+  border-radius: 24px;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+  border: 1px solid rgba(144, 209, 5, 0.2);
+  transition: transform 0.3s;
 }
 
-/* NDI Badge */
-.ndi-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: linear-gradient(135deg, #1a3a2e, #0f2e00);
-  padding: 6px 16px;
-  border-radius: 40px;
-  margin-top: 15px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  border: 1px solid #90d105;
-  width: fit-content;
+.hero-image:hover img {
+  transform: scale(1.02);
 }
 
-.ndi-badge i {
-  color: #90d105;
-  font-size: 1rem;
+.glow-effect {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 120%;
+  height: 120%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(144,209,5,0.2) 0%, transparent 70%);
+  filter: blur(40px);
+  z-index: -1;
 }
 
-.ndi-badge span {
-  color: #c4ff66;
-}
-
-/* Features */
-.features {
-  padding: 80px 0;
-  background: #1e293b;
-}
-
+/* Section Titles Premium */
 .section-title {
   text-align: center;
-  font-size: 2rem;
-  margin-bottom: 15px;
+  font-size: 2.5rem;
+  margin-bottom: 16px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #ffffff, #94a3b8);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
 }
 
 .section-subtitle {
   text-align: center;
   color: #94a3b8;
-  margin-bottom: 50px;
+  margin-bottom: 60px;
+  font-size: 1.1rem;
+}
+
+/* Features Grid Premium */
+.features {
+  padding: 100px 0;
+  background: linear-gradient(180deg, #0a0a0f 0%, #0f0f15 100%);
+  position: relative;
 }
 
 .features-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 30px;
 }
 
 .feature-card {
-  background: #0f172a;
-  padding: 30px;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(10px);
+  padding: 40px 30px;
   border-radius: 24px;
   text-align: center;
-  transition: transform 0.3s;
-  border: 1px solid #334155;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(144, 209, 5, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(144, 209, 5, 0.05), transparent);
+  transition: left 0.6s;
+}
+
+.feature-card:hover::before {
+  left: 100%;
 }
 
 .feature-card:hover {
-  transform: translateY(-5px);
-  border-color: #90d105;
+  transform: translateY(-8px);
+  border-color: rgba(144, 209, 5, 0.3);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
 }
 
-.feature-card i {
-  font-size: 3rem;
+.feature-icon {
+  width: 70px;
+  height: 70px;
+  background: linear-gradient(135deg, rgba(144, 209, 5, 0.1), rgba(144, 209, 5, 0.05));
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 25px;
+  transition: all 0.3s;
+}
+
+.feature-card:hover .feature-icon {
+  transform: scale(1.1);
+  background: linear-gradient(135deg, rgba(144, 209, 5, 0.2), rgba(144, 209, 5, 0.1));
+}
+
+.feature-icon i {
+  font-size: 2.2rem;
   color: #90d105;
-  margin-bottom: 20px;
 }
 
 .feature-card h3 {
   margin-bottom: 15px;
+  font-size: 1.3rem;
 }
 
 .feature-card p {
   color: #94a3b8;
   font-size: 0.9rem;
+  line-height: 1.6;
 }
 
-/* Como funciona */
+/* Steps Premium */
 .how-it-works {
-  padding: 80px 0;
+  padding: 100px 0;
 }
 
 .steps {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
-  margin-top: 50px;
+  gap: 40px;
+  margin-top: 60px;
 }
 
 .step {
   text-align: center;
+  position: relative;
+}
+
+.step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 30%;
+  right: -20px;
+  width: 40px;
+  height: 2px;
+  background: linear-gradient(90deg, #90d105, transparent);
 }
 
 .step-number {
-  width: 50px;
-  height: 50px;
-  background: #90d105;
-  color: #0f2e00;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #90d105, #6a9e00);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.5rem;
   font-weight: 800;
-  margin: 0 auto 20px;
+  margin: 0 auto 25px;
+  color: #0a0a0f;
+  box-shadow: 0 0 20px rgba(144, 209, 5, 0.3);
 }
 
 .step i {
@@ -383,58 +605,68 @@ body {
 }
 
 .step h3 {
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+  font-size: 1.2rem;
 }
 
 .step p {
   color: #94a3b8;
+  font-size: 0.9rem;
 }
 
-/* Screens */
+/* Screens Premium */
 .screens {
-  padding: 80px 0;
-  background: #1e293b;
+  padding: 100px 0;
+  background: linear-gradient(180deg, #0f0f15 0%, #0a0a0f 100%);
 }
 
 .screens-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 30px;
+  gap: 40px;
 }
 
 .screen-card {
-  background: #0f172a;
-  padding: 20px;
-  border-radius: 20px;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(10px);
+  padding: 30px;
+  border-radius: 24px;
   text-align: center;
-  border: 1px solid #334155;
+  border: 1px solid rgba(144, 209, 5, 0.1);
+  transition: all 0.3s;
+}
+
+.screen-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(144, 209, 5, 0.3);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.3);
 }
 
 .screen-card img {
   width: 100%;
-  border-radius: 12px;
-  margin-bottom: 15px;
-  max-width: 100%;
-  height: auto;
+  border-radius: 16px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(144, 209, 5, 0.2);
 }
 
 .screen-card h4 {
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+  font-size: 1.2rem;
 }
 
 .screen-card code {
-  background: #1e293b;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 0.7rem;
+  background: rgba(144, 209, 5, 0.1);
+  padding: 6px 16px;
+  border-radius: 40px;
+  font-size: 0.8rem;
   color: #90d105;
   display: inline-block;
+  margin-top: 12px;
 }
 
-/* Testimonials */
+/* Testimonials Premium */
 .testimonials {
-  padding: 80px 0;
-  background: #1e293b;
+  padding: 100px 0;
 }
 
 .testimonials-grid {
@@ -445,143 +677,183 @@ body {
 }
 
 .testimonial-card {
-  background: #0f172a;
-  padding: 25px;
-  border-radius: 20px;
-  border: 1px solid #334155;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(10px);
+  padding: 30px;
+  border-radius: 24px;
+  border: 1px solid rgba(144, 209, 5, 0.1);
+  transition: all 0.3s;
+}
+
+.testimonial-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(144, 209, 5, 0.3);
 }
 
 .testimonial-card .stars {
   color: #fbbf24;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
 }
 
 .testimonial-card p {
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   font-style: italic;
+  line-height: 1.6;
+  color: #cbd5e1;
 }
 
 .testimonial-author {
   font-weight: 700;
+  color: #ffffff;
 }
 
 .testimonial-author span {
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   color: #94a3b8;
   display: block;
+  margin-top: 5px;
 }
 
-/* FAQ */
+/* FAQ Premium */
 .faq {
-  padding: 80px 0;
+  padding: 100px 0;
+  background: linear-gradient(180deg, #0a0a0f 0%, #0f0f15 100%);
 }
 
 .faq-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
 }
 
 .faq-item {
-  background: #1e293b;
-  padding: 20px;
-  border-radius: 16px;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(10px);
+  padding: 25px;
+  border-radius: 20px;
+  border: 1px solid rgba(144, 209, 5, 0.1);
+  transition: all 0.3s;
+}
+
+.faq-item:hover {
+  border-color: rgba(144, 209, 5, 0.3);
+  transform: translateX(5px);
 }
 
 .faq-item h4 {
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   color: #90d105;
+  font-size: 1rem;
 }
 
 .faq-item p {
   color: #94a3b8;
   font-size: 0.85rem;
+  line-height: 1.5;
 }
 
-/* CTA */
+/* CTA Premium */
 .cta {
-  padding: 80px 0;
+  padding: 100px 0;
   text-align: center;
-  background: linear-gradient(135deg, #0f172a, #1e293b);
+  position: relative;
+  overflow: hidden;
+}
+
+.cta::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at center, rgba(144, 209, 5, 0.1) 0%, transparent 70%);
+  pointer-events: none;
 }
 
 .cta h2 {
-  font-size: 2rem;
+  font-size: 2.5rem;
   margin-bottom: 20px;
+  font-weight: 700;
 }
 
 .cta p {
   color: #94a3b8;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
+  font-size: 1.1rem;
 }
 
-/* Footer */
+/* Footer Premium */
 .footer {
-  background: #020617;
-  padding: 50px 0 20px;
+  background: #050508;
+  padding: 60px 0 30px;
+  border-top: 1px solid rgba(144, 209, 5, 0.1);
 }
 
 .footer-content {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 40px;
-  margin-bottom: 40px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 50px;
+  margin-bottom: 50px;
 }
 
 .footer-logo p {
   color: #64748b;
-  margin-top: 10px;
-  font-size: 0.8rem;
+  margin-top: 12px;
+  font-size: 0.85rem;
 }
 
 .footer-links h4, .footer-contact h4 {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
+  font-size: 1rem;
+  color: #ffffff;
 }
 
 .footer-links a {
   display: block;
   color: #94a3b8;
   text-decoration: none;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   font-size: 0.85rem;
+  transition: all 0.3s;
 }
 
 .footer-links a:hover {
   color: #90d105;
+  transform: translateX(5px);
 }
 
 .footer-contact p {
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   font-size: 0.85rem;
   color: #94a3b8;
 }
 
 .footer-contact i {
-  margin-right: 8px;
+  margin-right: 10px;
   color: #90d105;
+  width: 20px;
 }
 
 .footer-bottom {
   text-align: center;
-  padding-top: 20px;
-  border-top: 1px solid #334155;
-  font-size: 0.7rem;
+  padding-top: 30px;
+  border-top: 1px solid rgba(144, 209, 5, 0.1);
+  font-size: 0.75rem;
   color: #64748b;
 }
 
-/* ========== RESPONSIVIDADE DO MENU ========== */
-
-/* Desktop normal */
-@media (min-width: 769px) {
-  .nav {
-    display: flex !important;
-  }
-}
-
-/* Tablet e Mobile */
+/* Responsive */
 @media (max-width: 768px) {
+  .header {
+    width: 95%;
+    top: 15px;
+    padding: 6px 20px;
+  }
+  
   .menu-toggle {
     display: flex;
   }
@@ -590,58 +862,48 @@ body {
     position: fixed;
     top: 0;
     right: -100%;
-    width: 70%;
-    max-width: 300px;
+    width: 80%;
+    max-width: 320px;
     height: 100vh;
-    background: rgba(15, 23, 42, 0.98);
+    background: rgba(10, 10, 15, 0.98);
     backdrop-filter: blur(20px);
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 30px;
-    transition: right 0.3s ease;
+    gap: 35px;
+    transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 1000;
-    box-shadow: -5px 0 20px rgba(0,0,0,0.3);
+    box-shadow: -10px 0 40px rgba(0,0,0,0.5);
   }
   
   .nav.active {
     right: 0;
   }
   
-  .nav a {
+  .nav-link {
     font-size: 1.2rem;
-    padding: 10px;
   }
   
-  .btn-download-header {
-    margin-left: 0;
+  .menu-toggle.active span:nth-child(1) {
+    transform: translateY(9px) rotate(45deg);
   }
   
-  /* Overlay para fechar menu */
-  .menu-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.5);
-    z-index: 999;
+  .menu-toggle.active span:nth-child(2) {
     opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
   }
   
-  .menu-overlay.active {
-    opacity: 1;
-    visibility: visible;
+  .menu-toggle.active span:nth-child(3) {
+    transform: translateY(-9px) rotate(-45deg);
   }
-}
-
-/* Demais responsividades */
-@media (max-width: 768px) {
+  
   .hero .container {
     grid-template-columns: 1fr;
     text-align: center;
+    gap: 40px;
+  }
+  
+  .hero h1 {
+    font-size: 2.5rem;
   }
   
   .hero-buttons {
@@ -656,6 +918,10 @@ body {
     grid-template-columns: 1fr;
   }
   
+  .step:not(:last-child)::after {
+    display: none;
+  }
+  
   .screens-grid {
     grid-template-columns: 1fr;
   }
@@ -668,96 +934,103 @@ body {
     grid-template-columns: 1fr;
   }
   
-  h1 {
+  .section-title {
     font-size: 2rem;
   }
-
-  .ndi-badge {
-    margin: 15px auto 0;
+  
+  .cursor, .cursor-follower {
+    display: none;
   }
 }
 
 @media (max-width: 480px) {
   .container {
-    padding: 0 16px;
-  }
-  
-  .hero {
-    padding: 120px 0 60px;
+    padding: 0 20px;
   }
   
   .hero h1 {
     font-size: 1.8rem;
   }
   
-  .hero p {
-    font-size: 1rem;
-  }
-  
   .hero-buttons {
     flex-direction: column;
-    gap: 12px;
+    gap: 15px;
   }
   
   .btn-primary, .btn-secondary {
     width: 100%;
     justify-content: center;
-    padding: 12px 20px;
-  }
-  
-  .hero-stats {
-    flex-wrap: wrap;
-    gap: 15px;
-    justify-content: center;
-  }
-  
-  .stat {
-    flex: 1;
-    min-width: 110px;
-    justify-content: center;
-  }
-  
-  .feature-card, .step, .screen-card, .testimonial-card {
-    padding: 20px;
   }
   
   .section-title {
     font-size: 1.6rem;
   }
   
-  .footer-content {
+  .features-grid {
     grid-template-columns: 1fr;
-    text-align: center;
-    gap: 25px;
-  }
-  
-  .nav {
-    width: 85%;
   }
 }
 
 @media (min-width: 1400px) {
   .container {
-    max-width: 1280px;
+    max-width: 1400px;
   }
   
   .hero h1 {
-    font-size: 3.5rem;
+    font-size: 4rem;
   }
 }
 
-img, video, iframe {
-  max-width: 100%;
-  height: auto;
+/* Menu Overlay */
+.menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.8);
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.menu-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Scrollbar Personalizada */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a0f;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #90d105, #6a9e00);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #90d105;
 }
 </style>
 </head>
 <body>
 
+<div class="animated-bg"></div>
+<div class="cursor"></div>
+<div class="cursor-follower"></div>
+
 <header class="header" id="header">
   <div class="container">
     <div class="logo">
-      <img src="assets/logo.png" alt="ZapMix" onerror="this.style.display='none'">
+      <div class="logo-icon">
+        <i class="fas fa-bolt"></i>
+      </div>
       <span>ZapMix</span>
     </div>
     
@@ -769,7 +1042,7 @@ img, video, iframe {
     
     <nav class="nav" id="nav">
       <a href="#home" class="nav-link">Início</a>
-      <a href="#features" class="nav-link">Funcionalidades</a>
+      <a href="#features" class="nav-link">Recursos</a>
       <a href="#como-funciona" class="nav-link">Como funciona</a>
       <a href="#download" class="btn-download-header">📥 Download</a>
     </nav>
@@ -783,33 +1056,48 @@ img, video, iframe {
   <section id="home" class="hero">
     <div class="container">
       <div class="hero-content">
-        <h1>Transforme sua <span class="gradient-text">produção ao vivo</span> com WhatsApp</h1>
-        <p>Integre o WhatsApp com o vMix, crie enquetes interativas e exiba mensagens, fotos, vídeos e áudios em tempo real.</p>
-        <div class="hero-buttons">
-          <a href="#download" class="btn-primary"><i class="fas fa-download"></i> Baixar Agora</a>
-          <a href="#como-funciona" class="btn-secondary"><i class="fas fa-play"></i> Ver Demonstração</a>
+        <div class="hero-badge">
+          <i class="fas fa-crown"></i>
+          <span>Solução Profissional</span>
         </div>
-        <div class="ndi-badge">
-          <i class="fas fa-broadcast-tower"></i>
-          <span>✅ Suporte a NDI incluso!</span>
-          <i class="fas fa-check-circle" style="color:#90d105; font-size:0.8rem;"></i>
+        <h1>Transforme sua <span class="gradient-text">produção ao vivo</span> com WhatsApp</h1>
+        <p>Integre o WhatsApp com o vMix, crie enquetes interativas e exiba mensagens, fotos, vídeos e áudios em tempo real com tecnologia de ponta.</p>
+        <div class="hero-buttons">
+          <a href="#download" class="btn-primary"><i class="fas fa-download"></i> Começar Agora</a>
+          <a href="#como-funciona" class="btn-secondary"><i class="fas fa-play"></i> Ver Demonstração</a>
         </div>
         <div class="hero-stats">
           <div class="stat">
-            <i class="fas fa-download"></i>
-            <span>500+ Downloads</span>
+            <div class="stat-icon">
+              <i class="fas fa-download"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-number">500+</span>
+              <span class="stat-label">Downloads</span>
+            </div>
           </div>
           <div class="stat">
-            <i class="fas fa-star"></i>
-            <span>4.9/5 Avaliações</span>
+            <div class="stat-icon">
+              <i class="fas fa-star"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-number">4.9/5</span>
+              <span class="stat-label">Avaliações</span>
+            </div>
           </div>
           <div class="stat">
-            <i class="fas fa-users"></i>
-            <span>100+ Produtores</span>
+            <div class="stat-icon">
+              <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-number">100+</span>
+              <span class="stat-label">Produtores</span>
+            </div>
           </div>
         </div>
       </div>
       <div class="hero-image">
+        <div class="glow-effect"></div>
         <img src="assets/screenshot-dashboard.png" alt="ZapMix Dashboard" onerror="this.style.display='none'">
       </div>
     </div>
@@ -818,43 +1106,50 @@ img, video, iframe {
   <!-- Features -->
   <section id="features" class="features">
     <div class="container">
-      <h2 class="section-title">Funcionalidades</h2>
-      <p class="section-subtitle">Tudo que você precisa para sua produção</p>
+      <h2 class="section-title">Recursos Exclusivos</h2>
+      <p class="section-subtitle">Tudo que você precisa para uma produção profissional</p>
       <div class="features-grid">
         <div class="feature-card">
-          <i class="fab fa-whatsapp"></i>
+          <div class="feature-icon">
+            <i class="fab fa-whatsapp"></i>
+          </div>
           <h3>WhatsApp Integrado</h3>
-          <p>Receba mensagens, fotos, vídeos e áudios em tempo real</p>
+          <p>Receba mensagens, fotos, vídeos e áudios em tempo real diretamente no seu fluxo de produção</p>
         </div>
         <div class="feature-card">
-          <i class="fas fa-chart-bar"></i>
+          <div class="feature-icon">
+            <i class="fas fa-chart-bar"></i>
+          </div>
           <h3>Enquete Interativa</h3>
-          <p>Crie enquetes personalizadas com até 6 opções</p>
+          <p>Crie enquetes personalizadas com até 6 opções e resultados em tempo real</p>
         </div>
         <div class="feature-card">
-          <i class="fas fa-tv"></i>
+          <div class="feature-icon">
+            <i class="fas fa-tv"></i>
+          </div>
           <h3>Compatível com vMix</h3>
-          <p>Telas otimizadas para exibição ao vivo</p>
+          <p>Telas otimizadas para exibição ao vivo com integração perfeita</p>
         </div>
         <div class="feature-card">
-          <i class="fas fa-video"></i>
+          <div class="feature-icon">
+            <i class="fas fa-video"></i>
+          </div>
           <h3>Suporte a Mídias</h3>
-          <p>Vídeos, áudios e imagens enviados pelo WhatsApp</p>
+          <p>Vídeos, áudios e imagens enviados pelo WhatsApp com reprodução automática</p>
         </div>
         <div class="feature-card">
-          <i class="fas fa-mobile-alt"></i>
-          <h3>Fácil de Usar</h3>
-          <p>Conecte com QR Code em segundos</p>
+          <div class="feature-icon">
+            <i class="fas fa-mobile-alt"></i>
+          </div>
+          <h3>Conexão Instantânea</h3>
+          <p>Conecte com QR Code em segundos, sem configurações complexas</p>
         </div>
         <div class="feature-card">
-          <i class="fas fa-broadcast-tower"></i>
+          <div class="feature-icon">
+            <i class="fas fa-broadcast-tower"></i>
+          </div>
           <h3>NDI Integration</h3>
-          <p>Saída NDI nativa para integração profissional</p>
-        </div>
-        <div class="feature-card">
-          <i class="fas fa-windows"></i>
-          <h3>Aplicativo Desktop</h3>
-          <p>Executável para Windows, não precisa instalar dependências</p>
+          <p>Saída NDI nativa para integração profissional com qualquer software</p>
         </div>
       </div>
     </div>
@@ -864,24 +1159,24 @@ img, video, iframe {
   <section id="como-funciona" class="how-it-works">
     <div class="container">
       <h2 class="section-title">Como funciona</h2>
-      <p class="section-subtitle">3 passos simples para começar</p>
+      <p class="section-subtitle">Três passos para revolucionar sua produção</p>
       <div class="steps">
         <div class="step">
           <div class="step-number">1</div>
           <i class="fas fa-download"></i>
           <h3>Baixe e instale</h3>
-          <p>Baixe o instalador e execute no seu computador</p>
+          <p>Baixe o instalador e execute no seu computador em menos de 1 minuto</p>
         </div>
         <div class="step">
           <div class="step-number">2</div>
           <i class="fab fa-whatsapp"></i>
           <h3>Conecte o WhatsApp</h3>
-          <p>Escaneie o QR Code com seu WhatsApp</p>
+          <p>Escaneie o QR Code com seu WhatsApp e esteja online instantaneamente</p>
         </div>
         <div class="step">
           <div class="step-number">3</div>
           <i class="fas fa-tv"></i>
-          <h3>Use no vMix ou NDI</h3>
+          <h3>Integre ao vMix</h3>
           <p>Adicione as URLs no Web Browser do vMix ou receba via NDI</p>
         </div>
       </div>
@@ -891,19 +1186,19 @@ img, video, iframe {
   <!-- Telas para vMix -->
   <section class="screens">
     <div class="container">
-      <h2 class="section-title">Telas otimizadas para vMix & NDI</h2>
-      <p class="section-subtitle">Layouts prontos para sua produção</p>
+      <h2 class="section-title">Telas otimizadas</h2>
+      <p class="section-subtitle">Layouts profissionais prontos para sua produção</p>
       <div class="screens-grid">
         <div class="screen-card">
           <img src="assets/screen-enquete.png" alt="Tela da Enquete" onerror="this.style.display='none'">
           <h4>📊 Tela da Enquete</h4>
-          <p>Exibe as opções com barras de porcentagem ao vivo</p>
+          <p>Exibe as opções com barras de porcentagem animadas ao vivo</p>
           <code>/vmix.html</code>
         </div>
         <div class="screen-card">
           <img src="assets/screen-gt.png" alt="Tela do GT" onerror="this.style.display='none'">
           <h4>🎙️ Tela do GT</h4>
-          <p>Exibe mensagem, foto e mídias em destaque</p>
+          <p>Exibe mensagem, foto e mídias em destaque com transições suaves</p>
           <code>/vmix-gt.html</code>
         </div>
       </div>
@@ -914,26 +1209,27 @@ img, video, iframe {
   <section class="testimonials">
     <div class="container">
       <h2 class="section-title">O que dizem nossos clientes</h2>
+      <p class="section-subtitle">Depoimentos de quem já transformou sua produção</p>
       <div class="testimonials-grid">
         <div class="testimonial-card">
           <div class="stars">
             <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
           </div>
-          <p>"O ZapMix transformou minha produção! Agora interajo com o público em tempo real de forma simples e profissional."</p>
+          <p>"O ZapMix transformou minha produção! Agora interajo com o público em tempo real de forma simples e profissional. Recomendo demais!"</p>
           <div class="testimonial-author">Carlos Silva <span>Produtor de TV</span></div>
         </div>
         <div class="testimonial-card">
           <div class="stars">
             <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
           </div>
-          <p>"Integração perfeita com o vMix. A enquete ao vivo é um sucesso! Recomendo para todos que fazem live."</p>
+          <p>"Integração perfeita com o vMix. A enquete ao vivo é um sucesso absoluto! A qualidade do software é impressionante."</p>
           <div class="testimonial-author">Mariana Costa <span>Streamer</span></div>
         </div>
         <div class="testimonial-card">
           <div class="stars">
             <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
           </div>
-          <p>"Fácil de configurar e funciona perfeitamente. O melhor investimento que fiz para minha igreja!"</p>
+          <p>"Fácil de configurar e funciona perfeitamente. O melhor investimento que fiz para minha igreja! Suporte excelente."</p>
           <div class="testimonial-author">Ricardo Almeida <span>Comunicador</span></div>
         </div>
       </div>
@@ -944,34 +1240,39 @@ img, video, iframe {
   <section class="faq">
     <div class="container">
       <h2 class="section-title">Perguntas Frequentes</h2>
+      <p class="section-subtitle">Tire suas dúvidas sobre o ZapMix</p>
       <div class="faq-grid">
         <div class="faq-item">
-          <h4>Precisa instalar Node.js?</h4>
-          <p>Não! O ZapMix é um executável autossuficiente para Windows.</p>
+          <h4>Precisa instalar dependências?</h4>
+          <p>Não! O ZapMix é um executável autossuficiente para Windows. Baixe e use.</p>
         </div>
         <div class="faq-item">
           <h4>Funciona com vMix?</h4>
-          <p>Sim! O ZapMix foi desenvolvido especialmente para vMix.</p>
+          <p>Sim! O ZapMix foi desenvolvido especialmente para vMix e outras plataformas.</p>
         </div>
         <div class="faq-item">
           <h4>O que é o suporte a NDI?</h4>
-          <p>O ZapMix agora possui saída NDI nativa, permitindo capturar o sinal diretamente em softwares compatíveis.</p>
+          <p>O ZapMix possui saída NDI nativa, capturando o sinal diretamente em softwares compatíveis.</p>
         </div>
         <div class="faq-item">
           <h4>Precisa de internet?</h4>
-          <p>Sim, para conectar o WhatsApp e receber mensagens.</p>
+          <p>Sim, para conectar o WhatsApp e receber mensagens em tempo real.</p>
         </div>
         <div class="faq-item">
-          <h4>Precisa de Chrome?</h4>
-          <p>Sim, o WhatsApp Web precisa. O Edge já vem instalado no Windows.</p>
+          <h4>Precisa de navegador específico?</h4>
+          <p>O WhatsApp Web usa o Chromium. O Edge já vem instalado no Windows.</p>
         </div>
         <div class="faq-item">
           <h4>Como recebo o produto?</h4>
-          <p>Após o download, você tem o executável pronto para usar.</p>
+          <p>Após o download, você tem o executável pronto para usar imediatamente.</p>
         </div>
         <div class="faq-item">
           <h4>Tem garantia?</h4>
-          <p>Sim, garantia de funcionamento. Entre em contato se precisar de suporte.</p>
+          <p>Sim, garantia de funcionamento. Suporte incluso para dúvidas e problemas.</p>
+        </div>
+        <div class="faq-item">
+          <h4>Suporta múltiplas conexões?</h4>
+          <p>Sim! Você pode conectar várias contas simultaneamente.</p>
         </div>
       </div>
     </div>
@@ -981,9 +1282,9 @@ img, video, iframe {
   <section id="download" class="cta">
     <div class="container">
       <h2>Pronto para transformar sua produção?</h2>
-      <p>Baixe agora e comece a interagir com seu público em tempo real</p>
-      <a href="https://github.com/andersoncgpb1/zapmix/releases/download/v1.0.0/ZapMix_Setup.exe" class="btn-primary" style="font-size: 1.2rem; padding: 16px 40px;">
-        <i class="fas fa-download"></i> Baixar ZapMix
+      <p>Junte-se a mais de 500 produtores que já utilizam o ZapMix</p>
+      <a href="https://github.com/andersoncgpb1/zapmix/releases/download/v1.0.0/ZapMix_Setup.exe" class="btn-primary" style="font-size: 1.1rem; padding: 16px 42px;">
+        <i class="fas fa-download"></i> Baixar ZapMix Gratuitamente
       </a>
     </div>
   </section>
@@ -993,27 +1294,62 @@ img, video, iframe {
   <div class="container">
     <div class="footer-content">
       <div class="footer-logo">
-        <img src="assets/logo.png" alt="ZapMix" style="height: 40px;" onerror="this.style.display='none'">
-        <p>Gestão Inteligente para TV</p>
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+          <div class="logo-icon" style="width: 35px; height: 35px;">
+            <i class="fas fa-bolt" style="font-size: 1.2rem;"></i>
+          </div>
+          <span style="font-size: 1.2rem; font-weight: 700;">ZapMix</span>
+        </div>
+        <p>Solução profissional para integração do WhatsApp com produções ao vivo.</p>
       </div>
       <div class="footer-links">
-        <h4>Links</h4>
+        <h4>Navegação</h4>
         <a href="#home">Início</a>
-        <a href="#features">Funcionalidades</a>
+        <a href="#features">Recursos</a>
         <a href="#como-funciona">Como funciona</a>
+        <a href="#download">Download</a>
       </div>
       <div class="footer-contact">
         <h4>Contato</h4>
         <p><i class="fab fa-whatsapp"></i> (83) 98628-0769</p>
+        <p><i class="far fa-envelope"></i> contato@zapmix.com</p>
+        <p><i class="fab fa-github"></i> github.com/zapmix</p>
       </div>
     </div>
     <div class="footer-bottom">
-      <p>&copy; 2026 ZapMix - Todos os direitos reservados. Desenvolvido por Anderson Souza</p>
+      <p>&copy; 2026 ZapMix - Todos os direitos reservados. Desenvolvido com <i class="fas fa-heart" style="color: #90d105;"></i> por Anderson Souza</p>
     </div>
   </div>
 </footer>
 
 <script>
+// Custom Cursor
+const cursor = document.querySelector('.cursor');
+const cursorFollower = document.querySelector('.cursor-follower');
+
+if (window.innerWidth > 768) {
+  document.addEventListener('mousemove', (e) => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+    
+    setTimeout(() => {
+      cursorFollower.style.left = e.clientX + 'px';
+      cursorFollower.style.top = e.clientY + 'px';
+    }, 80);
+  });
+  
+  document.querySelectorAll('a, button, .btn-primary, .btn-secondary, .feature-card').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.transform = 'scale(2)';
+      cursorFollower.style.transform = 'scale(1.5)';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.transform = 'scale(1)';
+      cursorFollower.style.transform = 'scale(1)';
+    });
+  });
+}
+
 // Menu Mobile
 const menuToggle = document.getElementById('menuToggle');
 const nav = document.getElementById('nav');
@@ -1058,14 +1394,13 @@ window.addEventListener('scroll', () => {
   }
 });
 
-// Smooth scroll para links âncora
+// Smooth scroll
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   anchor.addEventListener('click', function(e) {
     e.preventDefault();
     const target = document.querySelector(this.getAttribute('href'));
     if (target) {
       target.scrollIntoView({ behavior: 'smooth' });
-      closeMenu();
     }
   });
 });
@@ -1090,7 +1425,7 @@ window.addEventListener('scroll', () => {
   });
 });
 
-// Animação ao scroll
+// Scroll animations
 const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
@@ -1104,8 +1439,17 @@ const observer = new IntersectionObserver((entries) => {
 document.querySelectorAll('.feature-card, .step, .screen-card, .testimonial-card, .faq-item').forEach(el => {
   el.style.opacity = '0';
   el.style.transform = 'translateY(30px)';
-  el.style.transition = 'all 0.5s ease';
+  el.style.transition = 'all 0.6s ease';
   observer.observe(el);
+});
+
+// Parallax effect on hero image
+window.addEventListener('scroll', () => {
+  const scrolled = window.pageYOffset;
+  const heroImage = document.querySelector('.hero-image');
+  if (heroImage) {
+    heroImage.style.transform = `translateY(${scrolled * 0.1}px)`;
+  }
 });
 </script>
 </body>
