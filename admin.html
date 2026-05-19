@@ -1225,142 +1225,90 @@ async function excluirCliente(id, nome) {
 }
 
 // ============================================================
-// LICENÇAS
+// LICENÇAS - VERSÃO CORRIGIDA
 // ============================================================
 async function carregarLicencas() {
   const token = getToken();
-  console.log("Token:", token ? "Existe" : "Não existe");
-  
   if (!token) {
-    console.log("Sem token, não carrega licenças");
+    console.log("Sem token, redirecionando para login");
     return;
+  }
+  
+  // Mostrar loading
+  const tbody = document.getElementById('listaLicencas');
+  if (tbody) {
+    tbody.innerHTML = '<tr><td colspan="7" class="empty-state"><i class="fas fa-spinner fa-spin"></i> Carregando licenças...</td></tr>';
   }
   
   try {
-    console.log("Buscando licenças da API...");
+    console.log("Chamando API /api/admin-licencas");
     const data = await apiLicencas("GET");
-    console.log("Resposta da API:", data);
+    console.log("Resposta recebida:", data);
     
     if (data.ok && data.licencas) {
       licencas = data.licencas;
-      console.log(`${licencas.length} licenças carregadas`);
+      console.log(`${licencas.length} licenças carregadas com sucesso`);
+      
+      // Atualizar stats
+      document.getElementById('statTotalLicencas').innerText = licencas.length;
+      document.getElementById('statAtivas').innerText = licencas.filter(l => l.status === 'ATIVA').length;
+      document.getElementById('statMaquinas').innerText = licencas.filter(l => l.machine_id).length;
+      
+      // Aplicar filtros e renderizar
+      aplicarFiltros();
+      atualizarDashboard();
     } else {
-      console.log("Erro ao carregar licenças:", data.erro);
-      licencas = [];
+      console.error("Erro na resposta da API:", data.erro);
+      showToast(data.erro || "Erro ao carregar licenças", "error");
+      if (tbody) {
+        tbody.innerHTML = '<tr><td colspan="7" class="empty-state"><i class="fas fa-exclamation-triangle"></i> Erro ao carregar licenças</td></tr>';
+      }
     }
-    
-    // Atualizar stats mesmo se não houver licenças
-    document.getElementById('statTotalLicencas').innerText = licencas.length;
-    document.getElementById('statAtivas').innerText = licencas.filter(l => l.status === 'ATIVA').length;
-    document.getElementById('statMaquinas').innerText = licencas.filter(l => l.machine_id).length;
-    
-    aplicarFiltros();
-    atualizarDashboard();
-    
   } catch (error) {
-    console.error("Erro na requisição:", error);
-    showToast("Erro ao carregar licenças", "error");
-    document.getElementById('listaLicencas').innerHTML = '<tr><td colspan="7" class="empty-state">❌ Erro ao carregar licenças</td></tr>';
+    console.error("Exceção ao carregar licenças:", error);
+    showToast("Erro de conexão com o servidor", "error");
+    if (tbody) {
+      tbody.innerHTML = '<tr><td colspan="7" class="empty-state"><i class="fas fa-plug"></i> Erro de conexão. Verifique sua internet.</td></tr>';
+    }
   }
 }
+
+function aplicarFiltros() {
+  const searchTerm = document.getElementById('searchLicenca')?.value.toLowerCase() || '';
+  const statusFilter = document.getElementById('filterStatusLicenca')?.value || 'todos';
+  const dataInicio = document.getElementById('filterDataInicio')?.value;
+  const dataFim = document.getElementById('filterDataFim')?.value;
+  
+  console.log("Aplicando filtros - busca:", searchTerm, "status:", statusFilter);
+  
+  licencasFiltradas = licencas.filter(l => {
+    const matchSearch = (l.cliente || '').toLowerCase().includes(searchTerm) || 
+                        (l.chave || '').toLowerCase().includes(searchTerm);
+    const matchStatus = statusFilter === 'todos' || l.status === statusFilter;
+    let matchData = true;
+    if (dataInicio && l.validade) matchData = matchData && new Date(l.validade) >= new Date(dataInicio);
+    if (dataFim && l.validade) matchData = matchData && new Date(l.validade) <= new Date(dataFim);
+    return matchSearch && matchStatus && matchData;
+  });
+  
+  console.log(`${licencasFiltradas.length} licenças após filtros`);
+  
+  // Ordenar
+  licencasFiltradas.sort((a, b) => {
+    let valA = a[ordemColuna] || '';
+    let valB = b[ordemColuna] || '';
+    if (ordemColuna === 'validade') {
+      valA = new Date(valA) || 0;
+      valB = new Date(valB) || 0;
+    }
+    if (valA < valB) return ordemDirecao === 'asc' ? -1 : 1;
+    if (valA > valB) return ordemDirecao === 'asc' ? 1 : -1;
+    return 0;
+  });
+  
   paginaAtual = 1;
   renderizarLicencas();
-  atualizarDashboard();
 }
-
-function ordenarLicencas(coluna) {
-  if (ordemColuna === coluna) ordemDirecao = ordemDirecao === 'asc' ? 'desc' : 'asc';
-  else { ordemColuna = coluna; ordemDirecao = 'asc'; }
-  aplicarFiltros();
-}
-
-function aplicarFiltrosAvancados() { aplicarFiltros(); }
-function limparFiltrosAvancados() { document.getElementById('filterDataInicio').value = ''; document.getElementById('filterDataFim').value = ''; aplicarFiltros(); }
-
-function renderizarLicencas() {
-  const start = (paginaAtual-1) * itensPorPagina;
-  const pagina = licencasFiltradas.slice(start, start + itensPorPagina);
-  const tbody = document.getElementById('listaLicencas');
-  
-  if (pagina.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8" class="empty-state"><i class="fas fa-key"></i><br>Nenhuma licença encontrada</td</tr>';
-    return;
-  }
-  
-  tbody.innerHTML = pagina.map(l => {
-    const statusInfo = getStatusLicenca(l.validade, l.status);
-    const hoje = new Date();
-    const dataValidade = new Date(l.validade);
-    const precisaRenovar = statusInfo.alerta || (dataValidade - hoje) / (1000 * 60 * 60 * 24) <= 30;
-    
-    return `
-      <tr>
-        <td data-label="Selecionar"><input type="checkbox" class="select-licenca" value="${l.id}" onchange="toggleSelecionarLicenca('${l.id}')"></td>
-        <td data-label="Cliente"><strong>${escapeHtml(l.cliente)}</strong>${l.ultima_renovacao ? `<br><small style="color:#64748b">Última renovação: ${formatarData(l.ultima_renovacao)}</small>` : ''}</td>
-        <td data-label="Chave"><code>${escapeHtml(l.chave)}</code></td>
-        <td data-label="Status"><span class="status-badge ${statusInfo.class}">${statusInfo.text}</span></td>
-        <td data-label="Validade">${formatarData(l.validade)}</td>
-        <td data-label="Máquina">${l.machine_id ? l.machine_id.substring(0,20)+'...' : '💻 Livre'}</td>
-        <td data-label="Ações">
-          <div class="action-buttons">
-            <button class="btn-success btn-sm" onclick="atualizarStatus('${l.id}','ATIVA')" title="Ativar"><i class="fas fa-check"></i> Ativar</button>
-            <button class="btn-danger btn-sm" onclick="atualizarStatus('${l.id}','BLOQUEADA')" title="Bloquear"><i class="fas fa-lock"></i> Bloquear</button>
-            <button class="btn-warning btn-sm" onclick="liberarMaquina('${l.id}')" title="Liberar PC"><i class="fas fa-desktop"></i> Liberar</button>
-            ${precisaRenovar ? `<button class="btn-primary btn-sm" onclick="abrirModalRenovacao('${l.id}', '${escapeHtml(l.cliente)}', '${l.validade}')" title="Renovar"><i class="fas fa-sync-alt"></i> Renovar</button>` : ''}
-            <button class="btn-danger btn-sm" onclick="excluirLicenca('${l.id}','${escapeHtml(l.cliente)}')" title="Excluir"><i class="fas fa-trash"></i> Excluir</button>
-          </div>
-         </td>
-       </tr>
-    `;
-  }).join('');
-  
-  const bulkDiv = document.getElementById('bulkActions');
-  if (licencasSelecionadas.size > 0) {
-    bulkDiv.style.display = 'flex';
-    document.getElementById('selectedCount').innerText = licencasSelecionadas.size;
-  } else {
-    bulkDiv.style.display = 'none';
-  }
-  renderizarPaginacao();
-}
-
-function renderizarPaginacao() {
-  const totalPaginas = Math.ceil(licencasFiltradas.length / itensPorPagina);
-  const div = document.getElementById('paginationLicencas');
-  if (totalPaginas <= 1) { div.innerHTML = ''; return; }
-  let html = `<button class="page-btn" onclick="mudarPagina(${paginaAtual-1})" ${paginaAtual===1?'disabled':''}>«</button>`;
-  for(let i=1; i<=Math.min(totalPaginas,5); i++) html += `<button class="page-btn ${paginaAtual===i?'active':''}" onclick="mudarPagina(${i})">${i}</button>`;
-  html += `<button class="page-btn" onclick="mudarPagina(${paginaAtual+1})" ${paginaAtual===totalPaginas?'disabled':''}>»</button>`;
-  div.innerHTML = html;
-}
-
-function mudarPagina(p) { const total = Math.ceil(licencasFiltradas.length / itensPorPagina); if(p<1 || p>total) return; paginaAtual=p; renderizarLicencas(); }
-
-function selecionarTodasLicencas() {
-  const selectAll = document.getElementById('selectAllLicencas');
-  const checkboxes = document.querySelectorAll('.select-licenca');
-  checkboxes.forEach(cb => { cb.checked = selectAll.checked; if (selectAll.checked) licencasSelecionadas.add(cb.value); else licencasSelecionadas.clear(); });
-  renderizarLicencas();
-}
-
-function toggleSelecionarLicenca(id) {
-  if (licencasSelecionadas.has(id)) licencasSelecionadas.delete(id);
-  else licencasSelecionadas.add(id);
-  const selectAll = document.getElementById('selectAllLicencas');
-  const checkboxes = document.querySelectorAll('.select-licenca');
-  if (selectAll) selectAll.checked = checkboxes.length === licencasSelecionadas.size;
-  renderizarLicencas();
-}
-
-async function bulkAtivar() { openModalConfirm(`Ativar ${licencasSelecionadas.size} licença(s)?`, async () => { for (const id of licencasSelecionadas) await apiLicencas("PUT", { id, status: 'ATIVA' }); licencasSelecionadas.clear(); showToast("Licenças ativadas", "success"); carregarLicencas(); }); }
-async function bulkBloquear() { openModalConfirm(`Bloquear ${licencasSelecionadas.size} licença(s)?`, async () => { for (const id of licencasSelecionadas) await apiLicencas("PUT", { id, status: 'BLOQUEADA' }); licencasSelecionadas.clear(); showToast("Licenças bloqueadas", "success"); carregarLicencas(); }); }
-async function bulkExcluir() { openModalConfirm(`Excluir ${licencasSelecionadas.size} licença(s)?`, async () => { for (const id of licencasSelecionadas) await apiLicencas("DELETE", { id }); licencasSelecionadas.clear(); showToast("Licenças excluídas", "success"); carregarLicencas(); }); }
-
-async function atualizarStatus(id, status) { const d = await apiLicencas("PUT", { id, status }); if(d.ok){ showToast(`Licença ${status.toLowerCase()}`, "success"); carregarLicencas(); } else showToast(d.erro, "error"); }
-async function liberarMaquina(id) { const d = await apiLicencas("PUT", { id, machine_id: null }); if(d.ok){ showToast("Máquina liberada", "success"); carregarLicencas(); } else showToast(d.erro, "error"); }
-async function excluirLicenca(id, cliente) { openModalConfirm(`Excluir licença de ${cliente}?`, async()=>{ const d=await apiLicencas("DELETE",{id}); if(d.ok){ showToast("Licença excluída","success"); carregarLicencas(); } else showToast(d.erro,"error"); }); }
-async function criarLicenca() { let cid = document.getElementById('novaLicencaCliente').value, validade = document.getElementById('novaLicencaValidade').value; if(!cid||!validade){ showToast("Selecione cliente e data","error"); return; } let cli = clientes.find(c=>c.id==cid); let d = await apiLicencas("POST",{chave:document.getElementById('novaLicencaChave').value||gerarChave(), cliente:cli.nome, cliente_id:parseInt(cid), validade, status:document.getElementById('novaLicencaStatus').value, max_machines:1, modulos:["whatsapp","ndi","enquete"]}); if(d.ok){ showToast("Licença criada!","success"); document.getElementById('novaLicencaChave').value=''; document.getElementById('novaLicencaValidade').value=''; mostrarTab('licencas'); carregarLicencas(); } else showToast(d.erro,"error"); }
-
 // ============================================================
 // EXPORTAÇÕES
 // ============================================================
