@@ -19,7 +19,6 @@ export default async function handler(req, res) {
   const auth = req.headers.authorization || "";
   const token = auth.replace("Bearer ", "");
   
-  // Validação simples do token (ajuste conforme sua implementação)
   if (!token) {
     return res.status(401).json({ ok: false, erro: "Não autorizado" });
   }
@@ -32,15 +31,16 @@ export default async function handler(req, res) {
       .order('created_at', { ascending: false });
 
     if (error) {
+      console.error("Erro ao buscar clientes:", error);
       return res.status(500).json({ ok: false, erro: error.message });
     }
 
-    return res.json({ ok: true, clientes: data });
+    return res.json({ ok: true, clientes: data || [] });
   }
 
   // POST - Criar novo cliente
   if (req.method === 'POST') {
-    const { nome, email, telefone, empresa, observacoes, status } = req.body;
+    const { nome, email, telefone, empresa, observacoes } = req.body;
 
     if (!nome) {
       return res.status(400).json({ ok: false, erro: "Nome é obrigatório" });
@@ -54,12 +54,13 @@ export default async function handler(req, res) {
         telefone: telefone || null,
         empresa: empresa || null,
         observacoes: observacoes || null,
-        status: status || 'ATIVO'
+        status: 'ATIVO'
       })
       .select()
       .single();
 
     if (error) {
+      console.error("Erro ao criar cliente:", error);
       return res.status(500).json({ ok: false, erro: error.message });
     }
 
@@ -91,6 +92,7 @@ export default async function handler(req, res) {
       .single();
 
     if (error) {
+      console.error("Erro ao atualizar cliente:", error);
       return res.status(500).json({ ok: false, erro: error.message });
     }
 
@@ -105,12 +107,27 @@ export default async function handler(req, res) {
       return res.status(400).json({ ok: false, erro: "ID é obrigatório" });
     }
 
+    // Verificar se cliente tem licenças
+    const { count, error: countError } = await supabase
+      .from('licenses')
+      .select('*', { count: 'exact', head: true })
+      .eq('cliente_id', id);
+
+    if (countError) {
+      return res.status(500).json({ ok: false, erro: countError.message });
+    }
+
+    if (count > 0) {
+      return res.status(400).json({ ok: false, erro: "Cliente possui licenças vinculadas" });
+    }
+
     const { error } = await supabase
       .from('clientes')
       .delete()
       .eq('id', id);
 
     if (error) {
+      console.error("Erro ao excluir cliente:", error);
       return res.status(500).json({ ok: false, erro: error.message });
     }
 
