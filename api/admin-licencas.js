@@ -38,21 +38,35 @@ function gerarChave() {
 }
 
 export default async function handler(req, res) {
+  // Configurar CORS
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
+  // Verificar token para todas as rotas
   if (!verificarToken(req)) {
     return res.status(401).json({ ok: false, erro: "Não autorizado" });
   }
 
+  // GET - Listar todas licenças
   if (req.method === "GET") {
     const { data, error } = await supabase
       .from("licenses")
       .select("*")
       .order("created_at", { ascending: false });
 
-    if (error) return res.status(500).json({ ok: false, erro: error.message });
+    if (error) {
+      return res.status(500).json({ ok: false, erro: error.message });
+    }
 
     return res.json({ ok: true, licencas: data });
   }
 
+  // POST - Criar nova licença
   if (req.method === "POST") {
     const {
       chave,
@@ -78,16 +92,20 @@ export default async function handler(req, res) {
         validade,
         status: status || "ATIVA",
         max_machines: max_machines || 1,
-        modulos: modulos || ["whatsapp", "ndi", "enquete"]
+        modulos: modulos || ["whatsapp", "ndi", "enquete"],
+        created_at: new Date().toISOString()
       })
       .select()
       .single();
 
-    if (error) return res.status(500).json({ ok: false, erro: error.message });
+    if (error) {
+      return res.status(500).json({ ok: false, erro: error.message });
+    }
 
     return res.json({ ok: true, licenca: data });
   }
 
+  // PUT - Atualizar licença
   if (req.method === "PUT") {
     const {
       id,
@@ -99,8 +117,11 @@ export default async function handler(req, res) {
       modulos
     } = req.body || {};
 
-    const update = {};
+    if (!id) {
+      return res.status(400).json({ ok: false, erro: "ID é obrigatório" });
+    }
 
+    const update = {};
     if (cliente !== undefined) update.cliente = cliente;
     if (validade !== undefined) update.validade = validade;
     if (status !== undefined) update.status = status;
@@ -115,20 +136,29 @@ export default async function handler(req, res) {
       .select()
       .single();
 
-    if (error) return res.status(500).json({ ok: false, erro: error.message });
+    if (error) {
+      return res.status(500).json({ ok: false, erro: error.message });
+    }
 
     return res.json({ ok: true, licenca: data });
   }
 
+  // DELETE - Excluir licença
   if (req.method === "DELETE") {
     const { id } = req.body || {};
+
+    if (!id) {
+      return res.status(400).json({ ok: false, erro: "ID é obrigatório" });
+    }
 
     const { error } = await supabase
       .from("licenses")
       .delete()
       .eq("id", id);
 
-    if (error) return res.status(500).json({ ok: false, erro: error.message });
+    if (error) {
+      return res.status(500).json({ ok: false, erro: error.message });
+    }
 
     return res.json({ ok: true });
   }

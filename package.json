@@ -1,5 +1,14 @@
 {
+  "name": "zapmix-site",
+  "version": "1.0.0",
+  "description": "ZapMix - Gestão Inteligente para TV",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel deploy --prod"
+  },
   "dependencies": {
-    "@supabase/supabase-js": "^2.106.0"
+    "@supabase/supabase-js": "^2.39.0",
+    "crypto": "^1.0.1"
   }
 }
