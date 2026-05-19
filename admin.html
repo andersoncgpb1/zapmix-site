@@ -290,17 +290,28 @@ async function apiClientes(method, body) {
 
 async function apiLicencas(method, body) { 
     let token = getToken(); 
-    if (!token) return { ok: false, licencas: [] };
+    if (!token) {
+        console.log("Sem token");
+        return { ok: false, erro: "Sem token" };
+    }
     
     try {
+        console.log(`Fazendo ${method} para /api/admin-licencas`, body);
         let res = await fetch("/api/admin-licencas", { 
             method, 
-            headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token }, 
+            headers: { 
+                "Content-Type": "application/json", 
+                "Authorization": "Bearer " + token 
+            }, 
             body: body ? JSON.stringify(body) : undefined 
         }); 
-        return await res.json(); 
+        
+        let data = await res.json();
+        console.log(`Resposta ${method}:`, data);
+        return data;
     } catch(e) {
-        return { ok: true, licencas: DADOS_FIXOS.licencas };
+        console.error(`Erro na API ${method}:`, e);
+        return { ok: false, erro: e.message };
     }
 }
 
@@ -593,44 +604,63 @@ async function criarLicenca() {
 
 async function atualizarStatus(id, status) { 
     try {
+        showToast("Processando...", "info");
+        console.log(`Atualizando licença ${id} para status ${status}`);
+        
         const d = await apiLicencas("PUT", { id, status }); 
+        console.log("Resposta recebida:", d);
+        
         if(d && d.ok){ 
-            showToast(`Licença ${status === 'ATIVA' ? 'ativada' : 'bloqueada'}!`, "success"); 
-            await carregarLicencas(); 
+            showToast(`Licença ${status === 'ATIVA' ? 'ativada' : 'bloqueada'} com sucesso!`, "success"); 
+            // Recarregar a lista
+            await carregarLicencas();
         } else { 
-            showToast(d?.erro || "Erro ao atualizar", "error"); 
+            showToast(d?.erro || "Erro ao atualizar status", "error"); 
         } 
     } catch(e) {
-        showToast("Erro ao atualizar", "error");
+        console.error("Erro em atualizarStatus:", e);
+        showToast("Erro ao atualizar status", "error");
     }
 }
 
 async function liberarMaquina(id) { 
     try {
+        showToast("Liberando máquina...", "info");
+        console.log(`Liberando máquina da licença ${id}`);
+        
         const d = await apiLicencas("PUT", { id, machine_id: null }); 
+        console.log("Resposta recebida:", d);
+        
         if(d && d.ok){ 
-            showToast("Máquina liberada!", "success"); 
-            await carregarLicencas(); 
+            showToast("Máquina liberada com sucesso!", "success"); 
+            await carregarLicencas();
         } else { 
-            showToast(d?.erro || "Erro ao liberar", "error"); 
+            showToast(d?.erro || "Erro ao liberar máquina", "error"); 
         } 
     } catch(e) {
-        showToast("Erro ao liberar", "error");
+        console.error("Erro em liberarMaquina:", e);
+        showToast("Erro ao liberar máquina", "error");
     }
 }
 
 async function excluirLicenca(id, cliente) { 
     openModalConfirm(`Excluir licença de ${cliente}?`, async () => { 
         try {
+            showToast("Excluindo licença...", "info");
+            console.log(`Excluindo licença ${id}`);
+            
             const d = await apiLicencas("DELETE", { id }); 
+            console.log("Resposta recebida:", d);
+            
             if(d && d.ok){ 
-                showToast("Licença excluída!", "success"); 
-                await carregarLicencas(); 
+                showToast("Licença excluída com sucesso!", "success"); 
+                await carregarLicencas();
             } else { 
-                showToast(d?.erro || "Erro ao excluir", "error"); 
+                showToast(d?.erro || "Erro ao excluir licença", "error"); 
             } 
         } catch(e) {
-            showToast("Erro ao excluir", "error");
+            console.error("Erro em excluirLicenca:", e);
+            showToast("Erro ao excluir licença", "error");
         }
     }); 
 }
