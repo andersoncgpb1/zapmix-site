@@ -313,13 +313,6 @@ button {
   background: #f8fafc;
 }
 
-.filter-group select {
-  padding: 10px 12px;
-  border-radius: 12px;
-  border: 1.5px solid #e2e8f0;
-  background: #f8fafc;
-}
-
 .table-wrapper {
   overflow-x: auto;
   border-radius: 16px;
@@ -697,7 +690,13 @@ code {
 </div>
 
 <script>
-let clientes = [], licencas = [], licencasFiltradas = [], paginaAtual = 1, itensPorPagina = 10, acaoConfirmada = null;
+let clientes = [];
+let licencas = [];
+let licencasFiltradas = [];
+let paginaAtual = 1;
+let itensPorPagina = 10;
+let acaoConfirmada = null;
+let clienteEditandoId = null;
 
 function showToast(msg, type) { let t = document.createElement('div'); t.className = `toast ${type}`; t.innerHTML = type === 'success' ? `✅ ${msg}` : `❌ ${msg}`; document.body.appendChild(t); setTimeout(() => t.remove(), 3000); }
 function getToken() { return localStorage.getItem("zapmix_admin_token") || ""; }
@@ -767,14 +766,93 @@ async function atualizarStatus(id, status) { let d = await apiLicencas("PUT", { 
 async function liberarMaquina(id) { let d = await apiLicencas("PUT", { id, machine_id: null }); if(d.ok){ showToast("Máquina liberada", "success"); carregarLicencas(); } else showToast(d.erro, "error"); }
 async function excluirLicenca(id, cliente) { openModalConfirm(`Excluir licença de ${cliente}?`, async()=>{ let d=await apiLicencas("DELETE",{id}); if(d.ok){ showToast("Licença excluída","success"); carregarLicencas(); } else showToast(d.erro,"error"); }); }
 async function criarLicenca() { let cid=document.getElementById('novaLicencaCliente').value, validade=document.getElementById('novaLicencaValidade').value; if(!cid||!validade){ showToast("Selecione cliente e data","error"); return; } let cli=clientes.find(c=>c.id==cid); let d=await apiLicencas("POST",{chave:document.getElementById('novaLicencaChave').value||gerarChave(), cliente:cli.nome, cliente_id:parseInt(cid), validade, status:document.getElementById('novaLicencaStatus').value, max_machines:1, modulos:["whatsapp","ndi","enquete"]}); if(d.ok){ showToast("Licença criada!","success"); document.getElementById('novaLicencaChave').value=''; document.getElementById('novaLicencaValidade').value=''; mostrarTab('licencas'); carregarLicencas(); } else showToast(d.erro,"error"); }
-async function salvarCliente() { let nome=document.getElementById('clienteNome').value.trim(); if(!nome){ showToast("Nome obrigatório","error"); return; } let data=await apiClientes("POST",{nome, email:document.getElementById('clienteEmail').value, telefone:document.getElementById('clienteTelefone').value, empresa:document.getElementById('clienteEmpresa').value, observacoes:document.getElementById('clienteObs').value}); if(data.ok){ showToast("Cliente salvo!","success"); fecharModalCliente(); carregarClientes(); } else showToast(data.erro,"error"); }
-function excluirCliente(id, nome) { openModalConfirm(`Excluir "${nome}"?`, async()=>{ let d=await apiClientes("DELETE",{id}); if(d.ok){ showToast("Cliente excluído","success"); carregarClientes(); } else showToast(d.erro,"error"); }); }
-function editarCliente(id) { let c=clientes.find(c=>c.id===id); if(c){ document.getElementById('modalClienteTitle').innerHTML='✏️ Editar Cliente'; document.getElementById('clienteNome').value=c.nome; document.getElementById('clienteEmail').value=c.email||''; document.getElementById('clienteTelefone').value=c.telefone||''; document.getElementById('clienteEmpresa').value=c.empresa||''; document.getElementById('clienteObs').value=c.observacoes||''; document.getElementById('modalCliente').classList.add('active'); } }
-function abrirModalCliente() { document.getElementById('modalClienteTitle').innerHTML='📝 Novo Cliente'; document.getElementById('clienteNome').value=''; document.getElementById('clienteEmail').value=''; document.getElementById('clienteTelefone').value=''; document.getElementById('clienteEmpresa').value=''; document.getElementById('clienteObs').value=''; document.getElementById('modalCliente').classList.add('active'); }
-function fecharModalCliente() { document.getElementById('modalCliente').classList.remove('active'); }
+
+// CLIENTES CRUD CORRIGIDO
+async function salvarCliente() {
+  const nome = document.getElementById('clienteNome').value.trim();
+  if (!nome) {
+    showToast("Nome obrigatório", "error");
+    return;
+  }
+  
+  const clienteData = {
+    nome: nome,
+    email: document.getElementById('clienteEmail').value,
+    telefone: document.getElementById('clienteTelefone').value,
+    empresa: document.getElementById('clienteEmpresa').value,
+    observacoes: document.getElementById('clienteObs').value
+  };
+  
+  if (clienteEditandoId) {
+    // EDITAR - Usar PUT
+    clienteData.id = clienteEditandoId;
+    const data = await apiClientes("PUT", clienteData);
+    if (data.ok) {
+      showToast("Cliente atualizado com sucesso!", "success");
+      fecharModalCliente();
+      carregarClientes();
+    } else {
+      showToast(data.erro || "Erro ao atualizar", "error");
+    }
+  } else {
+    // CRIAR NOVO - Usar POST
+    const data = await apiClientes("POST", clienteData);
+    if (data.ok) {
+      showToast("Cliente criado com sucesso!", "success");
+      fecharModalCliente();
+      carregarClientes();
+    } else {
+      showToast(data.erro || "Erro ao criar", "error");
+    }
+  }
+}
+
+function editarCliente(id) {
+  const cliente = clientes.find(c => c.id === id);
+  if (cliente) {
+    clienteEditandoId = cliente.id;
+    document.getElementById('modalClienteTitle').innerHTML = '✏️ Editar Cliente';
+    document.getElementById('clienteNome').value = cliente.nome;
+    document.getElementById('clienteEmail').value = cliente.email || '';
+    document.getElementById('clienteTelefone').value = cliente.telefone || '';
+    document.getElementById('clienteEmpresa').value = cliente.empresa || '';
+    document.getElementById('clienteObs').value = cliente.observacoes || '';
+    document.getElementById('modalCliente').classList.add('active');
+  }
+}
+
+function abrirModalCliente() {
+  clienteEditandoId = null;
+  document.getElementById('modalClienteTitle').innerHTML = '📝 Novo Cliente';
+  document.getElementById('clienteNome').value = '';
+  document.getElementById('clienteEmail').value = '';
+  document.getElementById('clienteTelefone').value = '';
+  document.getElementById('clienteEmpresa').value = '';
+  document.getElementById('clienteObs').value = '';
+  document.getElementById('modalCliente').classList.add('active');
+}
+
+function fecharModalCliente() {
+  document.getElementById('modalCliente').classList.remove('active');
+  clienteEditandoId = null;
+}
+
+async function excluirCliente(id, nome) {
+  openModalConfirm(`Excluir cliente "${nome}"?`, async() => {
+    const data = await apiClientes("DELETE", { id });
+    if (data.ok) {
+      showToast("Cliente excluído com sucesso!", "success");
+      carregarClientes();
+    } else {
+      showToast(data.erro || "Erro ao excluir cliente", "error");
+    }
+  });
+}
+
 function openModalConfirm(msg, cb) { document.getElementById('confirmMessage').innerText = msg; acaoConfirmada = cb; document.getElementById('confirmModal').classList.add('active'); }
 function fecharModalConfirmar() { document.getElementById('confirmModal').classList.remove('active'); acaoConfirmada = null; }
 document.getElementById('confirmBtn').onclick = () => { if(acaoConfirmada) acaoConfirmada(); fecharModalConfirmar(); };
+
 function mostrarTab(tab) {
   document.getElementById('tabClientes').style.display='none'; document.getElementById('tabLicencas').style.display='none'; document.getElementById('tabNovaLicenca').style.display='none';
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
@@ -782,11 +860,14 @@ function mostrarTab(tab) {
   else if(tab==='licencas'){ document.getElementById('tabLicencas').style.display='block'; document.querySelector('.tab-btn:nth-child(2)').classList.add('active'); carregarLicencas(); }
   else{ document.getElementById('tabNovaLicenca').style.display='block'; document.querySelector('.tab-btn:nth-child(3)').classList.add('active'); }
 }
+
 async function login() { let usuario=document.getElementById('usuario').value.trim(), senha=document.getElementById('senha').value.trim(); if(!usuario||!senha){ showToast("Preencha usuário e senha","error"); return; } try{ let res=await fetch("/api/admin-login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({usuario,senha})}); let data=await res.json(); if(!data.ok){ showToast(data.erro||"Erro no login","error"); return; } localStorage.setItem("zapmix_admin_token",data.token); showToast("Login realizado!","success"); document.getElementById('loginOverlay').style.display='none'; document.getElementById('adminHeader').style.display='flex'; document.getElementById('adminContent').style.display='block'; mostrarTab('clientes'); carregarLicencas(); }catch(e){ showToast("Erro de conexão","error"); } }
 function logout() { localStorage.removeItem('zapmix_admin_token'); document.getElementById('loginOverlay').style.display='flex'; document.getElementById('adminHeader').style.display='none'; document.getElementById('adminContent').style.display='none'; showToast('Logout realizado','success'); }
+
 document.getElementById('searchCliente')?.addEventListener('keyup', carregarClientes);
 document.getElementById('searchLicenca')?.addEventListener('keyup', carregarLicencas);
 document.getElementById('filterStatusLicenca')?.addEventListener('change', carregarLicencas);
+
 if(getToken()){ document.getElementById('loginOverlay').style.display='none'; document.getElementById('adminHeader').style.display='flex'; document.getElementById('adminContent').style.display='block'; mostrarTab('clientes'); carregarLicencas(); } else { document.getElementById('loginOverlay').style.display='flex'; }
 setInterval(()=>{ if(getToken()) carregarLicencas(); }, 30000);
 </script>
