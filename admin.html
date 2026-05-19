@@ -3,12 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#90d105">
 <title>ZapMix Admin | Painel de Controle</title>
-<link rel="icon" type="image/png" href="/public/media/favicon.png">
+<link rel="icon" type="image/png" href="/assets/favicon.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 * {
   margin: 0;
@@ -81,7 +79,6 @@ body {
   padding: 32px;
 }
 
-/* Stats Cards */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -134,6 +131,30 @@ body {
   color: #90d105;
 }
 
+.tabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.tab-btn {
+  padding: 12px 24px;
+  border-radius: 12px 12px 0 0;
+  margin-bottom: -2px;
+  background: transparent;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  color: #64748b;
+}
+
+.tab-btn.active {
+  background: #90d105;
+  color: #0f2e00;
+}
+
 .card {
   background: #ffffff;
   border-radius: 28px;
@@ -149,13 +170,22 @@ body {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
 }
 
-.card h2 {
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.card-header h2 {
   font-size: 1.25rem;
   font-weight: 700;
-  margin-bottom: 20px;
   border-left: 4px solid #90d105;
   padding-left: 16px;
   color: #0f172a;
+  margin-bottom: 0;
 }
 
 .form-grid {
@@ -179,7 +209,11 @@ body {
   margin-bottom: 6px;
 }
 
-input, select {
+.input-group label .required {
+  color: #ef4444;
+}
+
+input, select, textarea {
   padding: 12px 14px;
   border-radius: 12px;
   border: 1.5px solid #e2e8f0;
@@ -189,13 +223,12 @@ input, select {
   font-family: 'Inter', sans-serif;
 }
 
-input:focus, select:focus {
+input:focus, select:focus, textarea:focus {
   outline: none;
   border-color: #90d105;
   box-shadow: 0 0 0 3px rgba(144, 209, 5, 0.1);
 }
 
-/* Botões - ESTILO ORIGINAL MANTIDO */
 button {
   padding: 10px 20px;
   border-radius: 12px;
@@ -258,7 +291,6 @@ button {
   font-size: 0.7rem;
 }
 
-/* Search */
 .search-bar {
   display: flex;
   gap: 12px;
@@ -292,7 +324,6 @@ button {
   border-radius: 12px;
   border: 1.5px solid #e2e8f0;
   background: #f8fafc;
-  font-family: 'Inter', sans-serif;
 }
 
 .table-wrapper {
@@ -314,11 +345,6 @@ th {
   text-transform: uppercase;
   color: #475569;
   border-bottom: 2px solid #e2e8f0;
-  cursor: pointer;
-}
-
-th:hover {
-  color: #90d105;
 }
 
 td {
@@ -339,12 +365,12 @@ tr:hover {
   font-weight: 600;
 }
 
-.status-ATIVA {
+.status-ATIVA, .status-ATIVO {
   background: #dcfce7;
   color: #15803d;
 }
 
-.status-BLOQUEADA {
+.status-BLOQUEADA, .status-INATIVO {
   background: #fee2e2;
   color: #991b1b;
 }
@@ -368,31 +394,56 @@ code {
   flex-wrap: wrap;
 }
 
-/* Pagination */
-.pagination {
-  display: flex;
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  align-items: center;
   justify-content: center;
-  gap: 8px;
-  margin-top: 24px;
-  flex-wrap: wrap;
 }
 
-.page-btn {
-  padding: 8px 14px;
-  background: #f1f5f9;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
+.modal.active {
+  display: flex;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 24px;
+  padding: 32px;
+  max-width: 600px;
+  width: 90%;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.modal-header h3 {
+  margin: 0;
+}
+
+.close-modal {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
   cursor: pointer;
-  font-size: 0.8rem;
-  transition: all 0.2s;
-  color: #1e293b;
+  color: #94a3b8;
 }
 
-.page-btn:hover,
-.page-btn.active {
-  background: #90d105;
-  border-color: #90d105;
-  color: #0f2e00;
+.modal-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 24px;
 }
 
 .toast {
@@ -437,48 +488,30 @@ code {
   to { transform: rotate(360deg); }
 }
 
-/* Modal */
-.modal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-  z-index: 1000;
-  align-items: center;
-  justify-content: center;
-}
-
-.modal.active {
+.pagination {
   display: flex;
-}
-
-.modal-content {
-  background: white;
-  border-radius: 24px;
-  padding: 32px;
-  max-width: 400px;
-  width: 90%;
-  text-align: center;
-}
-
-.modal-content h3 {
-  margin-bottom: 16px;
-  color: #0f172a;
-}
-
-.modal-content p {
-  margin-bottom: 24px;
-  color: #64748b;
-}
-
-.modal-buttons {
-  display: flex;
-  gap: 12px;
   justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+
+.page-btn {
+  padding: 8px 14px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all 0.2s;
+  color: #1e293b;
+}
+
+.page-btn:hover,
+.page-btn.active {
+  background: #90d105;
+  border-color: #90d105;
+  color: #0f2e00;
 }
 
 .login-overlay {
@@ -531,6 +564,8 @@ code {
   .card { padding: 20px; }
   .action-buttons { flex-direction: column; }
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .tabs { flex-wrap: wrap; }
+  .tab-btn { flex: 1; text-align: center; }
 }
 
 @media (max-width: 1024px) {
@@ -543,7 +578,7 @@ code {
 <!-- Tela de Login -->
 <div id="loginOverlay" class="login-overlay">
   <div class="login-box">
-    <img src="/public/media/logo.png" alt="ZapMix" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'60\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%2390d105\'/%3E%3Ctext x=\'50\' y=\'67\' font-size=\'40\' text-anchor=\'middle\' fill=\'%230f172a\' font-weight=\'bold\'%3EZM%3C/text%3E%3C/svg%3E'">
+    <img src="/assets/logo.png" alt="ZapMix" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'60\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%2390d105\'/%3E%3Ctext x=\'50\' y=\'67\' font-size=\'40\' text-anchor=\'middle\' fill=\'%230f172a\' font-weight=\'bold\'%3EZM%3C/text%3E%3C/svg%3E'">
     <h2>🔐 Acesso Administrativo</h2>
     <div class="input-group" style="margin-bottom: 20px;">
       <label>Usuário</label>
@@ -560,7 +595,7 @@ code {
 <!-- Header Admin -->
 <div class="admin-header" id="adminHeader" style="display: none;">
   <div class="logo-area">
-    <img src="/public/media/logo.png" alt="ZapMix" class="logo-img" onerror="this.style.display='none'">
+    <img src="/assets/logo.png" alt="ZapMix" class="logo-img" onerror="this.style.display='none'">
     <div class="logo-text">
       <h1>ZapMix</h1>
       <span>Admin</span>
@@ -579,8 +614,15 @@ code {
   <div class="stats-grid">
     <div class="stat-card">
       <div class="stat-info">
+        <h3>Total de Clientes</h3>
+        <div class="stat-number" id="statClientes">0</div>
+      </div>
+      <div class="stat-icon"><i class="fas fa-users"></i></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-info">
         <h3>Total de Licenças</h3>
-        <div class="stat-number" id="statTotal">0</div>
+        <div class="stat-number" id="statTotalLicencas">0</div>
       </div>
       <div class="stat-icon"><i class="fas fa-key"></i></div>
     </div>
@@ -593,13 +635,6 @@ code {
     </div>
     <div class="stat-card">
       <div class="stat-info">
-        <h3>Licenças Bloqueadas</h3>
-        <div class="stat-number" id="statBloqueadas">0</div>
-      </div>
-      <div class="stat-icon"><i class="fas fa-ban"></i></div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-info">
         <h3>Máquinas Ativas</h3>
         <div class="stat-number" id="statMaquinas">0</div>
       </div>
@@ -607,51 +642,55 @@ code {
     </div>
   </div>
 
-  <div class="card">
-    <h2>✨ Criar Nova Licença</h2>
-    <div class="form-grid">
-      <div class="input-group">
-        <label>🔑 Chave da Licença (opcional)</label>
-        <input id="chave" placeholder="Deixe em branco para gerar automática">
-      </div>
-      <div class="input-group">
-        <label>👤 Cliente *</label>
-        <input id="cliente" placeholder="Nome do cliente">
-      </div>
-      <div class="input-group">
-        <label>📅 Data de Validade *</label>
-        <input id="validade" type="date">
-      </div>
-      <div class="input-group">
-        <label>📊 Status</label>
-        <select id="status">
-          <option value="ATIVA">✅ ATIVA</option>
-          <option value="BLOQUEADA">🔒 BLOQUEADA</option>
-          <option value="EXPIRADA">⏰ EXPIRADA</option>
-        </select>
-      </div>
-    </div>
-    <button class="btn-primary" onclick="criarLicenca()">➕ Criar Licença</button>
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="mostrarTab('clientes')">👥 Clientes</button>
+    <button class="tab-btn" onclick="mostrarTab('licencas')">🔑 Licenças</button>
+    <button class="tab-btn" onclick="mostrarTab('nova-licenca')">✨ Nova Licença</button>
   </div>
 
-  <div class="card">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-      <h2 style="margin-bottom: 0;">📋 Gerenciar Licenças</h2>
-      <button class="btn-secondary" onclick="carregar()">🔄 Atualizar Lista</button>
+  <!-- Tab Clientes -->
+  <div id="tabClientes" class="card">
+    <div class="card-header">
+      <h2>👥 Gerenciar Clientes</h2>
+      <button class="btn-primary" onclick="abrirModalCliente()">➕ Novo Cliente</button>
     </div>
 
-    <!-- Search e Filtro -->
     <div class="search-bar">
       <div class="search-input">
         <i class="fas fa-search"></i>
-        <input type="text" id="searchInput" placeholder="Buscar por cliente ou chave...">
+        <input type="text" id="searchCliente" placeholder="Buscar cliente...">
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr><th>Nome</th><th>Email</th><th>Telefone</th><th>Empresa</th><th>Licenças</th><th>Status</th><th>Ações</th></tr>
+        </thead>
+        <tbody id="listaClientes"><tr><td colspan="7" class="empty-state"><i class="fas fa-users"></i><br>Carregando clientes...</td</tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Tab Licenças -->
+  <div id="tabLicencas" class="card" style="display: none;">
+    <div class="card-header">
+      <h2>🔑 Gerenciar Licenças</h2>
+      <button class="btn-secondary" onclick="carregarLicencas()">🔄 Atualizar</button>
+    </div>
+
+    <div class="search-bar">
+      <div class="search-input">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchLicenca" placeholder="Buscar licença...">
       </div>
       <div class="filter-group">
-        <select id="filterStatus">
-          <option value="todos">📊 Todos os status</option>
-          <option value="ATIVA">✅ ATIVA</option>
-          <option value="BLOQUEADA">🔒 BLOQUEADA</option>
-          <option value="EXPIRADA">⏰ EXPIRADA</option>
+        <select id="filterStatusLicenca">
+          <option value="todos">Todos os status</option>
+          <option value="ATIVA">Ativas</option>
+          <option value="BLOQUEADA">Bloqueadas</option>
+          <option value="EXPIRADA">Expiradas</option>
         </select>
       </div>
     </div>
@@ -659,31 +698,90 @@ code {
     <div class="table-wrapper">
       <table>
         <thead>
-          <tr>
-            <th onclick="ordenarTabela('cliente')">Cliente <i class="fas fa-sort"></i></th>
-            <th onclick="ordenarTabela('chave')">Chave <i class="fas fa-sort"></i></th>
-            <th onclick="ordenarTabela('status')">Status <i class="fas fa-sort"></i></th>
-            <th onclick="ordenarTabela('validade')">Validade <i class="fas fa-sort"></i></th>
-            <th>Máquina</th>
-            <th>Ações</th>
-          </tr>
+          <tr><th>Cliente</th><th>Chave</th><th>Status</th><th>Validade</th><th>Máquina</th><th>Ações</th></tr>
         </thead>
-        <tbody id="lista"><tr><td colspan="6" style="text-align: center;">Faça login para carregar...</td</tr></tbody>
-      :</table>
+        <tbody id="listaLicencas"><tr><td colspan="6" class="empty-state"><i class="fas fa-key"></i><br>Carregando licenças...</td</tr></tbody>
+      </table>
     </div>
+    <div class="pagination" id="paginationLicencas"></div>
+  </div>
 
-    <!-- Pagination -->
-    <div class="pagination" id="pagination"></div>
+  <!-- Tab Nova Licença -->
+  <div id="tabNovaLicenca" class="card" style="display: none;">
+    <h2>✨ Criar Nova Licença</h2>
+    <div class="form-grid">
+      <div class="input-group">
+        <label>👤 Cliente *</label>
+        <select id="novaLicencaCliente">
+          <option value="">Selecione um cliente</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label>🔑 Chave (opcional)</label>
+        <input id="novaLicencaChave" placeholder="Deixe em branco para gerar">
+      </div>
+      <div class="input-group">
+        <label>📅 Data de Validade *</label>
+        <input id="novaLicencaValidade" type="date">
+      </div>
+      <div class="input-group">
+        <label>📊 Status</label>
+        <select id="novaLicencaStatus">
+          <option value="ATIVA">✅ ATIVA</option>
+          <option value="BLOQUEADA">🔒 BLOQUEADA</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="criarLicenca()">➕ Criar Licença</button>
   </div>
 </div>
 
-<!-- Modal de Confirmação -->
-<div id="confirmModal" class="modal">
+<!-- Modal Cliente -->
+<div id="modalCliente" class="modal">
   <div class="modal-content">
-    <h3>⚠️ Confirmar ação</h3>
-    <p id="confirmMessage">Tem certeza que deseja realizar esta ação?</p>
+    <div class="modal-header">
+      <h3 id="modalClienteTitle">📝 Novo Cliente</h3>
+      <button class="close-modal" onclick="fecharModalCliente()">&times;</button>
+    </div>
+    <div class="form-grid" style="grid-template-columns: 1fr;">
+      <div class="input-group">
+        <label>Nome completo <span class="required">*</span></label>
+        <input type="text" id="clienteNome" placeholder="Nome do cliente">
+      </div>
+      <div class="input-group">
+        <label>Email</label>
+        <input type="email" id="clienteEmail" placeholder="cliente@email.com">
+      </div>
+      <div class="input-group">
+        <label>Telefone</label>
+        <input type="tel" id="clienteTelefone" placeholder="(00) 00000-0000">
+      </div>
+      <div class="input-group">
+        <label>Empresa</label>
+        <input type="text" id="clienteEmpresa" placeholder="Nome da empresa">
+      </div>
+      <div class="input-group">
+        <label>Observações</label>
+        <textarea id="clienteObs" rows="3" placeholder="Informações adicionais..."></textarea>
+      </div>
+    </div>
     <div class="modal-buttons">
-      <button class="btn-secondary" onclick="fecharModal()">Cancelar</button>
+      <button class="btn-secondary" onclick="fecharModalCliente()">Cancelar</button>
+      <button class="btn-primary" onclick="salvarCliente()">Salvar Cliente</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Confirmar -->
+<div id="confirmModal" class="modal">
+  <div class="modal-content" style="max-width: 400px;">
+    <div class="modal-header">
+      <h3>⚠️ Confirmar ação</h3>
+      <button class="close-modal" onclick="fecharModalConfirmar()">&times;</button>
+    </div>
+    <p id="confirmMessage" style="margin: 20px 0;">Tem certeza que deseja realizar esta ação?</p>
+    <div class="modal-buttons">
+      <button class="btn-secondary" onclick="fecharModalConfirmar()">Cancelar</button>
       <button class="btn-danger" id="confirmBtn">Confirmar</button>
     </div>
   </div>
@@ -693,13 +791,13 @@ code {
 // ============================================================
 // VARIÁVEIS GLOBAIS
 // ============================================================
-let todasLicencas = [];
+let clientes = [];
+let licencas = [];
 let licencasFiltradas = [];
 let paginaAtual = 1;
 let itensPorPagina = 10;
-let ordemColuna = 'cliente';
-let ordemDirecao = 'asc';
 let acaoConfirmada = null;
+let clienteEditandoId = null;
 
 // ============================================================
 // FUNÇÕES DE UTILIDADE
@@ -736,29 +834,45 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
-// ============================================================
-// MODAL
-// ============================================================
-function openModal(message, callback) {
-  document.getElementById('confirmMessage').innerText = message;
-  acaoConfirmada = callback;
-  document.getElementById('confirmModal').classList.add('active');
+function mostrarTab(tab) {
+  document.getElementById('tabClientes').style.display = 'none';
+  document.getElementById('tabLicencas').style.display = 'none';
+  document.getElementById('tabNovaLicenca').style.display = 'none';
+  
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+  
+  if (tab === 'clientes') {
+    document.getElementById('tabClientes').style.display = 'block';
+    document.querySelector('.tab-btn:first-child').classList.add('active');
+    carregarClientes();
+  } else if (tab === 'licencas') {
+    document.getElementById('tabLicencas').style.display = 'block';
+    document.querySelector('.tab-btn:nth-child(2)').classList.add('active');
+    carregarLicencas();
+  } else if (tab === 'nova-licenca') {
+    document.getElementById('tabNovaLicenca').style.display = 'block';
+    document.querySelector('.tab-btn:nth-child(3)').classList.add('active');
+    atualizarSelectClientes();
+  }
 }
-
-function fecharModal() {
-  document.getElementById('confirmModal').classList.remove('active');
-  acaoConfirmada = null;
-}
-
-document.getElementById('confirmBtn').onclick = () => {
-  if (acaoConfirmada) acaoConfirmada();
-  fecharModal();
-};
 
 // ============================================================
 // API
 // ============================================================
-async function api(method, body) {
+async function apiClientes(method, body) {
+  const token = getToken();
+  const res = await fetch("/api/clientes", {
+    method,
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + token
+    },
+    body: body ? JSON.stringify(body) : undefined
+  });
+  return await res.json();
+}
+
+async function apiLicencas(method, body) {
   const token = getToken();
   const res = await fetch("/api/admin-licencas", {
     method,
@@ -772,123 +886,194 @@ async function api(method, body) {
 }
 
 // ============================================================
-// CRUD
+// MODAL CONFIRMAÇÃO
 // ============================================================
-async function criarLicenca() {
-  const cliente = document.getElementById("cliente").value.trim();
-  const validade = document.getElementById("validade").value;
+function openModalConfirm(message, callback) {
+  document.getElementById('confirmMessage').innerText = message;
+  acaoConfirmada = callback;
+  document.getElementById('confirmModal').classList.add('active');
+}
+
+function fecharModalConfirmar() {
+  document.getElementById('confirmModal').classList.remove('active');
+  acaoConfirmada = null;
+}
+
+document.getElementById('confirmBtn').onclick = () => {
+  if (acaoConfirmada) acaoConfirmada();
+  fecharModalConfirmar();
+};
+
+// ============================================================
+// CLIENTES CRUD
+// ============================================================
+async function carregarClientes() {
+  const token = getToken();
+  if (!token) return;
   
-  if (!cliente || !validade) {
-    showToast("Cliente e data de validade são obrigatórios", "error");
-    return;
-  }
-  
-  const payload = {
-    chave: document.getElementById("chave").value.trim() || gerarChave(),
-    cliente: cliente,
-    validade: validade,
-    status: document.getElementById("status").value,
-    max_machines: 1,
-    modulos: ["whatsapp", "ndi", "enquete"]
-  };
-  
-  const data = await api("POST", payload);
+  const data = await apiClientes("GET");
   
   if (!data.ok) {
-    showToast(data.erro || "Erro ao criar licença", "error");
+    showToast(data.erro || "Erro ao carregar clientes", "error");
     return;
   }
   
-  showToast("✅ Licença criada com sucesso!", "success");
-  document.getElementById("chave").value = "";
-  document.getElementById("cliente").value = "";
-  document.getElementById("validade").value = "";
-  carregar();
-}
-
-async function atualizarStatus(id, status) {
-  const data = await api("PUT", { id, status });
-  if (!data.ok) { 
-    showToast(data.erro || "Erro ao atualizar", "error"); 
-    return; 
-  }
-  showToast(`Licença ${status === 'ATIVA' ? 'ativada' : 'bloqueada'} com sucesso!`, "success");
-  carregar();
-}
-
-async function liberarMaquina(id) {
-  const data = await api("PUT", { id, machine_id: null });
-  if (!data.ok) { 
-    showToast(data.erro || "Erro ao liberar máquina", "error"); 
-    return; 
-  }
-  showToast("💻 Máquina liberada com sucesso!", "success");
-  carregar();
-}
-
-async function excluirLicencaConfirmado(id) {
-  const data = await api("DELETE", { id });
-  if (!data.ok) { 
-    showToast(data.erro || "Erro ao excluir licença", "error"); 
-    return; 
-  }
-  showToast("🗑️ Licença excluída com sucesso!", "success");
-  carregar();
-}
-
-function excluirLicenca(id, cliente) {
-  openModal(`Tem certeza que deseja excluir a licença de "${cliente}"?`, () => excluirLicencaConfirmado(id));
-}
-
-// ============================================================
-// FILTROS E ORDENAÇÃO
-// ============================================================
-function ordenarTabela(coluna) {
-  if (ordemColuna === coluna) {
-    ordemDirecao = ordemDirecao === 'asc' ? 'desc' : 'asc';
-  } else {
-    ordemColuna = coluna;
-    ordemDirecao = 'asc';
-  }
-  filtrarTabela();
-}
-
-function filtrarTabela() {
-  const searchTerm = document.getElementById('searchInput')?.value.toLowerCase() || '';
-  const statusFilter = document.getElementById('filterStatus')?.value || 'todos';
+  clientes = data.clientes || [];
+  atualizarSelectClientes();
   
-  licencasFiltradas = todasLicencas.filter(licenca => {
-    const matchSearch = licenca.cliente.toLowerCase().includes(searchTerm) || 
-                        licenca.chave.toLowerCase().includes(searchTerm);
-    const matchStatus = statusFilter === 'todos' || licenca.status === statusFilter;
+  const searchTerm = document.getElementById('searchCliente')?.value.toLowerCase() || '';
+  const filtered = clientes.filter(c => 
+    c.nome.toLowerCase().includes(searchTerm) ||
+    (c.email && c.email.toLowerCase().includes(searchTerm)) ||
+    (c.telefone && c.telefone.includes(searchTerm))
+  );
+  
+  const tbody = document.getElementById('listaClientes');
+  if (filtered.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7" class="empty-state"><i class="fas fa-users"></i><br>Nenhum cliente encontrado</td</tr>';
+    return;
+  }
+  
+  tbody.innerHTML = filtered.map(c => `
+    <tr>
+      <td data-label="Nome"><strong>${escapeHtml(c.nome)}</strong><br><small>${escapeHtml(c.empresa || '')}</small></td>
+      <td data-label="Email">${escapeHtml(c.email || '-')}</td>
+      <td data-label="Telefone">${escapeHtml(c.telefone || '-')}</td>
+      <td data-label="Empresa">${escapeHtml(c.empresa || '-')}</td>
+      <td data-label="Licenças">${licencas.filter(l => l.cliente_id === c.id).length}</td>
+      <td data-label="Status"><span class="status-badge status-ATIVO">Ativo</span></td>
+      <td data-label="Ações">
+        <div class="action-buttons">
+          <button class="btn-success btn-sm" onclick='editarCliente(${JSON.stringify(c).replace(/'/g, "&#39;")})'>✏️ Editar</button>
+          <button class="btn-danger btn-sm" onclick="excluirCliente(${c.id}, '${escapeHtml(c.nome)}')">🗑️ Excluir</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+  
+  atualizarStats();
+}
+
+function atualizarSelectClientes() {
+  const select = document.getElementById('novaLicencaCliente');
+  if (select) {
+    select.innerHTML = '<option value="">Selecione um cliente</option>' + 
+      clientes.map(c => `<option value="${c.id}">${escapeHtml(c.nome)}</option>`).join('');
+  }
+}
+
+function abrirModalCliente(cliente = null) {
+  if (cliente) {
+    document.getElementById('modalClienteTitle').innerHTML = '✏️ Editar Cliente';
+    document.getElementById('clienteNome').value = cliente.nome;
+    document.getElementById('clienteEmail').value = cliente.email || '';
+    document.getElementById('clienteTelefone').value = cliente.telefone || '';
+    document.getElementById('clienteEmpresa').value = cliente.empresa || '';
+    document.getElementById('clienteObs').value = cliente.observacoes || '';
+    clienteEditandoId = cliente.id;
+  } else {
+    document.getElementById('modalClienteTitle').innerHTML = '📝 Novo Cliente';
+    document.getElementById('clienteNome').value = '';
+    document.getElementById('clienteEmail').value = '';
+    document.getElementById('clienteTelefone').value = '';
+    document.getElementById('clienteEmpresa').value = '';
+    document.getElementById('clienteObs').value = '';
+    clienteEditandoId = null;
+  }
+  document.getElementById('modalCliente').classList.add('active');
+}
+
+function fecharModalCliente() {
+  document.getElementById('modalCliente').classList.remove('active');
+}
+
+async function salvarCliente() {
+  const nome = document.getElementById('clienteNome').value.trim();
+  if (!nome) {
+    showToast("Nome do cliente é obrigatório", "error");
+    return;
+  }
+  
+  const clienteData = {
+    nome: nome,
+    email: document.getElementById('clienteEmail').value,
+    telefone: document.getElementById('clienteTelefone').value,
+    empresa: document.getElementById('clienteEmpresa').value,
+    observacoes: document.getElementById('clienteObs').value
+  };
+  
+  let data;
+  if (clienteEditandoId) {
+    data = await apiClientes("PUT", { id: clienteEditandoId, ...clienteData });
+    if (data.ok) showToast("Cliente atualizado com sucesso!", "success");
+  } else {
+    data = await apiClientes("POST", clienteData);
+    if (data.ok) showToast("Cliente cadastrado com sucesso!", "success");
+  }
+  
+  if (!data.ok) {
+    showToast(data.erro || "Erro ao salvar cliente", "error");
+    return;
+  }
+  
+  fecharModalCliente();
+  carregarClientes();
+}
+
+function editarCliente(cliente) {
+  abrirModalCliente(cliente);
+}
+
+async function excluirCliente(id, nome) {
+  openModalConfirm(`Tem certeza que deseja excluir o cliente "${nome}"?`, async () => {
+    const data = await apiClientes("DELETE", { id });
+    if (!data.ok) {
+      showToast(data.erro || "Erro ao excluir cliente", "error");
+      return;
+    }
+    showToast("Cliente removido com sucesso!", "success");
+    carregarClientes();
+  });
+}
+
+// ============================================================
+// LICENÇAS CRUD
+// ============================================================
+async function carregarLicencas() {
+  const token = getToken();
+  if (!token) return;
+  
+  const data = await apiLicencas("GET");
+  
+  if (!data.ok) {
+    showToast(data.erro || "Erro ao carregar licenças", "error");
+    return;
+  }
+  
+  licencas = data.licencas || [];
+  atualizarStats();
+  
+  const searchTerm = document.getElementById('searchLicenca')?.value.toLowerCase() || '';
+  const statusFilter = document.getElementById('filterStatusLicenca')?.value || 'todos';
+  
+  licencasFiltradas = licencas.filter(l => {
+    const matchSearch = (l.cliente || '').toLowerCase().includes(searchTerm) || l.chave.toLowerCase().includes(searchTerm);
+    const matchStatus = statusFilter === 'todos' || l.status === statusFilter;
     return matchSearch && matchStatus;
   });
   
-  licencasFiltradas.sort((a, b) => {
-    let valA = a[ordemColuna] || '';
-    let valB = b[ordemColuna] || '';
-    if (ordemColuna === 'validade') {
-      valA = new Date(valA) || 0;
-      valB = new Date(valB) || 0;
-    }
-    if (valA < valB) return ordemDirecao === 'asc' ? -1 : 1;
-    if (valA > valB) return ordemDirecao === 'asc' ? 1 : -1;
-    return 0;
-  });
-  
   paginaAtual = 1;
-  renderizarPagina();
-  renderizarPaginacao();
+  renderizarLicencas();
 }
 
-function renderizarPagina() {
+function renderizarLicencas() {
   const start = (paginaAtual - 1) * itensPorPagina;
   const end = start + itensPorPagina;
   const licencasPagina = licencasFiltradas.slice(start, end);
   
-  const tbody = document.getElementById('lista');
+  const tbody = document.getElementById('listaLicencas');
   if (licencasPagina.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" class="empty-state"><i class="fas fa-inbox"></i><br>Nenhuma licença encontrada</td</tr>`;
+    tbody.innerHTML = '<tr><td colspan="6" class="empty-state"><i class="fas fa-key"></i><br>Nenhuma licença encontrada</td</tr>';
     return;
   }
   
@@ -898,22 +1083,24 @@ function renderizarPagina() {
       <td data-label="Chave"><code>${escapeHtml(l.chave)}</code></td>
       <td data-label="Status"><span class="status-badge status-${l.status}">${l.status}</span></td>
       <td data-label="Validade">${formatarData(l.validade)}</td>
-      <td data-label="Máquina">${l.machine_id ? l.machine_id.substring(0, 20) + "..." : "💻 Livre"}</td>
+      <td data-label="Máquina">${l.machine_id ? l.machine_id.substring(0, 20) + '...' : '💻 Livre'}</td>
       <td data-label="Ações">
         <div class="action-buttons">
-          <button class="btn-success btn-sm" onclick="atualizarStatus('${l.id}', 'ATIVA')">✅ Ativar</button>
-          <button class="btn-danger btn-sm" onclick="atualizarStatus('${l.id}', 'BLOQUEADA')">🔒 Bloquear</button>
-          <button class="btn-warning btn-sm" onclick="liberarMaquina('${l.id}')">🖥️ Liberar PC</button>
-          <button class="btn-danger btn-sm" onclick="excluirLicenca('${l.id}', '${escapeHtml(l.cliente)}')">🗑️ Excluir</button>
+          <button class="btn-success btn-sm" onclick="atualizarStatusLicenca(${l.id}, 'ATIVA')">✅ Ativar</button>
+          <button class="btn-danger btn-sm" onclick="atualizarStatusLicenca(${l.id}, 'BLOQUEADA')">🔒 Bloquear</button>
+          <button class="btn-warning btn-sm" onclick="liberarMaquinaLicenca(${l.id})">🖥️ Liberar PC</button>
+          <button class="btn-danger btn-sm" onclick="excluirLicenca(${l.id}, '${escapeHtml(l.cliente)}')">🗑️ Excluir</button>
         </div>
       </td>
     </tr>
-  `).join("");
+  `).join('');
+  
+  renderizarPaginacao();
 }
 
 function renderizarPaginacao() {
   const totalPaginas = Math.ceil(licencasFiltradas.length / itensPorPagina);
-  const paginationDiv = document.getElementById('pagination');
+  const paginationDiv = document.getElementById('paginationLicencas');
   
   if (totalPaginas <= 1) {
     paginationDiv.innerHTML = '';
@@ -921,13 +1108,13 @@ function renderizarPaginacao() {
   }
   
   let html = '';
-  html += `<button class="page-btn" onclick="mudarPagina(${paginaAtual - 1})" ${paginaAtual === 1 ? 'disabled' : ''}>« Anterior</button>`;
+  html += `<button class="page-btn" onclick="mudarPagina(${paginaAtual - 1})" ${paginaAtual === 1 ? 'disabled' : ''}>«</button>`;
   
   for (let i = 1; i <= Math.min(totalPaginas, 5); i++) {
     html += `<button class="page-btn ${paginaAtual === i ? 'active' : ''}" onclick="mudarPagina(${i})">${i}</button>`;
   }
   
-  html += `<button class="page-btn" onclick="mudarPagina(${paginaAtual + 1})" ${paginaAtual === totalPaginas ? 'disabled' : ''}>Próximo »</button>`;
+  html += `<button class="page-btn" onclick="mudarPagina(${paginaAtual + 1})" ${paginaAtual === totalPaginas ? 'disabled' : ''}>»</button>`;
   paginationDiv.innerHTML = html;
 }
 
@@ -935,48 +1122,96 @@ function mudarPagina(pagina) {
   const totalPaginas = Math.ceil(licencasFiltradas.length / itensPorPagina);
   if (pagina < 1 || pagina > totalPaginas) return;
   paginaAtual = pagina;
-  renderizarPagina();
-  renderizarPaginacao();
+  renderizarLicencas();
+}
+
+async function criarLicenca() {
+  const clienteId = document.getElementById('novaLicencaCliente').value;
+  const validade = document.getElementById('novaLicencaValidade').value;
+  
+  if (!clienteId) {
+    showToast("Selecione um cliente", "error");
+    return;
+  }
+  
+  if (!validade) {
+    showToast("Data de validade é obrigatória", "error");
+    return;
+  }
+  
+  const cliente = clientes.find(c => c.id == clienteId);
+  if (!cliente) {
+    showToast("Cliente não encontrado", "error");
+    return;
+  }
+  
+  const payload = {
+    chave: document.getElementById('novaLicencaChave').value.trim() || gerarChave(),
+    cliente: cliente.nome,
+    cliente_id: parseInt(clienteId),
+    validade: validade,
+    status: document.getElementById('novaLicencaStatus').value,
+    max_machines: 1,
+    modulos: ["whatsapp", "ndi", "enquete"]
+  };
+  
+  const data = await apiLicencas("POST", payload);
+  
+  if (!data.ok) {
+    showToast(data.erro || "Erro ao criar licença", "error");
+    return;
+  }
+  
+  showToast("✅ Licença criada com sucesso!", "success");
+  document.getElementById('novaLicencaChave').value = '';
+  document.getElementById('novaLicencaValidade').value = '';
+  mostrarTab('licencas');
+  carregarLicencas();
+}
+
+async function atualizarStatusLicenca(id, status) {
+  const data = await apiLicencas("PUT", { id, status });
+  if (!data.ok) { 
+    showToast(data.erro || "Erro ao atualizar", "error"); 
+    return; 
+  }
+  showToast(`Licença ${status === 'ATIVA' ? 'ativada' : 'bloqueada'} com sucesso!`, "success");
+  carregarLicencas();
+}
+
+async function liberarMaquinaLicenca(id) {
+  const data = await apiLicencas("PUT", { id, machine_id: null });
+  if (!data.ok) { 
+    showToast(data.erro || "Erro ao liberar máquina", "error"); 
+    return; 
+  }
+  showToast("💻 Máquina liberada com sucesso!", "success");
+  carregarLicencas();
+}
+
+async function excluirLicenca(id, cliente) {
+  openModalConfirm(`Tem certeza que deseja excluir a licença do cliente "${cliente}"?`, async () => {
+    const data = await apiLicencas("DELETE", { id });
+    if (!data.ok) { 
+      showToast(data.erro || "Erro ao excluir licença", "error"); 
+      return; 
+    }
+    showToast("🗑️ Licença excluída com sucesso!", "success");
+    carregarLicencas();
+  });
 }
 
 // ============================================================
 // STATS
 // ============================================================
 function atualizarStats() {
-  const ativas = todasLicencas.filter(l => l.status === 'ATIVA').length;
-  const bloqueadas = todasLicencas.filter(l => l.status === 'BLOQUEADA').length;
-  const maquinas = todasLicencas.filter(l => l.machine_id).length;
+  const ativas = licencas.filter(l => l.status === 'ATIVA').length;
+  const maquinas = licencas.filter(l => l.machine_id).length;
   
-  document.getElementById('statTotal').innerText = todasLicencas.length;
+  document.getElementById('statClientes').innerText = clientes.length;
+  document.getElementById('statTotalLicencas').innerText = licencas.length;
   document.getElementById('statAtivas').innerText = ativas;
-  document.getElementById('statBloqueadas').innerText = bloqueadas;
   document.getElementById('statMaquinas').innerText = maquinas;
-}
-
-// ============================================================
-// CARREGAR DADOS
-// ============================================================
-async function carregar() {
-  const token = getToken();
-  if (!token) return;
-  
-  document.getElementById("lista").innerHTML = `<tr><td colspan="6" style="text-align: center;"><span class="spinner"></span> Carregando...</td</tr>`;
-  
-  const data = await api("GET");
-  
-  if (!data.ok) {
-    if (data.erro === "Não autorizado") {
-      logout();
-      showToast("Sessão expirada. Faça login novamente.", "error");
-    } else {
-      document.getElementById("lista").innerHTML = `<tr><td colspan="6" style="text-align: center; color: #ef4444;">❌ ${data.erro || "Erro ao carregar"}</td</tr>`;
-    }
-    return;
-  }
-  
-  todasLicencas = data.licencas || [];
-  atualizarStats();
-  filtrarTabela();
 }
 
 // ============================================================
@@ -1012,7 +1247,9 @@ async function login() {
     document.getElementById('adminHeader').style.display = 'flex';
     document.getElementById('adminContent').style.display = 'block';
     
-    carregar();
+    mostrarTab('clientes');
+    carregarClientes();
+    carregarLicencas();
   } catch (error) {
     showToast("Erro de conexão com o servidor", "error");
   }
@@ -1027,16 +1264,19 @@ function logout() {
 }
 
 // ============================================================
-// EVENTOS E INICIALIZAÇÃO
+// EVENTOS
 // ============================================================
-document.getElementById('searchInput')?.addEventListener('keyup', filtrarTabela);
-document.getElementById('filterStatus')?.addEventListener('change', filtrarTabela);
+document.getElementById('searchCliente')?.addEventListener('keyup', carregarClientes);
+document.getElementById('searchLicenca')?.addEventListener('keyup', carregarLicencas);
+document.getElementById('filterStatusLicenca')?.addEventListener('change', carregarLicencas);
 
 if (getToken()) {
   document.getElementById('loginOverlay').style.display = 'none';
   document.getElementById('adminHeader').style.display = 'flex';
   document.getElementById('adminContent').style.display = 'block';
-  carregar();
+  mostrarTab('clientes');
+  carregarClientes();
+  carregarLicencas();
 } else {
   document.getElementById('loginOverlay').style.display = 'flex';
   document.getElementById('adminHeader').style.display = 'none';
@@ -1044,7 +1284,9 @@ if (getToken()) {
 }
 
 setInterval(() => {
-  if (getToken()) carregar();
+  if (getToken()) {
+    carregarLicencas();
+  }
 }, 30000);
 </script>
 </body>

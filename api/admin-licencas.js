@@ -38,25 +38,29 @@ function gerarChave() {
 }
 
 export default async function handler(req, res) {
-  // Configurar CORS
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
   if (req.method === "OPTIONS") {
     return res.status(200).end();
   }
 
-  // Verificar token para todas as rotas
   if (!verificarToken(req)) {
     return res.status(401).json({ ok: false, erro: "Não autorizado" });
   }
 
-  // GET - Listar todas licenças
   if (req.method === "GET") {
     const { data, error } = await supabase
       .from("licenses")
-      .select("*")
+      .select(`
+        *,
+        clientes (
+          id,
+          nome,
+          email
+        )
+      `)
       .order("created_at", { ascending: false });
 
     if (error) {
@@ -66,11 +70,11 @@ export default async function handler(req, res) {
     return res.json({ ok: true, licencas: data });
   }
 
-  // POST - Criar nova licença
   if (req.method === "POST") {
     const {
       chave,
       cliente,
+      cliente_id,
       validade,
       status,
       max_machines,
@@ -84,18 +88,31 @@ export default async function handler(req, res) {
       });
     }
 
+    const insert = {
+      chave: chave || gerarChave(),
+      cliente,
+      validade,
+      status: status || "ATIVA",
+      max_machines: max_machines || 1,
+      modulos: modulos || ["whatsapp", "ndi", "enquete"],
+      created_at: new Date().toISOString()
+    };
+
+    if (cliente_id !== undefined && cliente_id !== null && cliente_id !== "") {
+      insert.cliente_id = Number(cliente_id);
+    }
+
     const { data, error } = await supabase
       .from("licenses")
-      .insert({
-        chave: chave || gerarChave(),
-        cliente,
-        validade,
-        status: status || "ATIVA",
-        max_machines: max_machines || 1,
-        modulos: modulos || ["whatsapp", "ndi", "enquete"],
-        created_at: new Date().toISOString()
-      })
-      .select()
+      .insert(insert)
+      .select(`
+        *,
+        clientes (
+          id,
+          nome,
+          email
+        )
+      `)
       .single();
 
     if (error) {
@@ -105,11 +122,11 @@ export default async function handler(req, res) {
     return res.json({ ok: true, licenca: data });
   }
 
-  // PUT - Atualizar licença
   if (req.method === "PUT") {
     const {
       id,
       cliente,
+      cliente_id,
       validade,
       status,
       machine_id,
@@ -122,6 +139,7 @@ export default async function handler(req, res) {
     }
 
     const update = {};
+
     if (cliente !== undefined) update.cliente = cliente;
     if (validade !== undefined) update.validade = validade;
     if (status !== undefined) update.status = status;
@@ -129,11 +147,25 @@ export default async function handler(req, res) {
     if (max_machines !== undefined) update.max_machines = max_machines;
     if (modulos !== undefined) update.modulos = modulos;
 
+    if (cliente_id !== undefined) {
+      update.cliente_id =
+        cliente_id === null || cliente_id === ""
+          ? null
+          : Number(cliente_id);
+    }
+
     const { data, error } = await supabase
       .from("licenses")
       .update(update)
       .eq("id", id)
-      .select()
+      .select(`
+        *,
+        clientes (
+          id,
+          nome,
+          email
+        )
+      `)
       .single();
 
     if (error) {
@@ -143,7 +175,6 @@ export default async function handler(req, res) {
     return res.json({ ok: true, licenca: data });
   }
 
-  // DELETE - Excluir licença
   if (req.method === "DELETE") {
     const { id } = req.body || {};
 
