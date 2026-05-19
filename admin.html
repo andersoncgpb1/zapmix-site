@@ -1,13 +1,18 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#90d105">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>ZapMix Admin | Painel de Controle</title>
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="icon" type="image/png" href="/assets/favicon.png">
 <link rel="shortcut icon" href="/assets/favicon.png">
+<link rel="manifest" href="/manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 * {
   margin: 0;
@@ -15,20 +20,148 @@
   box-sizing: border-box;
 }
 
-body {
-  background: #f1f5f9;
-  background-image: linear-gradient(145deg, #f8fafc 0%, #eef2f6 100%);
-  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  color: #1e293b;
-  line-height: 1.5;
-  padding-bottom: 40px;
+:root {
+  --bg-primary: #f1f5f9;
+  --bg-secondary: #ffffff;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --border: #e2e8f0;
+  --card-bg: #ffffff;
+  --sidebar-bg: #ffffff;
+  --header-bg: rgba(255, 255, 255, 0.95);
+  --success: #dcfce7;
+  --success-text: #15803d;
+  --danger: #fee2e2;
+  --danger-text: #991b1b;
+  --warning: #fef3c7;
+  --warning-text: #92400e;
+  --primary: #90d105;
+  --primary-dark: #6a9e00;
 }
 
+.dark-theme {
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --border: #334155;
+  --card-bg: #1e293b;
+  --sidebar-bg: #1e293b;
+  --header-bg: rgba(30, 41, 59, 0.95);
+  --success: #14532d;
+  --success-text: #4ade80;
+  --danger: #7f1d1d;
+  --danger-text: #f87171;
+  --warning: #78350f;
+  --warning-text: #fbbf24;
+}
+
+body {
+  background: var(--bg-primary);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: var(--text-primary);
+  line-height: 1.5;
+  transition: all 0.3s ease;
+  overflow-x: hidden;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 260px;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--border);
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  transition: all 0.3s ease;
+  z-index: 40;
+  overflow-y: auto;
+}
+
+.sidebar.collapsed {
+  width: 70px;
+}
+
+.sidebar.collapsed .sidebar-link span,
+.sidebar.collapsed .logo-text,
+.sidebar.collapsed .sidebar-title {
+  display: none;
+}
+
+.sidebar-header {
+  padding: 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sidebar-logo {
+  height: 40px;
+  width: auto;
+}
+
+.logo-text h2 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.sidebar-nav {
+  padding: 20px 0;
+}
+
+.sidebar-title {
+  padding: 10px 20px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.sidebar-link:hover,
+.sidebar-link.active {
+  background: rgba(144, 209, 5, 0.1);
+  color: var(--primary);
+}
+
+.sidebar-link i {
+  width: 20px;
+  font-size: 1rem;
+}
+
+/* Main Content */
+.main-content {
+  margin-left: 260px;
+  transition: all 0.3s ease;
+}
+
+.main-content.expanded {
+  margin-left: 70px;
+}
+
+/* Header */
 .admin-header {
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--header-bg);
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid #e2e8f0;
-  padding: 16px 32px;
+  border-bottom: 1px solid var(--border);
+  padding: 12px 24px;
   position: sticky;
   top: 0;
   z-index: 30;
@@ -39,40 +172,75 @@ body {
   gap: 16px;
 }
 
-.logo-area {
+.header-left {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
 }
 
-.logo-img {
-  height: 45px;
-  width: auto;
-  object-fit: contain;
+.menu-toggle {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: var(--text-primary);
+  display: none;
 }
 
-.logo-text h1 {
-  font-size: 1.3rem;
-  font-weight: 800;
-  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+.menu-toggle-mobile {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-primary);
 }
 
-.logo-text span {
-  font-size: 0.65rem;
-  color: #90d105;
-  font-weight: 500;
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
-.admin-badge {
-  background: #90d105;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 0.7rem;
-  font-weight: 700;
+.theme-toggle,
+.notification-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: var(--text-secondary);
+  padding: 8px;
+  border-radius: 8px;
+  transition: all 0.3s;
+}
+
+.theme-toggle:hover,
+.notification-btn:hover {
+  background: var(--border);
+  color: var(--primary);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  background: var(--primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: #0f172a;
+  font-weight: 700;
+}
+
+/* Container */
+.admin-container {
+  padding: 24px;
 }
 
 /* Stats Cards */
@@ -84,10 +252,10 @@ body {
 }
 
 .stat-card {
-  background: #ffffff;
+  background: var(--card-bg);
   border-radius: 20px;
   padding: 20px;
-  border: 1px solid #e9eef3;
+  border: 1px solid var(--border);
   transition: all 0.3s;
   display: flex;
   align-items: center;
@@ -103,20 +271,20 @@ body {
   font-size: 0.7rem;
   font-weight: 600;
   text-transform: uppercase;
-  color: #64748b;
+  color: var(--text-secondary);
   margin-bottom: 6px;
 }
 
 .stat-number {
   font-size: 1.8rem;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--text-primary);
 }
 
 .stat-icon {
   width: 45px;
   height: 45px;
-  background: #f1f5f9;
+  background: var(--bg-primary);
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -125,28 +293,17 @@ body {
 
 .stat-icon i {
   font-size: 1.3rem;
-  color: #90d105;
+  color: var(--primary);
 }
 
-.admin-container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 32px;
-}
-
+/* Cards */
 .card {
-  background: #ffffff;
+  background: var(--card-bg);
   border-radius: 24px;
-  padding: 28px;
+  padding: 24px;
   margin-bottom: 28px;
-  border: 1px solid #e9eef3;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  border: 1px solid var(--border);
   transition: all 0.2s;
-}
-
-.card:hover {
-  border-color: #cbd5e1;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
 }
 
 .card-header {
@@ -161,11 +318,34 @@ body {
 .card-header h2 {
   font-size: 1.25rem;
   font-weight: 700;
-  border-left: 4px solid #90d105;
+  border-left: 4px solid var(--primary);
   padding-left: 16px;
-  color: #0f172a;
+  color: var(--text-primary);
 }
 
+/* Charts */
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+.chart-card {
+  background: var(--card-bg);
+  border-radius: 20px;
+  padding: 20px;
+  border: 1px solid var(--border);
+}
+
+.chart-card h3 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--text-primary);
+}
+
+/* Formulários */
 .form-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -183,7 +363,7 @@ body {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #475569;
+  color: var(--text-secondary);
   margin-bottom: 6px;
 }
 
@@ -194,8 +374,9 @@ body {
 input, select {
   padding: 12px 14px;
   border-radius: 12px;
-  border: 1.5px solid #e2e8f0;
-  background: #f8fafc;
+  border: 1.5px solid var(--border);
+  background: var(--bg-primary);
+  color: var(--text-primary);
   font-size: 0.85rem;
   transition: all 0.2s;
   font-family: 'Inter', sans-serif;
@@ -203,11 +384,12 @@ input, select {
 
 input:focus, select:focus {
   outline: none;
-  border-color: #90d105;
+  border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(144, 209, 5, 0.1);
 }
 
-button {
+/* Botões */
+.btn {
   padding: 10px 20px;
   border-radius: 12px;
   border: none;
@@ -215,16 +397,15 @@ button {
   font-size: 0.85rem;
   cursor: pointer;
   transition: all 0.2s;
-  font-family: 'Inter', sans-serif;
   display: inline-flex;
   align-items: center;
   gap: 8px;
 }
 
 .btn-primary {
-  background: #90d105;
+  background: var(--primary);
   color: #0f2e00;
-  border: 1px solid #7cb518;
+  border: 1px solid var(--primary-dark);
 }
 
 .btn-primary:hover {
@@ -234,20 +415,20 @@ button {
 }
 
 .btn-secondary {
-  background: #f1f5f9;
-  border: 1px solid #e2e8f0;
-  color: #1e293b;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
 }
 
 .btn-secondary:hover {
-  background: #ffffff;
-  border-color: #90d105;
+  background: var(--card-bg);
+  border-color: var(--primary);
 }
 
 .btn-danger {
-  background: #fee2e2;
-  color: #991b1b;
-  border: 1px solid #fecaca;
+  background: var(--danger);
+  color: var(--danger-text);
+  border: 1px solid var(--danger);
 }
 
 .btn-danger:hover {
@@ -255,15 +436,15 @@ button {
 }
 
 .btn-warning {
-  background: #fef3c7;
-  color: #92400e;
-  border: 1px solid #fde68a;
+  background: var(--warning);
+  color: var(--warning-text);
+  border: 1px solid var(--warning);
 }
 
 .btn-success {
-  background: #dcfce7;
-  color: #15803d;
-  border: 1px solid #bbf7d0;
+  background: var(--success);
+  color: var(--success-text);
+  border: 1px solid var(--success);
 }
 
 .btn-sm {
@@ -289,25 +470,44 @@ button {
   left: 12px;
   top: 50%;
   transform: translateY(-50%);
-  color: #94a3b8;
+  color: var(--text-secondary);
 }
 
 .search-input input {
   width: 100%;
   padding: 10px 12px 10px 36px;
   border-radius: 12px;
-  border: 1.5px solid #e2e8f0;
+  border: 1.5px solid var(--border);
+  background: var(--bg-primary);
 }
 
 .filter-group {
   display: flex;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
 .filter-group select {
   padding: 10px 12px;
 }
 
+.filters-advanced {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.export-buttons {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  justify-content: flex-end;
+}
+
+/* Tabela */
 .table-wrapper {
   overflow-x: auto;
   border-radius: 16px;
@@ -321,18 +521,18 @@ table {
 th {
   text-align: left;
   padding: 14px 12px;
-  background: #f8fafc;
+  background: var(--bg-primary);
   font-size: 0.7rem;
   font-weight: 700;
   text-transform: uppercase;
-  color: #475569;
-  border-bottom: 2px solid #e2e8f0;
+  color: var(--text-secondary);
+  border-bottom: 2px solid var(--border);
   cursor: pointer;
   user-select: none;
 }
 
 th:hover {
-  color: #90d105;
+  color: var(--primary);
 }
 
 th i {
@@ -342,14 +542,16 @@ th i {
 
 td {
   padding: 14px 12px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--border);
   font-size: 0.8rem;
+  color: var(--text-primary);
 }
 
 tr:hover {
-  background: #f8fafc;
+  background: var(--bg-primary);
 }
 
+/* Status badges */
 .status-badge {
   display: inline-block;
   padding: 4px 10px;
@@ -359,32 +561,52 @@ tr:hover {
 }
 
 .status-ATIVA {
-  background: #dcfce7;
-  color: #15803d;
+  background: var(--success);
+  color: var(--success-text);
 }
 
 .status-BLOQUEADA {
-  background: #fee2e2;
-  color: #991b1b;
+  background: var(--danger);
+  color: var(--danger-text);
 }
 
 .status-EXPIRADA {
-  background: #fef3c7;
-  color: #92400e;
+  background: var(--warning);
+  color: var(--warning-text);
 }
 
+.badge-plano {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.65rem;
+  font-weight: 600;
+}
+
+.badge-basic { background: #e2e8f0; color: #475569; }
+.badge-pro { background: var(--primary); color: #0f2e00; }
+.badge-enterprise { background: #8b5cf6; color: white; }
+
 code {
-  background: #f1f5f9;
+  background: var(--bg-primary);
   padding: 4px 8px;
   border-radius: 6px;
   font-family: monospace;
   font-size: 0.7rem;
+  color: var(--primary);
 }
 
 .action-buttons {
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
+}
+
+/* Checkbox */
+.select-checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
 }
 
 /* Pagination */
@@ -398,29 +620,73 @@ code {
 
 .page-btn {
   padding: 8px 14px;
-  background: #f1f5f9;
-  border: 1px solid #e2e8f0;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
   border-radius: 10px;
   cursor: pointer;
   font-size: 0.8rem;
   transition: all 0.2s;
+  color: var(--text-primary);
 }
 
 .page-btn:hover {
-  background: #90d105;
-  border-color: #90d105;
+  background: var(--primary);
+  border-color: var(--primary);
   color: #0f172a;
 }
 
 .page-btn.active {
-  background: #90d105;
-  border-color: #90d105;
+  background: var(--primary);
+  border-color: var(--primary);
   color: #0f172a;
 }
 
 .page-btn.disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* Warning Banner */
+.warning-banner {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  left: 20px;
+  max-width: 400px;
+  margin-left: auto;
+  padding: 14px 20px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 1000;
+  animation: slideInRight 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.warning-banner.warning {
+  background: var(--warning);
+  color: var(--warning-text);
+  border-left: 4px solid #f59e0b;
+}
+
+.warning-banner.success {
+  background: var(--success);
+  color: var(--success-text);
+  border-left: 4px solid #22c55e;
+}
+
+.warning-banner button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: auto;
+  color: inherit;
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
 }
 
 /* Modal */
@@ -443,22 +709,24 @@ code {
 }
 
 .modal-content {
-  background: white;
+  background: var(--card-bg);
   border-radius: 24px;
   padding: 32px;
   max-width: 500px;
   width: 90%;
   text-align: center;
+  border: 1px solid var(--border);
 }
 
 .modal-content h3 {
   margin-bottom: 16px;
   font-size: 1.3rem;
+  color: var(--text-primary);
 }
 
 .modal-content p {
   margin-bottom: 24px;
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 .modal-buttons {
@@ -467,48 +735,35 @@ code {
   justify-content: center;
 }
 
+/* Toast */
 .toast {
   position: fixed;
-  top: 20px;
+  bottom: 20px;
   right: 20px;
   padding: 14px 20px;
   border-radius: 12px;
   z-index: 1000;
-  animation: slideIn 0.3s ease;
+  animation: slideInUp 0.3s ease;
   font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
 .toast.success {
-  background: #15803d;
-  color: white;
+  background: var(--success);
+  color: var(--success-text);
 }
 
 .toast.error {
-  background: #991b1b;
-  color: white;
+  background: var(--danger);
+  color: var(--danger-text);
 }
 
-@keyframes slideIn {
-  from { transform: translateX(100%); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+@keyframes slideInUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
-.spinner {
-  display: inline-block;
-  width: 14px;
-  height: 14px;
-  border: 2px solid rgba(144, 209, 5, 0.3);
-  border-top-color: #90d105;
-  border-radius: 50%;
-  animation: spin 0.6s linear infinite;
-  margin-right: 8px;
-  vertical-align: middle;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
+/* Login Overlay */
 .login-overlay {
   position: fixed;
   top: 0;
@@ -520,16 +775,17 @@ code {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 100;
+  z-index: 200;
 }
 
 .login-box {
-  background: white;
+  background: var(--card-bg);
   border-radius: 32px;
   padding: 40px;
   max-width: 400px;
   width: 90%;
   text-align: center;
+  border: 1px solid var(--border);
 }
 
 .login-box img {
@@ -539,13 +795,31 @@ code {
 
 .login-box h2 {
   margin-bottom: 24px;
-  color: #0f172a;
+  color: var(--text-primary);
 }
 
+/* Spinner */
+.spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(144, 209, 5, 0.3);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Empty State */
 .empty-state {
   text-align: center;
   padding: 60px 20px;
-  color: #94a3b8;
+  color: var(--text-secondary);
 }
 
 .empty-state i {
@@ -554,17 +828,372 @@ code {
   opacity: 0.5;
 }
 
+/* Responsive */
+@media (max-width: 1024px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+  
+  .sidebar.mobile-open {
+    transform: translateX(0);
+  }
+  
+  .main-content {
+    margin-left: 0;
+  }
+  
+  .menu-toggle-mobile {
+    display: block;
+  }
+  
+  .menu-toggle {
+    display: none;
+  }
+  
+  .main-content.expanded {
+    margin-left: 0;
+  }
+}
+
 @media (max-width: 768px) {
-  .admin-container { padding: 16px; }
-  .card { padding: 20px; }
-  .action-buttons { flex-direction: column; }
-  .stats-grid { grid-template-columns: repeat(2, 1fr); }
-  .search-bar { flex-direction: column; }
-  .filter-group { flex-wrap: wrap; }
+  .admin-container {
+    padding: 16px;
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .search-bar {
+    flex-direction: column;
+  }
+  
+  .filter-group {
+    flex-wrap: wrap;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .export-buttons {
+    justify-content: flex-start;
+  }
+  
+  /* Tabela vira cards no mobile */
+  .table-wrapper table,
+  .table-wrapper thead,
+  .table-wrapper tbody,
+  .table-wrapper tr,
+  .table-wrapper td {
+    display: block;
+  }
+  
+  .table-wrapper thead {
+    display: none;
+  }
+  
+  .table-wrapper tr {
+    background: var(--card-bg);
+    border-radius: 16px;
+    margin-bottom: 16px;
+    padding: 16px;
+    border: 1px solid var(--border);
+  }
+  
+  .table-wrapper td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border: none;
+  }
+  
+  .table-wrapper td::before {
+    content: attr(data-label);
+    font-weight: 700;
+    color: var(--text-secondary);
+    margin-right: 16px;
+  }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-dark);
 }
 </style>
 </head>
 <body>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <img src="assets/logo.png" alt="ZapMix" class="sidebar-logo" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%2390d105\'/%3E%3Ctext x=\'50\' y=\'67\' font-size=\'40\' text-anchor=\'middle\' fill=\'%230f172a\' font-weight=\'bold\'%3EZM%3C/text%3E%3C/svg%3E'">
+    <div class="logo-text">
+      <h2>ZapMix Admin</h2>
+    </div>
+  </div>
+  <div class="sidebar-nav">
+    <div class="sidebar-title">Principal</div>
+    <a class="sidebar-link active" data-page="dashboard">
+      <i class="fas fa-tachometer-alt"></i> <span>Dashboard</span>
+    </a>
+    <a class="sidebar-link" data-page="licencas">
+      <i class="fas fa-ticket-alt"></i> <span>Licenças</span>
+    </a>
+    <a class="sidebar-link" data-page="nova-licenca">
+      <i class="fas fa-plus-circle"></i> <span>Nova Licença</span>
+    </a>
+    <div class="sidebar-title">Configurações</div>
+    <a class="sidebar-link" data-page="exportar">
+      <i class="fas fa-download"></i> <span>Exportar Dados</span>
+    </a>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content" id="mainContent">
+  <!-- Header -->
+  <div class="admin-header">
+    <div class="header-left">
+      <button class="menu-toggle-mobile" id="menuToggleMobile" aria-label="Menu">
+        <i class="fas fa-bars"></i>
+      </button>
+      <button class="menu-toggle" id="menuToggle" aria-label="Menu">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+    </div>
+    <div class="header-right">
+      <button class="theme-toggle" id="themeToggle" aria-label="Tema">
+        <i class="fas fa-moon"></i>
+      </button>
+      <button class="notification-btn" id="notificationBtn" aria-label="Notificações">
+        <i class="fas fa-bell"></i>
+      </button>
+      <div class="user-info">
+        <div class="user-avatar">
+          <i class="fas fa-user"></i>
+        </div>
+        <span id="adminStatus" class="status-badge status-ATIVA">✅ Logado</span>
+      </div>
+      <button class="btn-secondary btn-sm" onclick="logout()">🚪 Sair</button>
+    </div>
+  </div>
+
+  <!-- Warning Banner -->
+  <div id="warningBanner" class="warning-banner warning" style="display: none;">
+    <i class="fas fa-exclamation-triangle"></i>
+    <span id="warningMessage"></span>
+    <button onclick="fecharBanner()"><i class="fas fa-times"></i></button>
+  </div>
+
+  <!-- Container Principal -->
+  <div class="admin-container" id="adminContainer">
+    <!-- Dashboard Page -->
+    <div id="dashboardPage">
+      <!-- Stats Cards -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-info">
+            <h3>Total de Licenças</h3>
+            <div class="stat-number" id="statTotal">0</div>
+          </div>
+          <div class="stat-icon"><i class="fas fa-ticket-alt"></i></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-info">
+            <h3>Licenças Ativas</h3>
+            <div class="stat-number" id="statAtivas">0</div>
+          </div>
+          <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-info">
+            <h3>Licenças Bloqueadas</h3>
+            <div class="stat-number" id="statBloqueadas">0</div>
+          </div>
+          <div class="stat-icon"><i class="fas fa-ban"></i></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-info">
+            <h3>Máquinas Ativas</h3>
+            <div class="stat-number" id="statMaquinas">0</div>
+          </div>
+          <div class="stat-icon"><i class="fas fa-desktop"></i></div>
+        </div>
+      </div>
+
+      <!-- Gráficos -->
+      <div class="charts-grid">
+        <div class="chart-card">
+          <h3><i class="fas fa-chart-pie"></i> Licenças por Status</h3>
+          <canvas id="statusChart" height="200"></canvas>
+        </div>
+        <div class="chart-card">
+          <h3><i class="fas fa-calendar-warning"></i> Vencem nos Próximos 30 Dias</h3>
+          <div id="vencimentosList" style="max-height: 200px; overflow-y: auto;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Licenças Page -->
+    <div id="licencasPage" style="display: none;">
+      <div class="card">
+        <div class="card-header">
+          <h2>📋 Gerenciar Licenças</h2>
+          <button class="btn-secondary" onclick="carregar()"><i class="fas fa-sync-alt"></i> Atualizar</button>
+        </div>
+        
+        <!-- Export Buttons -->
+        <div class="export-buttons">
+          <button class="btn-sm btn-secondary" onclick="exportarCSV()">
+            <i class="fas fa-file-csv"></i> CSV
+          </button>
+          <button class="btn-sm btn-secondary" onclick="exportarJSON()">
+            <i class="fas fa-file-code"></i> JSON
+          </button>
+          <button class="btn-sm btn-secondary" onclick="window.print()">
+            <i class="fas fa-print"></i> Imprimir
+          </button>
+        </div>
+        
+        <!-- Search and Filters -->
+        <div class="search-bar">
+          <div class="search-input">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Buscar por cliente ou chave..." onkeyup="filtrarTabela()">
+          </div>
+          <div class="filter-group">
+            <select id="filterStatus" onchange="filtrarTabela()">
+              <option value="todos">📊 Todos os status</option>
+              <option value="ATIVA">✅ ATIVA</option>
+              <option value="BLOQUEADA">🔒 BLOQUEADA</option>
+              <option value="EXPIRADA">⏰ EXPIRADA</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="filters-advanced">
+          <div class="filter-group">
+            <label>Plano</label>
+            <select id="filtroPlano" onchange="filtrarTabela()">
+              <option value="">Todos</option>
+              <option value="BASIC">Basic</option>
+              <option value="PRO">Pro</option>
+              <option value="ENTERPRISE">Enterprise</option>
+            </select>
+          </div>
+          <button class="btn-sm btn-secondary" onclick="limparFiltros()">
+            <i class="fas fa-eraser"></i> Limpar Filtros
+          </button>
+        </div>
+        
+        <div class="table-wrapper">
+          <table id="licencasTable">
+            <thead>
+              <tr>
+                <th><input type="checkbox" id="selectAll" onchange="selecionarTodos()"></th>
+                <th onclick="ordenarTabela('cliente')">Cliente <i class="fas fa-sort"></i></th>
+                <th onclick="ordenarTabela('chave')">Chave <i class="fas fa-sort"></i></th>
+                <th onclick="ordenarTabela('status')">Status <i class="fas fa-sort"></i></th>
+                <th onclick="ordenarTabela('validade')">Validade <i class="fas fa-sort"></i></th>
+                <th>Plano</th>
+                <th>Máquina</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="lista">
+              <tr><td colspan="8" style="text-align: center;"><span class="spinner"></span> Carregando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <!-- Ações em Massa -->
+        <div style="margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap;">
+          <button class="btn-sm btn-success" onclick="acaoEmMassa('ativar')">
+            <i class="fas fa-check"></i> Ativar Selecionados
+          </button>
+          <button class="btn-sm btn-danger" onclick="acaoEmMassa('bloquear')">
+            <i class="fas fa-lock"></i> Bloquear Selecionados
+          </button>
+          <button class="btn-sm btn-danger" onclick="acaoEmMassa('excluir')">
+            <i class="fas fa-trash"></i> Excluir Selecionados
+          </button>
+        </div>
+        
+        <div class="pagination" id="pagination"></div>
+      </div>
+    </div>
+
+    <!-- Nova Licença Page -->
+    <div id="novaLicencaPage" style="display: none;">
+      <div class="card">
+        <div class="card-header">
+          <h2>✨ Criar Nova Licença</h2>
+        </div>
+        <div class="form-grid">
+          <div class="input-group">
+            <label>🔑 Chave da Licença</label>
+            <input id="chave" placeholder="Deixe em branco para gerar automática">
+          </div>
+          <div class="input-group">
+            <label>👤 Cliente <span class="required">*</span></label>
+            <input id="cliente" placeholder="Nome do cliente">
+          </div>
+          <div class="input-group">
+            <label>📅 Data de Validade <span class="required">*</span></label>
+            <input id="validade" type="date">
+          </div>
+          <div class="input-group">
+            <label>📊 Status</label>
+            <select id="status">
+              <option value="ATIVA">✅ ATIVA</option>
+              <option value="BLOQUEADA">🔒 BLOQUEADA</option>
+              <option value="EXPIRADA">⏰ EXPIRADA</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>🎯 Plano</label>
+            <select id="plano">
+              <option value="BASIC">Basic</option>
+              <option value="PRO" selected>Pro</option>
+              <option value="ENTERPRISE">Enterprise</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>💻 Máquinas Máximas</label>
+            <input id="maxMachines" type="number" value="1" min="1" max="10">
+          </div>
+        </div>
+        <button class="btn-primary" onclick="criarLicenca()"><i class="fas fa-plus"></i> Criar Licença</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Modal de Confirmação -->
 <div id="confirmModal" class="modal">
@@ -578,7 +1207,7 @@ code {
   </div>
 </div>
 
-<!-- Tela de Login -->
+<!-- Login Overlay -->
 <div id="loginOverlay" class="login-overlay">
   <div class="login-box">
     <img src="assets/logo.png" alt="ZapMix" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'60\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%2390d105\'/%3E%3Ctext x=\'50\' y=\'67\' font-size=\'40\' text-anchor=\'middle\' fill=\'%230f172a\' font-weight=\'bold\'%3EZM%3C/text%3E%3C/svg%3E'">
@@ -595,134 +1224,10 @@ code {
   </div>
 </div>
 
-<!-- Header Admin -->
-<div class="admin-header" id="adminHeader" style="display: none;">
-  <div class="logo-area">
-    <img src="assets/logo.png" alt="ZapMix" class="logo-img" onerror="this.style.display='none'">
-    <div class="logo-text">
-      <h1>ZapMix Admin</h1>
-      <span>Painel de Controle</span>
-    </div>
-    <span class="admin-badge">v2.0</span>
-  </div>
-  <div>
-    <span id="adminStatus" class="status-badge status-ATIVA">✅ Logado</span>
-    <button class="btn-secondary btn-sm" onclick="logout()" style="margin-left: 12px;">🚪 Sair</button>
-  </div>
-</div>
-
-<!-- Conteúdo Admin -->
-<div class="admin-container" id="adminContent" style="display: none;">
-  <!-- Stats Cards -->
-  <div class="stats-grid" id="statsGrid">
-    <div class="stat-card">
-      <div class="stat-info">
-        <h3>Total de Licenças</h3>
-        <div class="stat-number" id="statTotal">0</div>
-      </div>
-      <div class="stat-icon"><i class="fas fa-ticket-alt"></i></div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-info">
-        <h3>Licenças Ativas</h3>
-        <div class="stat-number" id="statAtivas">0</div>
-      </div>
-      <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-info">
-        <h3>Licenças Bloqueadas</h3>
-        <div class="stat-number" id="statBloqueadas">0</div>
-      </div>
-      <div class="stat-icon"><i class="fas fa-ban"></i></div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-info">
-        <h3>Máquinas Ativas</h3>
-        <div class="stat-number" id="statMaquinas">0</div>
-      </div>
-      <div class="stat-icon"><i class="fas fa-desktop"></i></div>
-    </div>
-  </div>
-
-  <!-- Card de criação -->
-  <div class="card">
-    <div class="card-header">
-      <h2>✨ Criar Nova Licença</h2>
-    </div>
-    <div class="form-grid">
-      <div class="input-group">
-        <label>🔑 Chave da Licença</label>
-        <input id="chave" placeholder="Deixe em branco para gerar automática">
-      </div>
-      <div class="input-group">
-        <label>👤 Cliente <span class="required">*</span></label>
-        <input id="cliente" placeholder="Nome do cliente">
-      </div>
-      <div class="input-group">
-        <label>📅 Data de Validade <span class="required">*</span></label>
-        <input id="validade" type="date">
-      </div>
-      <div class="input-group">
-        <label>📊 Status</label>
-        <select id="status">
-          <option value="ATIVA">✅ ATIVA</option>
-          <option value="BLOQUEADA">🔒 BLOQUEADA</option>
-          <option value="EXPIRADA">⏰ EXPIRADA</option>
-        </select>
-      </div>
-    </div>
-    <button class="btn-primary" onclick="criarLicenca()"><i class="fas fa-plus"></i> Criar Licença</button>
-  </div>
-
-  <!-- Listagem de licenças -->
-  <div class="card">
-    <div class="card-header">
-      <h2>📋 Gerenciar Licenças</h2>
-      <button class="btn-secondary" onclick="carregar()"><i class="fas fa-sync-alt"></i> Atualizar</button>
-    </div>
-    
-    <!-- Search and Filters -->
-    <div class="search-bar">
-      <div class="search-input">
-        <i class="fas fa-search"></i>
-        <input type="text" id="searchInput" placeholder="Buscar por cliente ou chave..." onkeyup="filtrarTabela()">
-      </div>
-      <div class="filter-group">
-        <select id="filterStatus" onchange="filtrarTabela()">
-          <option value="todos">📊 Todos os status</option>
-          <option value="ATIVA">✅ ATIVA</option>
-          <option value="BLOQUEADA">🔒 BLOQUEADA</option>
-          <option value="EXPIRADA">⏰ EXPIRADA</option>
-        </select>
-      </div>
-    </div>
-    
-    <div class="table-wrapper">
-      <table id="licencasTable">
-        <thead>
-          <tr>
-            <th onclick="ordenarTabela('cliente')">Cliente <i class="fas fa-sort"></i></th>
-            <th onclick="ordenarTabela('chave')">Chave <i class="fas fa-sort"></i></th>
-            <th onclick="ordenarTabela('status')">Status <i class="fas fa-sort"></i></th>
-            <th onclick="ordenarTabela('validade')">Validade <i class="fas fa-sort"></i></th>
-            <th>Máquina</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody id="lista">
-          <tr><td colspan="6" style="text-align: center;"><span class="spinner"></span> Carregando...</td></tr>
-        </tbody>
-      </table>
-    </div>
-    
-    <!-- Pagination -->
-    <div class="pagination" id="pagination"></div>
-  </div>
-</div>
-
 <script>
-// Variáveis globais
+// ============================================================
+// VARIÁVEIS GLOBAIS
+// ============================================================
 let todasLicencas = [];
 let licencasFiltradas = [];
 let paginaAtual = 1;
@@ -730,17 +1235,30 @@ let itensPorPagina = 10;
 let ordemColuna = 'cliente';
 let ordemDirecao = 'asc';
 let acaoConfirmada = null;
+let itensSelecionados = new Set();
+let statusChart = null;
 
 // ============================================================
-// FUNÇÕES PRINCIPAIS
+// FUNÇÕES DE UTILIDADE
 // ============================================================
-
 function showToast(message, type) {
   const toast = document.createElement('div');
   toast.className = `toast ${type}`;
   toast.innerHTML = type === 'success' ? `✅ ${message}` : `❌ ${message}`;
   document.body.appendChild(toast);
   setTimeout(() => toast.remove(), 3000);
+}
+
+function mostrarAviso(mensagem, tipo = 'warning') {
+  const banner = document.getElementById('warningBanner');
+  banner.className = `warning-banner ${tipo}`;
+  document.getElementById('warningMessage').innerHTML = mensagem;
+  banner.style.display = 'flex';
+  setTimeout(() => fecharBanner(), 10000);
+}
+
+function fecharBanner() {
+  document.getElementById('warningBanner').style.display = 'none';
 }
 
 function getToken() {
@@ -760,6 +1278,22 @@ async function api(method, body) {
   return await res.json();
 }
 
+function formatarData(dataISO) {
+  if (!dataISO) return "N/A";
+  const data = new Date(dataISO);
+  return data.toLocaleDateString('pt-BR');
+}
+
+function escapeHtml(text) {
+  if (!text) return "";
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// ============================================================
+// MODAL
+// ============================================================
 function openModal(message, callback) {
   document.getElementById('confirmMessage').innerText = message;
   acaoConfirmada = callback;
@@ -776,6 +1310,9 @@ document.getElementById('confirmBtn').onclick = () => {
   closeModal();
 };
 
+// ============================================================
+// LOGIN / LOGOUT
+// ============================================================
 async function login() {
   const usuario = document.getElementById("usuario").value.trim();
   const senha = document.getElementById("senha").value.trim();
@@ -803,9 +1340,6 @@ async function login() {
     showToast("Login realizado com sucesso!", "success");
     
     document.getElementById('loginOverlay').style.display = 'none';
-    document.getElementById('adminHeader').style.display = 'flex';
-    document.getElementById('adminContent').style.display = 'block';
-    
     carregar();
   } catch (error) {
     showToast("Erro de conexão com o servidor", "error");
@@ -815,11 +1349,12 @@ async function login() {
 function logout() {
   localStorage.removeItem('zapmix_admin_token');
   document.getElementById('loginOverlay').style.display = 'flex';
-  document.getElementById('adminHeader').style.display = 'none';
-  document.getElementById('adminContent').style.display = 'none';
   showToast('Logout realizado', 'success');
 }
 
+// ============================================================
+// CRUD LICENÇAS
+// ============================================================
 async function criarLicenca() {
   const cliente = document.getElementById("cliente").value.trim();
   const validade = document.getElementById("validade").value;
@@ -834,7 +1369,8 @@ async function criarLicenca() {
     cliente: cliente,
     validade: validade,
     status: document.getElementById("status").value,
-    max_machines: 1,
+    plano: document.getElementById("plano").value,
+    max_machines: parseInt(document.getElementById("maxMachines").value),
     modulos: ["whatsapp", "ndi", "enquete"]
   };
   
@@ -849,6 +1385,10 @@ async function criarLicenca() {
   document.getElementById("chave").value = "";
   document.getElementById("cliente").value = "";
   document.getElementById("validade").value = "";
+  document.getElementById("maxMachines").value = "1";
+  
+  // Voltar para página de listagem
+  navegarPagina('licencas');
   carregar();
 }
 
@@ -886,30 +1426,59 @@ function excluirLicenca(id, cliente) {
   openModal(`Tem certeza que deseja excluir a licença de "${cliente}"?`, () => excluirLicencaConfirmado(id));
 }
 
-function formatarData(dataISO) {
-  if (!dataISO) return "N/A";
-  const data = new Date(dataISO);
-  return data.toLocaleDateString('pt-BR');
-}
-
-function escapeHtml(text) {
-  if (!text) return "";
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
-
-function atualizarStats() {
-  const ativas = todasLicencas.filter(l => l.status === 'ATIVA').length;
-  const bloqueadas = todasLicencas.filter(l => l.status === 'BLOQUEADA').length;
-  const maquinas = todasLicencas.filter(l => l.machine_id).length;
+// ============================================================
+// SELEÇÃO EM MASSA
+// ============================================================
+function selecionarTodos() {
+  const checkbox = document.getElementById('selectAll');
+  const checkboxes = document.querySelectorAll('.select-item');
   
-  document.getElementById('statTotal').innerText = todasLicencas.length;
-  document.getElementById('statAtivas').innerText = ativas;
-  document.getElementById('statBloqueadas').innerText = bloqueadas;
-  document.getElementById('statMaquinas').innerText = maquinas;
+  checkboxes.forEach(cb => {
+    cb.checked = checkbox.checked;
+    if (checkbox.checked) {
+      itensSelecionados.add(cb.value);
+    } else {
+      itensSelecionados.clear();
+    }
+  });
 }
 
+function toggleSelecionar(id) {
+  if (itensSelecionados.has(id)) {
+    itensSelecionados.delete(id);
+  } else {
+    itensSelecionados.add(id);
+  }
+  
+  const selectAll = document.getElementById('selectAll');
+  const checkboxes = document.querySelectorAll('.select-item');
+  if (selectAll) {
+    selectAll.checked = checkboxes.length === itensSelecionados.size;
+  }
+}
+
+function acaoEmMassa(acao) {
+  if (itensSelecionados.size === 0) {
+    showToast('Selecione pelo menos uma licença', 'error');
+    return;
+  }
+  
+  openModal(`Aplicar "${acao}" em ${itensSelecionados.size} licença(s)?`, () => {
+    itensSelecionados.forEach(id => {
+      if (acao === 'ativar') atualizarStatus(id, 'ATIVA');
+      if (acao === 'bloquear') atualizarStatus(id, 'BLOQUEADA');
+      if (acao === 'excluir') excluirLicencaConfirmado(id);
+    });
+    itensSelecionados.clear();
+    const selectAll = document.getElementById('selectAll');
+    if (selectAll) selectAll.checked = false;
+    setTimeout(() => carregar(), 1000);
+  });
+}
+
+// ============================================================
+// FILTROS E ORDENAÇÃO
+// ============================================================
 function ordenarTabela(coluna) {
   if (ordemColuna === coluna) {
     ordemDirecao = ordemDirecao === 'asc' ? 'desc' : 'asc';
@@ -920,15 +1489,24 @@ function ordenarTabela(coluna) {
   filtrarTabela();
 }
 
+function limparFiltros() {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('filterStatus').value = 'todos';
+  document.getElementById('filtroPlano').value = '';
+  filtrarTabela();
+}
+
 function filtrarTabela() {
   const searchTerm = document.getElementById('searchInput').value.toLowerCase();
   const statusFilter = document.getElementById('filterStatus').value;
+  const planoFilter = document.getElementById('filtroPlano').value;
   
   licencasFiltradas = todasLicencas.filter(licenca => {
     const matchSearch = licenca.cliente.toLowerCase().includes(searchTerm) || 
                         licenca.chave.toLowerCase().includes(searchTerm);
     const matchStatus = statusFilter === 'todos' || licenca.status === statusFilter;
-    return matchSearch && matchStatus;
+    const matchPlano = !planoFilter || (licenca.plano === planoFilter);
+    return matchSearch && matchStatus && matchPlano;
   });
   
   // Ordenar
@@ -955,42 +1533,51 @@ function renderizarPagina() {
   const licencasPagina = licencasFiltradas.slice(start, end);
   
   if (licencasPagina.length === 0) {
-    document.getElementById("lista").innerHTML = `
-      <tr><td colspan="6" class="empty-state">
-        <i class="fas fa-inbox"></i><br>
-        Nenhuma licença encontrada
-      </td></tr>
-    `;
+    document.getElementById("lista").innerHTML = `<tr><td colspan="8" class="empty-state">
+      <i class="fas fa-inbox"></i><br>Nenhuma licença encontrada
+    </td></tr>`;
     return;
   }
   
-  document.getElementById("lista").innerHTML = licencasPagina.map(l => `
-    <tr>
-      <td><strong>${escapeHtml(l.cliente)}</strong></td>
-      <td><code>${escapeHtml(l.chave)}</code></td>
-      <td><span class="status-badge status-${l.status}">${l.status}</span></td>
-      <td>${formatarData(l.validade)}</td>
-      <td style="font-family: monospace; font-size: 0.7rem;">
-        ${l.machine_id ? l.machine_id.substring(0, 20) + "..." : "💻 Livre"}
-      </td>
-      <td>
-        <div class="action-buttons">
-          <button class="btn-success btn-sm" onclick="atualizarStatus('${l.id}', 'ATIVA')" title="Ativar">
-            <i class="fas fa-check"></i>
-          </button>
-          <button class="btn-danger btn-sm" onclick="atualizarStatus('${l.id}', 'BLOQUEADA')" title="Bloquear">
-            <i class="fas fa-lock"></i>
-          </button>
-          <button class="btn-warning btn-sm" onclick="liberarMaquina('${l.id}')" title="Liberar PC">
-            <i class="fas fa-desktop"></i>
-          </button>
-          <button class="btn-danger btn-sm" onclick="excluirLicenca('${l.id}', '${escapeHtml(l.cliente)}')" title="Excluir">
-            <i class="fas fa-trash"></i>
-          </button>
-        </div>
-      </td>
-    </tr>
-  `).join("");
+  document.getElementById("lista").innerHTML = licencasPagina.map(l => {
+    const planoClass = l.plano === 'PRO' ? 'badge-pro' : (l.plano === 'ENTERPRISE' ? 'badge-enterprise' : 'badge-basic');
+    const planoNome = l.plano || 'BASIC';
+    
+    return `
+      <tr>
+        <td data-label="Selecionar"><input type="checkbox" class="select-item" value="${l.id}" onchange="toggleSelecionar('${l.id}')"></td>
+        <td data-label="Cliente"><strong>${escapeHtml(l.cliente)}</strong></td>
+        <td data-label="Chave"><code>${escapeHtml(l.chave)}</code></td>
+        <td data-label="Status"><span class="status-badge status-${l.status}">${l.status}</span></td>
+        <td data-label="Validade">${formatarData(l.validade)}</td>
+        <td data-label="Plano"><span class="badge-plano ${planoClass}">${planoNome}</span></td>
+        <td data-label="Máquina" style="font-family: monospace; font-size: 0.7rem;">
+          ${l.machine_id ? l.machine_id.substring(0, 20) + "..." : "💻 Livre"}
+        </td>
+        <td data-label="Ações">
+          <div class="action-buttons">
+            <button class="btn-success btn-sm" onclick="atualizarStatus('${l.id}', 'ATIVA')" title="Ativar">
+              <i class="fas fa-check"></i>
+            </button>
+            <button class="btn-danger btn-sm" onclick="atualizarStatus('${l.id}', 'BLOQUEADA')" title="Bloquear">
+              <i class="fas fa-lock"></i>
+            </button>
+            <button class="btn-warning btn-sm" onclick="liberarMaquina('${l.id}')" title="Liberar PC">
+              <i class="fas fa-desktop"></i>
+            </button>
+            <button class="btn-danger btn-sm" onclick="excluirLicenca('${l.id}', '${escapeHtml(l.cliente)}')" title="Excluir">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join("");
+  
+  // Reset seleção
+  itensSelecionados.clear();
+  const selectAll = document.getElementById('selectAll');
+  if (selectAll) selectAll.checked = false;
 }
 
 function renderizarPaginacao() {
@@ -1005,13 +1592,16 @@ function renderizarPaginacao() {
   let html = '';
   html += `<button class="page-btn ${paginaAtual === 1 ? 'disabled' : ''}" onclick="mudarPagina(${paginaAtual - 1})" ${paginaAtual === 1 ? 'disabled' : ''}>« Anterior</button>`;
   
-  for (let i = 1; i <= Math.min(totalPaginas, 5); i++) {
-    html += `<button class="page-btn ${paginaAtual === i ? 'active' : ''}" onclick="mudarPagina(${i})">${i}</button>`;
+  const maxButtons = 5;
+  let startPage = Math.max(1, paginaAtual - Math.floor(maxButtons / 2));
+  let endPage = Math.min(totalPaginas, startPage + maxButtons - 1);
+  
+  if (endPage - startPage + 1 < maxButtons) {
+    startPage = Math.max(1, endPage - maxButtons + 1);
   }
   
-  if (totalPaginas > 5) {
-    html += `<span style="padding: 8px;">...</span>`;
-    html += `<button class="page-btn" onclick="mudarPagina(${totalPaginas})">${totalPaginas}</button>`;
+  for (let i = startPage; i <= endPage; i++) {
+    html += `<button class="page-btn ${paginaAtual === i ? 'active' : ''}" onclick="mudarPagina(${i})">${i}</button>`;
   }
   
   html += `<button class="page-btn ${paginaAtual === totalPaginas ? 'disabled' : ''}" onclick="mudarPagina(${paginaAtual + 1})" ${paginaAtual === totalPaginas ? 'disabled' : ''}>Próximo »</button>`;
@@ -1027,6 +1617,145 @@ function mudarPagina(pagina) {
   renderizarPaginacao();
 }
 
+// ============================================================
+// ESTATÍSTICAS E GRÁFICOS
+// ============================================================
+function atualizarStats() {
+  const ativas = todasLicencas.filter(l => l.status === 'ATIVA').length;
+  const bloqueadas = todasLicencas.filter(l => l.status === 'BLOQUEADA').length;
+  const expiradas = todasLicencas.filter(l => l.status === 'EXPIRADA').length;
+  const maquinas = todasLicencas.filter(l => l.machine_id).length;
+  
+  document.getElementById('statTotal').innerText = todasLicencas.length;
+  document.getElementById('statAtivas').innerText = ativas;
+  document.getElementById('statBloqueadas').innerText = bloqueadas;
+  document.getElementById('statMaquinas').innerText = maquinas;
+  
+  // Atualizar gráfico
+  if (statusChart) {
+    statusChart.destroy();
+  }
+  
+  const ctx = document.getElementById('statusChart').getContext('2d');
+  statusChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Ativas', 'Bloqueadas', 'Expiradas'],
+      datasets: [{
+        data: [ativas, bloqueadas, expiradas],
+        backgroundColor: ['#90d105', '#ef4444', '#f59e0b'],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { color: getComputedStyle(document.body).getPropertyValue('--text-primary') }
+        }
+      }
+    }
+  });
+  
+  // Licenças que vencem nos próximos 30 dias
+  const hoje = new Date();
+  const vencendoEmBreve = todasLicencas.filter(l => {
+    if (!l.validade || l.status !== 'ATIVA') return false;
+    const vencimento = new Date(l.validade);
+    const diff = (vencimento - hoje) / (1000 * 60 * 60 * 24);
+    return diff > 0 && diff <= 30;
+  });
+  
+  const vencimentosList = document.getElementById('vencimentosList');
+  if (vencendoEmBreve.length > 0) {
+    vencimentosList.innerHTML = vencendoEmBreve.map(l => {
+      const vencimento = new Date(l.validade);
+      const diff = Math.ceil((vencimento - hoje) / (1000 * 60 * 60 * 24));
+      let classe = '';
+      if (diff <= 7) classe = 'expira-semana';
+      if (diff <= 1) classe = 'expira-hoje';
+      return `
+        <div style="display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid var(--border);">
+          <span><strong>${escapeHtml(l.cliente)}</strong></span>
+          <span class="${classe}" style="padding: 2px 8px; border-radius: 12px; font-size: 0.7rem;">${diff} dias</span>
+          <span>${formatarData(l.validade)}</span>
+        </div>
+      `;
+    }).join('');
+    
+    // Mostrar aviso se tiver licenças vencendo em 7 dias
+    const vencendo7dias = vencendoEmBreve.filter(l => {
+      const vencimento = new Date(l.validade);
+      const diff = (vencimento - hoje) / (1000 * 60 * 60 * 24);
+      return diff <= 7;
+    });
+    if (vencendo7dias.length > 0) {
+      mostrarAviso(`${vencendo7dias.length} licença(s) vence(m) nos próximos 7 dias!`, 'warning');
+    }
+  } else {
+    vencimentosList.innerHTML = '<div class="empty-state"><i class="fas fa-calendar-check"></i><br>Nenhuma licença vence este mês</div>';
+  }
+}
+
+// ============================================================
+// EXPORTAÇÃO
+// ============================================================
+function exportarCSV() {
+  const headers = ['Cliente', 'Chave', 'Status', 'Validade', 'Plano', 'Máquina'];
+  const rows = licencasFiltradas.map(l => [
+    l.cliente, l.chave, l.status, l.validade, l.plano || 'BASIC', l.machine_id || 'Livre'
+  ]);
+  
+  const csvContent = [headers, ...rows].map(row => row.join(',')).join('\n');
+  const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `licencas_${new Date().toISOString().split('T')[0]}.csv`;
+  link.click();
+  showToast('Exportado com sucesso!', 'success');
+}
+
+function exportarJSON() {
+  const dataStr = JSON.stringify(licencasFiltradas, null, 2);
+  const blob = new Blob([dataStr], { type: 'application/json' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `licencas_${new Date().toISOString().split('T')[0]}.json`;
+  link.click();
+  showToast('Exportado com sucesso!', 'success');
+}
+
+// ============================================================
+// NAVEGAÇÃO
+// ============================================================
+function navegarPagina(pagina) {
+  document.getElementById('dashboardPage').style.display = 'none';
+  document.getElementById('licencasPage').style.display = 'none';
+  document.getElementById('novaLicencaPage').style.display = 'none';
+  
+  if (pagina === 'dashboard') {
+    document.getElementById('dashboardPage').style.display = 'block';
+  } else if (pagina === 'licencas') {
+    document.getElementById('licencasPage').style.display = 'block';
+    carregar();
+  } else if (pagina === 'nova-licenca') {
+    document.getElementById('novaLicencaPage').style.display = 'block';
+  }
+  
+  // Atualizar sidebar active
+  document.querySelectorAll('.sidebar-link').forEach(link => {
+    link.classList.remove('active');
+    if (link.getAttribute('data-page') === pagina) {
+      link.classList.add('active');
+    }
+  });
+}
+
+// ============================================================
+// CARREGAR DADOS
+// ============================================================
 async function carregar() {
   const token = getToken();
   if (!token) return;
@@ -1038,7 +1767,7 @@ async function carregar() {
       logout();
       showToast("Sessão expirada. Faça login novamente.", "error");
     } else {
-      document.getElementById("lista").innerHTML = `<tr><td colspan="6" style="text-align:center;color:#ef4444;">❌ ${data.erro || "Erro"}</td></tr>`;
+      document.getElementById("lista").innerHTML = `<tr><td colspan="8" style="text-align:center;color:#ef4444;">❌ ${data.erro || "Erro"}</td></tr>`;
     }
     return;
   }
@@ -1048,20 +1777,118 @@ async function carregar() {
   filtrarTabela();
 }
 
-// Inicialização
+// ============================================================
+// TEMA ESCURO/CLARO
+// ============================================================
+function toggleTheme() {
+  const isDark = document.body.classList.toggle('dark-theme');
+  localStorage.setItem('admin_theme', isDark ? 'dark' : 'light');
+  
+  const themeIcon = document.querySelector('#themeToggle i');
+  if (isDark) {
+    themeIcon.className = 'fas fa-sun';
+  } else {
+    themeIcon.className = 'fas fa-moon';
+  }
+  
+  // Recriar gráfico para atualizar cores
+  atualizarStats();
+}
+
+const savedTheme = localStorage.getItem('admin_theme');
+if (savedTheme === 'dark') {
+  document.body.classList.add('dark-theme');
+  document.querySelector('#themeToggle i').className = 'fas fa-sun';
+}
+
+// ============================================================
+// ATALHOS DE TECLADO
+// ============================================================
+document.addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.key === 'n') {
+    e.preventDefault();
+    navegarPagina('nova-licenca');
+    showToast('Tecla: Criar nova licença', 'success');
+  }
+  if (e.ctrlKey && e.key === 'f') {
+    e.preventDefault();
+    document.getElementById('searchInput')?.focus();
+  }
+  if (e.ctrlKey && e.key === 'r') {
+    e.preventDefault();
+    carregar();
+  }
+  if (e.key === 'Escape') {
+    document.getElementById('searchInput').value = '';
+    filtrarTabela();
+  }
+});
+
+// ============================================================
+// INICIALIZAÇÃO
+// ============================================================
+document.querySelectorAll('.sidebar-link').forEach(link => {
+  link.addEventListener('click', () => {
+    const page = link.getAttribute('data-page');
+    navegarPagina(page);
+  });
+});
+
+// Menu Mobile
+const menuToggleMobile = document.getElementById('menuToggleMobile');
+const sidebar = document.getElementById('sidebar');
+
+menuToggleMobile?.addEventListener('click', () => {
+  sidebar.classList.toggle('mobile-open');
+});
+
+// Fechar menu ao clicar fora
+document.addEventListener('click', (e) => {
+  if (sidebar.classList.contains('mobile-open') && 
+      !sidebar.contains(e.target) && 
+      !menuToggleMobile.contains(e.target)) {
+    sidebar.classList.remove('mobile-open');
+  }
+});
+
+// Collapse sidebar desktop
+const menuToggle = document.getElementById('menuToggle');
+const mainContent = document.getElementById('mainContent');
+
+menuToggle?.addEventListener('click', () => {
+  sidebar.classList.toggle('collapsed');
+  mainContent.classList.toggle('expanded');
+  
+  const icon = menuToggle.querySelector('i');
+  if (sidebar.classList.contains('collapsed')) {
+    icon.className = 'fas fa-chevron-right';
+  } else {
+    icon.className = 'fas fa-chevron-left';
+  }
+});
+
+// Theme Toggle
+document.getElementById('themeToggle')?.addEventListener('click', toggleTheme);
+
+// Notification Button
+document.getElementById('notificationBtn')?.addEventListener('click', () => {
+  showToast('📢 Notificações: Sem novas mensagens', 'success');
+});
+
+// Verificar se já está logado
 if (getToken()) {
   document.getElementById('loginOverlay').style.display = 'none';
-  document.getElementById('adminHeader').style.display = 'flex';
-  document.getElementById('adminContent').style.display = 'block';
+  navegarPagina('dashboard');
   carregar();
 } else {
   document.getElementById('loginOverlay').style.display = 'flex';
-  document.getElementById('adminHeader').style.display = 'none';
-  document.getElementById('adminContent').style.display = 'none';
 }
 
+// Auto-refresh a cada 30 segundos
 setInterval(() => {
-  if (getToken()) carregar();
+  if (getToken() && document.getElementById('licencasPage').style.display !== 'none') {
+    carregar();
+  }
 }, 30000);
 </script>
 </body>
