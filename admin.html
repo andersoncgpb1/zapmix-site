@@ -865,7 +865,7 @@ tr:hover {
               <tr><th>Cliente</th><th>Contato</th><th>Email</th><th>Licenças</th><th>Status</th><th>Cadastro</th><th>Ações</th></tr>
             </thead>
             <tbody id="listaClientes">
-              <tr><td colspan="7" class="empty-state"><i class="fas fa-users"></i><br>Nenhum cliente cadastrado</td></tr>
+              <tr><td colspan="7" class="empty-state"><i class="fas fa-users"></i><br>Nenhum cliente cadastrado</td</tr>
             </tbody>
           </table>
         </div>
@@ -901,7 +901,7 @@ tr:hover {
               <tr><th>Cliente</th><th>Chave</th><th>Status</th><th>Validade</th><th>Máquina</th><th>Ações</th></tr>
             </thead>
             <tbody id="listaLicencas">
-              <tr><td colspan="6" class="empty-state"><i class="fas fa-key"></i><br>Nenhuma licença cadastrada</td></tr>
+              <tr><td colspan="6" class="empty-state"><i class="fas fa-key"></i><br>Nenhuma licença cadastrada</td</td>
             </tbody>
           </table>
         </div>
@@ -1094,6 +1094,10 @@ function showToast(message, type) {
   setTimeout(() => toast.remove(), 3000);
 }
 
+function getToken() {
+  return localStorage.getItem("zapmix_admin_token") || "";
+}
+
 function gerarChave() {
   const bytes = new Uint8Array(8);
   crypto.getRandomValues(bytes);
@@ -1112,6 +1116,26 @@ function escapeHtml(text) {
   const div = document.createElement('div');
   div.textContent = text;
   return div.innerHTML;
+}
+
+// ============================================================
+// API
+// ============================================================
+async function api(method, body) {
+  const token = getToken();
+  try {
+    const res = await fetch("/api/admin-licencas", {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token
+      },
+      body: body ? JSON.stringify(body) : undefined
+    });
+    return await res.json();
+  } catch (error) {
+    return { ok: false, erro: "Erro de conexão" };
+  }
 }
 
 // ============================================================
@@ -1232,11 +1256,11 @@ function carregarClientes() {
       <td data-label="Cadastro">${formatarData(c.dataCadastro)}</td>
       <td data-label="Ações">
         <div class="action-buttons">
-          <button class="btn-outline btn-sm" onclick="abrirModalCliente(${JSON.stringify(c).replace(/"/g, '&quot;')})"><i class="fas fa-edit"></i></button>
+          <button class="btn-outline btn-sm" onclick='abrirModalCliente(${JSON.stringify(c).replace(/'/g, "&#39;")})'><i class="fas fa-edit"></i></button>
           <button class="btn-danger btn-sm" onclick="excluirCliente(${c.id}, '${escapeHtml(c.nome)}')"><i class="fas fa-trash"></i></button>
         </div>
-      </td>
-    </tr>
+       </td>
+     </tr>
   `).join('');
   
   atualizarStats();
@@ -1265,7 +1289,7 @@ function fecharModalLicenca() {
   document.getElementById('modalLicenca').classList.remove('active');
 }
 
-function criarLicenca() {
+async function criarLicenca() {
   const clienteId = parseInt(document.getElementById('licencaCliente').value);
   const validade = document.getElementById('licencaValidade').value;
   
@@ -1285,11 +1309,12 @@ function criarLicenca() {
     return;
   }
   
-  const novaChave = document.getElementById('licencaChave').value.trim() || gerarChave();
+  const chave = document.getElementById('licencaChave').value.trim() || gerarChave();
   
+  // Salvar localmente primeiro
   const novaLicenca = {
     id: Date.now(),
-    chave: novaChave,
+    chave: chave,
     clienteId: clienteId,
     clienteNome: cliente.nome,
     validade: validade,
@@ -1300,10 +1325,29 @@ function criarLicenca() {
   
   licencas.push(novaLicenca);
   salvarLicencasLocal();
+  
+  // Tentar salvar na API também
+  try {
+    const data = await api("POST", {
+      chave: chave,
+      cliente: cliente.nome,
+      validade: validade,
+      status: document.getElementById('licencaStatus').value,
+      max_machines: 1
+    });
+    
+    if (data.ok) {
+      showToast("Licença criada com sucesso na API!", "success");
+    } else {
+      showToast("Licença criada localmente, mas com erro na API", "warning");
+    }
+  } catch (error) {
+    showToast("Licença criada localmente", "success");
+  }
+  
   fecharModalLicenca();
   carregarLicencas();
   atualizarStats();
-  showToast("Licença criada com sucesso!", "success");
 }
 
 function atualizarStatusLicenca(id, status) {
@@ -1365,7 +1409,7 @@ function renderizarPaginaLicencas() {
   
   const tbody = document.getElementById('listaLicencas');
   if (licencasPagina.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="6" class="empty-state"><i class="fas fa-key"></i><br>Nenhuma licença encontrada</td<tr>';
+    tbody.innerHTML = '<tr><td colspan="6" class="empty-state"><i class="fas fa-key"></i><br>Nenhuma licença encontrada</td></tr>';
     return;
   }
   
@@ -1502,8 +1546,6 @@ function alterarSenha() {
     return;
   }
   
-  // Salvar nova senha (local apenas para demonstração)
-  localStorage.setItem('zapmix_admin_password', nova);
   showToast("Senha alterada com sucesso!", "success");
   document.getElementById('senhaAtual').value = '';
   document.getElementById('novaSenha').value = '';
@@ -1543,22 +1585,43 @@ function navegarPagina(pagina) {
 // ============================================================
 // LOGIN / LOGOUT
 // ============================================================
-function login() {
+async function login() {
   const usuario = document.getElementById('loginUsuario').value.trim();
   const senha = document.getElementById('loginSenha').value;
   
-  // Login simples (em produção, use API)
-  if (usuario === 'admin' && senha === 'admin123') {
-    localStorage.setItem('zapmix_admin_logged', 'true');
+  if (!usuario || !senha) {
+    showToast("Preencha usuário e senha", "error");
+    return;
+  }
+  
+  try {
+    const res = await fetch("/api/admin-login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ usuario, senha })
+    });
+    
+    const data = await res.json();
+    
+    if (!data.ok) {
+      showToast(data.erro || "Usuário ou senha inválidos", "error");
+      return;
+    }
+    
+    localStorage.setItem("zapmix_admin_token", data.token);
+    localStorage.setItem("zapmix_admin_logged", "true");
     document.getElementById('loginOverlay').style.display = 'none';
     showToast("Login realizado com sucesso!", "success");
     carregarPerfil();
-  } else {
-    showToast("Usuário ou senha incorretos", "error");
+    navegarPagina('dashboard');
+    
+  } catch (error) {
+    showToast("Erro de conexão com o servidor", "error");
   }
 }
 
 function logout() {
+  localStorage.removeItem('zapmix_admin_token');
   localStorage.removeItem('zapmix_admin_logged');
   document.getElementById('loginOverlay').style.display = 'flex';
   document.getElementById('sidebar').classList.remove('mobile-open');
@@ -1602,7 +1665,9 @@ if (savedTheme === 'dark') {
 }
 
 const isLogged = localStorage.getItem('zapmix_admin_logged');
-if (isLogged === 'true') {
+const token = localStorage.getItem('zapmix_admin_token');
+
+if (isLogged === 'true' && token) {
   document.getElementById('loginOverlay').style.display = 'none';
   navegarPagina('dashboard');
 } else {
