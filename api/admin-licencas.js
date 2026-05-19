@@ -196,3 +196,40 @@ export default async function handler(req, res) {
 
   return res.status(405).json({ ok: false, erro: "Método não permitido" });
 }
+
+// No PUT, adicione esta lógica para renovação
+if (req.method === 'PUT') {
+  const { id, status, machine_id, validade, ultima_renovacao } = req.body;
+
+  if (!id) {
+    return res.status(400).json({ ok: false, erro: "ID é obrigatório" });
+  }
+
+  const update = {};
+  if (status !== undefined) update.status = status;
+  if (machine_id !== undefined) update.machine_id = machine_id;
+  if (validade !== undefined) update.validade = validade;
+  if (ultima_renovacao !== undefined) {
+    update.ultima_renovacao = ultima_renovacao;
+    // Incrementar contador de renovações
+    const { data: licenca } = await supabase
+      .from('licenses')
+      .select('renovacoes')
+      .eq('id', id)
+      .single();
+    update.renovacoes = (licenca?.renovacoes || 0) + 1;
+  }
+
+  const { data, error } = await supabase
+    .from('licenses')
+    .update(update)
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) {
+    return res.status(500).json({ ok: false, erro: error.message });
+  }
+
+  return res.json({ ok: true, licenca: data });
+}

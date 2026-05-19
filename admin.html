@@ -1277,22 +1277,46 @@ function renderizarLicencas() {
   const start = (paginaAtual-1) * itensPorPagina;
   const pagina = licencasFiltradas.slice(start, start + itensPorPagina);
   const tbody = document.getElementById('listaLicencas');
-  if (pagina.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="empty-state"><i class="fas fa-key"></i><br>Nenhuma licença encontrada</td</tr>'; return; }
   
-  tbody.innerHTML = pagina.map(l => `
-    <tr>
-      <td data-label=""><input type="checkbox" class="select-licenca" value="${l.id}" onchange="toggleSelecionarLicenca('${l.id}')"></td>
-      <td data-label="Cliente"><strong>${escapeHtml(l.cliente)}</strong></td>
-      <td data-label="Chave"><code>${escapeHtml(l.chave)}</code></td>
-      <td data-label="Status"><span class="status-badge status-${l.status}">${l.status}</span></td>
-      <td data-label="Validade">${formatarData(l.validade)}</td>
-      <td data-label="Máquina">${l.machine_id ? l.machine_id.substring(0,20)+'...' : '💻 Livre'}</td>
-      <td data-label="Ações"><div class="action-buttons"><button class="btn-success btn-sm" onclick="atualizarStatus('${l.id}','ATIVA')" title="Ativar"><i class="fas fa-check"></i> Ativar</button><button class="btn-danger btn-sm" onclick="atualizarStatus('${l.id}','BLOQUEADA')" title="Bloquear"><i class="fas fa-lock"></i> Bloquear</button><button class="btn-warning btn-sm" onclick="liberarMaquina('${l.id}')" title="Liberar"><i class="fas fa-desktop"></i> Liberar</button><button class="btn-danger btn-sm" onclick="excluirLicenca('${l.id}','${escapeHtml(l.cliente)}')" title="Excluir"><i class="fas fa-trash"></i> Excluir</button></div></td>
-    </tr>`).join('');
+  if (pagina.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="8" class="empty-state"><i class="fas fa-key"></i><br>Nenhuma licença encontrada</td</tr>';
+    return;
+  }
+  
+  tbody.innerHTML = pagina.map(l => {
+    const statusInfo = getStatusLicenca(l.validade, l.status);
+    const hoje = new Date();
+    const dataValidade = new Date(l.validade);
+    const precisaRenovar = statusInfo.alerta || (dataValidade - hoje) / (1000 * 60 * 60 * 24) <= 30;
+    
+    return `
+      <tr>
+        <td data-label="Selecionar"><input type="checkbox" class="select-licenca" value="${l.id}" onchange="toggleSelecionarLicenca('${l.id}')"></td>
+        <td data-label="Cliente"><strong>${escapeHtml(l.cliente)}</strong>${l.ultima_renovacao ? `<br><small style="color:#64748b">Última renovação: ${formatarData(l.ultima_renovacao)}</small>` : ''}</td>
+        <td data-label="Chave"><code>${escapeHtml(l.chave)}</code></td>
+        <td data-label="Status"><span class="status-badge ${statusInfo.class}">${statusInfo.text}</span></td>
+        <td data-label="Validade">${formatarData(l.validade)}</td>
+        <td data-label="Máquina">${l.machine_id ? l.machine_id.substring(0,20)+'...' : '💻 Livre'}</td>
+        <td data-label="Ações">
+          <div class="action-buttons">
+            <button class="btn-success btn-sm" onclick="atualizarStatus('${l.id}','ATIVA')" title="Ativar"><i class="fas fa-check"></i> Ativar</button>
+            <button class="btn-danger btn-sm" onclick="atualizarStatus('${l.id}','BLOQUEADA')" title="Bloquear"><i class="fas fa-lock"></i> Bloquear</button>
+            <button class="btn-warning btn-sm" onclick="liberarMaquina('${l.id}')" title="Liberar PC"><i class="fas fa-desktop"></i> Liberar</button>
+            ${precisaRenovar ? `<button class="btn-primary btn-sm" onclick="abrirModalRenovacao('${l.id}', '${escapeHtml(l.cliente)}', '${l.validade}')" title="Renovar"><i class="fas fa-sync-alt"></i> Renovar</button>` : ''}
+            <button class="btn-danger btn-sm" onclick="excluirLicenca('${l.id}','${escapeHtml(l.cliente)}')" title="Excluir"><i class="fas fa-trash"></i> Excluir</button>
+          </div>
+         </td>
+       </tr>
+    `;
+  }).join('');
   
   const bulkDiv = document.getElementById('bulkActions');
-  if (licencasSelecionadas.size > 0) { bulkDiv.style.display = 'flex'; document.getElementById('selectedCount').innerText = licencasSelecionadas.size; }
-  else { bulkDiv.style.display = 'none'; }
+  if (licencasSelecionadas.size > 0) {
+    bulkDiv.style.display = 'flex';
+    document.getElementById('selectedCount').innerText = licencasSelecionadas.size;
+  } else {
+    bulkDiv.style.display = 'none';
+  }
   renderizarPaginacao();
 }
 
