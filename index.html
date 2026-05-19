@@ -73,19 +73,10 @@ body {
   gap: 12px;
 }
 
-.logo-icon {
-  width: 40px;
+.logo-img {
   height: 40px;
-  background: linear-gradient(135deg, #90d105, #7ab804);
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.logo-icon i {
-  font-size: 1.4rem;
-  color: #0f172a;
+  width: auto;
+  object-fit: contain;
 }
 
 .logo span {
@@ -641,9 +632,21 @@ body {
   margin-bottom: 50px;
 }
 
+.footer-logo {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.footer-logo-img {
+  height: 45px;
+  width: auto;
+  object-fit: contain;
+}
+
 .footer-logo p {
   color: #94a3b8;
-  margin-top: 12px;
+  margin-top: 0;
   font-size: 0.85rem;
 }
 
@@ -851,9 +854,7 @@ body {
 <header class="header" id="header">
   <div class="container">
     <div class="logo">
-      <div class="logo-icon">
-        <i class="fas fa-bolt"></i>
-      </div>
+      <img src="/assets/logotipo.png" alt="ZapMix" class="logo-img" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%2390d105\'/%3E%3Ctext x=\'50\' y=\'67\' font-size=\'40\' text-anchor=\'middle\' fill=\'%230f172a\' font-weight=\'bold\'%3EZM%3C/text%3E%3C/svg%3E'">
       <span>ZapMix</span>
     </div>
     
@@ -920,7 +921,7 @@ body {
         </div>
       </div>
       <div class="hero-image">
-        <img src="assets/screenshot-dashboard.png" alt="ZapMix Dashboard" onerror="this.style.display='none'">
+        <img src="/assets/screenshot-dashboard.png" alt="ZapMix Dashboard" onerror="this.style.display='none'">
       </div>
     </div>
   </section>
@@ -1012,13 +1013,13 @@ body {
       <p class="section-subtitle">Layouts profissionais prontos para sua produção</p>
       <div class="screens-grid">
         <div class="screen-card">
-          <img src="assets/screen-enquete.png" alt="Tela da Enquete" onerror="this.style.display='none'">
+          <img src="/assets/screen-enquete.png" alt="Tela da Enquete" onerror="this.style.display='none'">
           <h4>📊 Tela da Enquete</h4>
           <p>Exibe as opções com barras de porcentagem animadas ao vivo</p>
           <code>/vmix.html</code>
         </div>
         <div class="screen-card">
-          <img src="assets/screen-gt.png" alt="Tela do GT" onerror="this.style.display='none'">
+          <img src="/assets/screen-gt.png" alt="Tela do GT" onerror="this.style.display='none'">
           <h4>🎙️ Tela do GT</h4>
           <p>Exibe mensagem, foto e mídias em destaque com transições suaves</p>
           <code>/vmix-gt.html</code>
@@ -1116,13 +1117,8 @@ body {
   <div class="container">
     <div class="footer-content">
       <div class="footer-logo">
-        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-          <div class="logo-icon" style="width: 35px; height: 35px;">
-            <i class="fas fa-bolt" style="font-size: 1.2rem;"></i>
-          </div>
-          <span style="font-size: 1.2rem; font-weight: 700; color: #ffffff;">ZapMix</span>
-        </div>
-        <p>Solução profissional para integração do WhatsApp com produções ao vivo.</p>
+        <img src="/assets/logotipo.png" alt="ZapMix" class="footer-logo-img" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'45\' height=\'45\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%2390d105\'/%3E%3Ctext x=\'50\' y=\'67\' font-size=\'40\' text-anchor=\'middle\' fill=\'%230f172a\' font-weight=\'bold\'%3EZM%3C/text%3E%3C/svg%3E'">
+        <p>Solução profissional para integração do WhatsApp para TV.</p>
       </div>
       <div class="footer-links">
         <h4>Navegação</h4>
