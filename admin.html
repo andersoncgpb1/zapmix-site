@@ -888,27 +888,31 @@ function renderizarPagina() {
   
   const tbody = document.getElementById('lista');
   if (licencasPagina.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" class="empty-state"><i class="fas fa-inbox"></i><br>Nenhuma licença encontrada</td</tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" class="empty-state"><i class="fas fa-inbox"></i><br>Nenhuma licença encontrada</td</td>`;
     return;
   }
   
-  tbody.innerHTML = licencasPagina.map(l => `
-    <tr>
-      <td data-label="Cliente"><strong>${escapeHtml(l.cliente)}</strong></td>
-      <td data-label="Chave"><code>${escapeHtml(l.chave)}</code></td>
-      <td data-label="Status"><span class="status-badge status-${l.status}">${l.status}</span></td>
-      <td data-label="Validade">${formatarData(l.validade)}</td>
-      <td data-label="Máquina">${l.machine_id ? l.machine_id.substring(0, 20) + "..." : "💻 Livre"}</td>
-      <td data-label="Ações">
-        <div class="action-buttons">
-          <button class="btn-success btn-sm" onclick="atualizarStatus('${l.id}', 'ATIVA')">✅ Ativar</button>
-          <button class="btn-danger btn-sm" onclick="atualizarStatus('${l.id}', 'BLOQUEADA')">🔒 Bloquear</button>
-          <button class="btn-warning btn-sm" onclick="liberarMaquina('${l.id}')">🖥️ Liberar PC</button>
-          <button class="btn-danger btn-sm" onclick="excluirLicenca('${l.id}', '${escapeHtml(l.cliente)}')">🗑️ Excluir</button>
-        </div>
-      </td>
-    </tr>
-  `).join("");
+  tbody.innerHTML = licencasPagina.map(l => {
+    const mostrarRenovar = precisaRenovar(l.validade, l.status);
+    return `
+      <tr>
+        <td data-label="Cliente"><strong>${escapeHtml(l.cliente)}</strong>${l.ultima_renovacao ? `<br><small style="color:#64748b">Renovada em: ${formatarData(l.ultima_renovacao)}</small>` : ''}${l.renovacoes ? `<br><small style="color:#90d105">${l.renovacoes} renovação(ões)</small>` : ''}</td>
+        <td data-label="Chave"><code>${escapeHtml(l.chave)}</code></td>
+        <td data-label="Status"><span class="status-badge status-${l.status}">${l.status}</span></td>
+        <td data-label="Validade">${formatarData(l.validade)}</td>
+        <td data-label="Máquina">${l.machine_id ? l.machine_id.substring(0, 20) + "..." : "💻 Livre"}</td>
+        <td data-label="Ações">
+          <div class="action-buttons">
+            <button class="btn-success btn-sm" onclick="atualizarStatus('${l.id}', 'ATIVA')">✅ Ativar</button>
+            <button class="btn-danger btn-sm" onclick="atualizarStatus('${l.id}', 'BLOQUEADA')">🔒 Bloquear</button>
+            <button class="btn-warning btn-sm" onclick="liberarMaquina('${l.id}')">🖥️ Liberar PC</button>
+            ${mostrarRenovar ? `<button class="btn-primary btn-sm" onclick="abrirModalRenovacao('${l.id}', '${escapeHtml(l.cliente)}', '${l.validade}')">🔄 Renovar</button>` : ''}
+            <button class="btn-danger btn-sm" onclick="excluirLicenca('${l.id}', '${escapeHtml(l.cliente)}')">🗑️ Excluir</button>
+          </div>
+        </td>
+      </table>
+    `;
+  }).join("");
 }
 
 function renderizarPaginacao() {
@@ -1046,6 +1050,116 @@ if (getToken()) {
 setInterval(() => {
   if (getToken()) carregar();
 }, 30000);
+
+// ============================================================
+// SISTEMA DE RENOVAÇÃO DE LICENÇAS
+// ============================================================
+
+function abrirModalRenovacao(id, cliente, validadeAtual) {
+  window.licencaRenovando = id;
+  
+  let modal = document.getElementById('modalRenovacao');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'modalRenovacao';
+    modal.className = 'modal';
+    modal.innerHTML = `
+      <div class="modal-content" style="max-width: 450px; text-align: left;">
+        <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <h3 style="margin:0;">🔄 Renovar Licença</h3>
+          <button class="close-modal" onclick="fecharModalRenovacao()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;">&times;</button>
+        </div>
+        <div style="margin-bottom: 20px;">
+          <p><strong>Cliente:</strong> <span id="renovacaoCliente"></span></p>
+          <p><strong>Validade atual:</strong> <span id="renovacaoValidadeAtual"></span></p>
+        </div>
+        <div class="input-group" style="margin-bottom: 20px;">
+          <label>Período de Renovação</label>
+          <select id="periodoRenovacao" style="width:100%;padding:10px;border-radius:8px;border:1px solid #e2e8f0;">
+            <option value="30">+ 30 dias</option>
+            <option value="60">+ 60 dias</option>
+            <option value="90" selected>+ 90 dias</option>
+            <option value="180">+ 180 dias (6 meses)</option>
+            <option value="365">+ 365 dias (1 ano)</option>
+          </select>
+        </div>
+        <div class="input-group" style="margin-bottom: 20px;">
+          <label>Nova data de validade</label>
+          <input type="date" id="novaDataValidade" readonly style="width:100%;padding:10px;border-radius:8px;background:#f1f5f9;">
+        </div>
+        <div class="modal-buttons" style="display: flex; gap: 12px; justify-content: flex-end;">
+          <button class="btn-secondary" onclick="fecharModalRenovacao()">Cancelar</button>
+          <button class="btn-primary" onclick="confirmarRenovacao()">Confirmar Renovação</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+  }
+  
+  document.getElementById('renovacaoCliente').innerText = cliente;
+  document.getElementById('renovacaoValidadeAtual').innerText = formatarData(validadeAtual);
+  
+  const periodoSelect = document.getElementById('periodoRenovacao');
+  const novaDataInput = document.getElementById('novaDataValidade');
+  
+  const atualizarNovaData = () => {
+    const dias = parseInt(periodoSelect.value);
+    const dataAtual = new Date(validadeAtual);
+    const novaData = new Date(dataAtual);
+    novaData.setDate(dataAtual.getDate() + dias);
+    const ano = novaData.getFullYear();
+    const mes = String(novaData.getMonth() + 1).padStart(2, '0');
+    const dia = String(novaData.getDate()).padStart(2, '0');
+    novaDataInput.value = `${ano}-${mes}-${dia}`;
+  };
+  
+  periodoSelect.onchange = atualizarNovaData;
+  atualizarNovaData();
+  
+  modal.classList.add('active');
+}
+
+function fecharModalRenovacao() {
+  const modal = document.getElementById('modalRenovacao');
+  if (modal) modal.classList.remove('active');
+  window.licencaRenovando = null;
+}
+
+async function confirmarRenovacao() {
+  const id = window.licencaRenovando;
+  if (!id) return;
+  
+  const novaData = document.getElementById('novaDataValidade').value;
+  const periodo = document.getElementById('periodoRenovacao').value;
+  const dias = parseInt(periodo);
+  
+  openModal(`Renovar licença por ${dias} dias?`, async () => {
+    const data = await api("PUT", { 
+      id, 
+      validade: novaData,
+      status: 'ATIVA',
+      ultima_renovacao: new Date().toISOString().split('T')[0]
+    });
+    
+    if (data.ok) {
+      showToast(`✅ Licença renovada! Nova validade: ${formatarData(novaData)}`, "success");
+      fecharModalRenovacao();
+      carregar();
+    } else {
+      showToast(data.erro || "Erro ao renovar licença", "error");
+    }
+  });
+}
+
+// Função para verificar se a licença precisa de renovação
+function precisaRenovar(validade, status) {
+  if (status !== 'ATIVA') return false;
+  if (!validade) return false;
+  const hoje = new Date();
+  const dataValidade = new Date(validade);
+  const diff = Math.ceil((dataValidade - hoje) / (1000 * 60 * 60 * 24));
+  return diff <= 30; // Mostra botão de renovar se faltar 30 dias ou menos
+}
 </script>
 </body>
 </html>
