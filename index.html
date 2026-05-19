@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -958,4 +957,66 @@ img, video, iframe, canvas {
     <div class="container">
       <h2>Pronto para transformar sua produção?</h2>
       <p>Baixe agora e comece a interagir com seu público em tempo real</p>
-  
+      <a href="https://github.com/andersoncgpb1/zapmix/releases/download/v1.0.0/ZapMix_Setup.exe" class="btn-primary" style="font-size: 1.2rem; padding: 16px 40px;">
+        <i class="fas fa-download"></i> Baixar ZapMix
+      </a>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-logo">
+        <img src="assets/logo.png" alt="ZapMix" style="height: 40px;" onerror="this.style.display='none'">
+        <p>Gestão Inteligente para TV</p>
+      </div>
+      <div class="footer-links">
+        <h4>Links</h4>
+        <a href="#home">Início</a>
+        <a href="#features">Funcionalidades</a>
+        <a href="#como-funciona">Como funciona</a>
+      </div>
+      <div class="footer-contact">
+        <h4>Contato</h4>
+        <p><i class="fab fa-whatsapp"></i> (83) 98628-0769</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 ZapMix - Todos os direitos reservados. Desenvolvido por Anderson Souza</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Smooth scroll para links âncora
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function(e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+});
+
+// Animação ao scroll
+const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.opacity = '1';
+      entry.target.style.transform = 'translateY(0)';
+    }
+  });
+}, observerOptions);
+
+document.querySelectorAll('.feature-card, .step, .screen-card, .testimonial-card, .faq-item').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(30px)';
+  el.style.transition = 'all 0.5s ease';
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
