@@ -137,14 +137,14 @@ code{background:#f1f5f9;padding:4px 8px;border-radius:6px;font-family:monospace;
   <div id="tabClientes" class="card">
     <div class="card-header"><h2>👥 Gerenciar Clientes</h2><button class="btn-primary" onclick="abrirModalCliente()"><i class="fas fa-plus"></i> Novo Cliente</button></div>
     <div class="search-bar"><div class="search-input"><i class="fas fa-search"></i><input type="text" id="searchCliente" placeholder="Buscar cliente..."></div></div>
-    <div class="table-wrapper"><table id="tabelaClientes"><thead><tr><th>Nome</th><th>Email</th><th>Telefone</th><th>Empresa</th><th>Licenças</th><th>Status</th><th>Ações</th></tr></thead><tbody id="listaClientes"><tr><td colspan="7" class="empty-state"><i class="fas fa-spinner fa-spin"></i> Carregando clientes...</td</tr></tbody></table></div>
+    <div class="table-wrapper"><table><thead><tr><th>Nome</th><th>Email</th><th>Telefone</th><th>Empresa</th><th>Licenças</th><th>Status</th><th>Ações</th></tr></thead><tbody id="listaClientes"><tr><td colspan="7" class="empty-state"><i class="fas fa-spinner fa-spin"></i> Carregando...</td</tr></tbody></table></div>
   </div>
 
   <!-- Tab Licenças -->
   <div id="tabLicencas" class="card" style="display:none;">
     <div class="card-header"><h2>🔑 Gerenciar Licenças</h2><button class="btn-secondary" onclick="carregarLicencas()"><i class="fas fa-sync-alt"></i> Atualizar</button></div>
-    <div class="search-bar"><div class="search-input"><i class="fas fa-search"></i><input type="text" id="searchLicenca" placeholder="Buscar licença..."></div><select id="filterStatusLicenca"><option value="todos">Todos os status</option><option value="ATIVA">✅ Ativas</option><option value="BLOQUEADA">🔒 Bloqueadas</option><option value="EXPIRADA">⏰ Expiradas</option></select></div>
-    <div class="table-wrapper"><table><thead><th onclick="ordenarLicencas('cliente')">Cliente <i class="fas fa-sort"></i></th><th onclick="ordenarLicencas('chave')">Chave <i class="fas fa-sort"></i></th><th onclick="ordenarLicencas('status')">Status <i class="fas fa-sort"></i></th><th onclick="ordenarLicencas('validade')">Validade <i class="fas fa-sort"></i></th><th>Máquina</th><th>Ações</th></thead><tbody id="listaLicencas"><tr><td colspan="6" class="empty-state"><i class="fas fa-spinner fa-spin"></i> Carregando licenças...</td</tr></tbody></table></div>
+    <div class="search-bar"><div class="search-input"><i class="fas fa-search"></i><input type="text" id="searchLicenca" placeholder="Buscar licença..."></div><select id="filterStatusLicenca"><option value="todos">Todos</option><option value="ATIVA">Ativas</option><option value="BLOQUEADA">Bloqueadas</option><option value="EXPIRADA">Expiradas</option></select></div>
+    <div class="table-wrapper"><table><thead><th onclick="ordenarLicencas('cliente')">Cliente</th><th onclick="ordenarLicencas('chave')">Chave</th><th onclick="ordenarLicencas('status')">Status</th><th onclick="ordenarLicencas('validade')">Validade</th><th>Máquina</th><th>Ações</th></thead><tbody id="listaLicencas"><tr><td colspan="6" class="empty-state">Carregando...</td</tr></tbody></table></div>
     <div class="pagination" id="paginationLicencas"></div>
   </div>
 
@@ -152,10 +152,10 @@ code{background:#f1f5f9;padding:4px 8px;border-radius:6px;font-family:monospace;
   <div id="tabNovaLicenca" class="card" style="display:none;">
     <h2>✨ Criar Nova Licença</h2>
     <div class="form-grid">
-      <div class="input-group"><label>👤 Cliente *</label><select id="novaLicencaCliente"><option value="">Selecione um cliente</option></select></div>
-      <div class="input-group"><label>🔑 Chave (opcional)</label><input id="novaLicencaChave" placeholder="Deixe em branco para gerar"></div>
-      <div class="input-group"><label>📅 Data de Validade *</label><input id="novaLicencaValidade" type="date"></div>
-      <div class="input-group"><label>📊 Status</label><select id="novaLicencaStatus"><option value="ATIVA">✅ ATIVA</option><option value="BLOQUEADA">🔒 BLOQUEADA</option></select></div>
+      <div class="input-group"><label>Cliente *</label><select id="novaLicencaCliente"><option value="">Selecione um cliente</option></select></div>
+      <div class="input-group"><label>Chave</label><input id="novaLicencaChave" placeholder="Deixe em branco"></div>
+      <div class="input-group"><label>Data de Validade *</label><input id="novaLicencaValidade" type="date"></div>
+      <div class="input-group"><label>Status</label><select id="novaLicencaStatus"><option value="ATIVA">ATIVA</option><option value="BLOQUEADA">BLOQUEADA</option></select></div>
     </div>
     <button class="btn-primary" onclick="criarLicenca()"><i class="fas fa-plus"></i> Criar Licença</button>
   </div>
@@ -164,7 +164,7 @@ code{background:#f1f5f9;padding:4px 8px;border-radius:6px;font-family:monospace;
   <div id="tabPerfil" class="card" style="display:none;">
     <div class="card-header"><h2>👤 Meu Perfil</h2></div>
     <div class="form-grid">
-      <div class="input-group"><label>Nome completo</label><input type="text" id="perfilNome" placeholder="Seu nome"></div>
+      <div class="input-group"><label>Nome</label><input type="text" id="perfilNome" placeholder="Seu nome"></div>
       <div class="input-group"><label>Email</label><input type="email" id="perfilEmail" placeholder="seu@email.com"></div>
       <div class="input-group"><label>Telefone</label><input type="tel" id="perfilTelefone" placeholder="(00) 00000-0000"></div>
       <div class="input-group"><label>Cargo</label><input type="text" id="perfilCargo" placeholder="Administrador"></div>
@@ -284,7 +284,6 @@ async function apiClientes(method, body) {
         }); 
         return await res.json(); 
     } catch(e) {
-        console.log("API clientes falhou, usando dados fixos");
         return { ok: true, clientes: DADOS_FIXOS.clientes };
     }
 }
@@ -301,7 +300,6 @@ async function apiLicencas(method, body) {
         }); 
         return await res.json(); 
     } catch(e) {
-        console.log("API licenças falhou, usando dados fixos");
         return { ok: true, licencas: DADOS_FIXOS.licencas };
     }
 }
@@ -336,19 +334,19 @@ async function carregarClientes() {
     if (!tbody) return;
     
     if (clientes.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" class="empty-state"><i class="fas fa-users"></i><br>Nenhum cliente cadastrado</td<tr>';
+        tbody.innerHTML = '<tr><td colspan="7" class="empty-state">Nenhum cliente cadastrado</td</tr>';
         return;
     }
     
     tbody.innerHTML = clientes.map(c => `
         <tr>
-            <td data-label="Nome"><strong>${escapeHtml(c.nome)}</strong><br><small>${escapeHtml(c.empresa || '')}</small></td>
-            <td data-label="Email">${escapeHtml(c.email || '-')}</td>
-            <td data-label="Telefone">${escapeHtml(c.telefone || '-')}</td>
-            <td data-label="Empresa">${escapeHtml(c.empresa || '-')}</td>
-            <td data-label="Licenças">${licencas.filter(l => l.cliente_id === c.id).length}</td>
-            <td data-label="Status"><span class="status-badge status-ATIVO">Ativo</span></td>
-            <td data-label="Ações">
+            <td><strong>${escapeHtml(c.nome)}</strong><br><small>${escapeHtml(c.empresa || '')}</small></td>
+            <td>${escapeHtml(c.email || '-')}</td>
+            <td>${escapeHtml(c.telefone || '-')}</td>
+            <td>${escapeHtml(c.empresa || '-')}</td>
+            <td>${licencas.filter(l => l.cliente_id === c.id).length}</td>
+            <td><span class="status-badge status-ATIVO">Ativo</span></td>
+            <td>
                 <div class="action-buttons">
                     <button class="btn-success btn-sm" onclick="editarCliente(${c.id})"><i class="fas fa-edit"></i> Editar</button>
                     <button class="btn-danger btn-sm" onclick="excluirCliente(${c.id}, '${escapeHtml(c.nome)}')"><i class="fas fa-trash"></i> Excluir</button>
@@ -381,19 +379,35 @@ async function salvarCliente() {
         return; 
     }
     
-    let data = await apiClientes("POST", { 
+    const clienteData = { 
         nome, 
         email: document.getElementById('clienteEmail').value, 
         telefone: document.getElementById('clienteTelefone').value, 
         empresa: document.getElementById('clienteEmpresa').value 
-    });
+    };
     
-    if (data.ok) { 
-        showToast("Cliente salvo!", "success"); 
-        fecharModalCliente(); 
-        carregarClientes(); 
-    } else { 
-        showToast(data.erro || "Erro ao salvar", "error"); 
+    // VERIFICAR SE É EDIÇÃO OU CRIAÇÃO
+    if (clienteEditandoId) {
+        // EDITAR - Enviar PUT com ID
+        clienteData.id = clienteEditandoId;
+        let data = await apiClientes("PUT", clienteData);
+        if (data.ok) { 
+            showToast("Cliente atualizado com sucesso!", "success"); 
+            fecharModalCliente(); 
+            carregarClientes(); 
+        } else { 
+            showToast(data.erro || "Erro ao atualizar", "error"); 
+        }
+    } else {
+        // CRIAR NOVO - Enviar POST
+        let data = await apiClientes("POST", clienteData);
+        if (data.ok) { 
+            showToast("Cliente criado com sucesso!", "success"); 
+            fecharModalCliente(); 
+            carregarClientes(); 
+        } else { 
+            showToast(data.erro || "Erro ao criar", "error"); 
+        }
     }
 }
 
@@ -491,7 +505,7 @@ function renderizarLicencas() {
     if (!tbody) return;
     
     if (pagina.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="empty-state"><i class="fas fa-key"></i><br>Nenhuma licença encontrada</td</tr>';
+        tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Nenhuma licença encontrada</td</tr>';
         return;
     }
     
@@ -501,21 +515,21 @@ function renderizarLicencas() {
         
         return `
         <tr>
-            <td data-label="Cliente"><strong>${escapeHtml(l.cliente)}</strong>${l.ultima_renovacao ? `<br><small>Renovada: ${formatarData(l.ultima_renovacao)}</small>` : ''}${l.renovacoes ? `<br><small>${l.renovacoes}x</small>` : ''}${precisaRenovar ? `<br><small class="status-badge status-EXPIRADA">Expira em ${diffDias} dias</small>` : ''}</td>
-            <td data-label="Chave"><code>${escapeHtml(l.chave)}</code></td>
-            <td data-label="Status"><span class="status-badge status-${l.status}">${l.status}</span></td>
-            <td data-label="Validade">${formatarData(l.validade)}</td>
-            <td data-label="Máquina">${l.machine_id ? l.machine_id.substring(0,20)+'...' : '💻 Livre'}</td>
-            <td data-label="Ações">
+            <td><strong>${escapeHtml(l.cliente)}</strong>${l.ultima_renovacao ? `<br><small>Renovada: ${formatarData(l.ultima_renovacao)}</small>` : ''}${l.renovacoes ? `<br><small>${l.renovacoes}x</small>` : ''}</td>
+            <td><code>${escapeHtml(l.chave)}</code></td>
+            <td><span class="status-badge status-${l.status}">${l.status}</span></td>
+            <td>${formatarData(l.validade)}</td>
+            <td>${l.machine_id ? l.machine_id.substring(0,20)+'...' : '💻 Livre'}</td>
+            <td>
                 <div class="action-buttons">
-                    <button class="btn-success btn-sm" onclick="atualizarStatus('${l.id}','ATIVA')" title="Ativar"><i class="fas fa-check"></i> Ativar</button>
-                    <button class="btn-danger btn-sm" onclick="atualizarStatus('${l.id}','BLOQUEADA')" title="Bloquear"><i class="fas fa-lock"></i> Bloquear</button>
-                    <button class="btn-warning btn-sm" onclick="liberarMaquina('${l.id}')" title="Liberar PC"><i class="fas fa-desktop"></i> Liberar</button>
-                    ${precisaRenovar ? `<button class="btn-primary btn-sm" onclick="abrirModalRenovacao('${l.id}', '${escapeHtml(l.cliente)}', '${l.validade}')" title="Renovar"><i class="fas fa-sync-alt"></i> Renovar</button>` : ''}
-                    <button class="btn-danger btn-sm" onclick="excluirLicenca('${l.id}','${escapeHtml(l.cliente)}')" title="Excluir"><i class="fas fa-trash"></i> Excluir</button>
+                    <button class="btn-success btn-sm" onclick="atualizarStatus('${l.id}','ATIVA')"><i class="fas fa-check"></i> Ativar</button>
+                    <button class="btn-danger btn-sm" onclick="atualizarStatus('${l.id}','BLOQUEADA')"><i class="fas fa-lock"></i> Bloquear</button>
+                    <button class="btn-warning btn-sm" onclick="liberarMaquina('${l.id}')"><i class="fas fa-desktop"></i> Liberar</button>
+                    ${precisaRenovar ? `<button class="btn-primary btn-sm" onclick="abrirModalRenovacao('${l.id}', '${escapeHtml(l.cliente)}', '${l.validade}')"><i class="fas fa-sync-alt"></i> Renovar</button>` : ''}
+                    <button class="btn-danger btn-sm" onclick="excluirLicenca('${l.id}','${escapeHtml(l.cliente)}')"><i class="fas fa-trash"></i> Excluir</button>
                 </div>
             </td>
-        </table>
+        </tr>
     `}).join('');
     
     // Paginação
@@ -582,7 +596,7 @@ async function atualizarStatus(id, status) {
         const d = await apiLicencas("PUT", { id, status }); 
         if(d && d.ok){ 
             showToast(`Licença ${status === 'ATIVA' ? 'ativada' : 'bloqueada'}!`, "success"); 
-            carregarLicencas(); 
+            await carregarLicencas(); 
         } else { 
             showToast(d?.erro || "Erro ao atualizar", "error"); 
         } 
@@ -596,7 +610,7 @@ async function liberarMaquina(id) {
         const d = await apiLicencas("PUT", { id, machine_id: null }); 
         if(d && d.ok){ 
             showToast("Máquina liberada!", "success"); 
-            carregarLicencas(); 
+            await carregarLicencas(); 
         } else { 
             showToast(d?.erro || "Erro ao liberar", "error"); 
         } 
@@ -611,7 +625,7 @@ async function excluirLicenca(id, cliente) {
             const d = await apiLicencas("DELETE", { id }); 
             if(d && d.ok){ 
                 showToast("Licença excluída!", "success"); 
-                carregarLicencas(); 
+                await carregarLicencas(); 
             } else { 
                 showToast(d?.erro || "Erro ao excluir", "error"); 
             } 
@@ -672,7 +686,7 @@ async function confirmarRenovacao() {
         if (d && d.ok) { 
             showToast("Licença renovada!", "success"); 
             fecharModalRenovacao(); 
-            carregarLicencas(); 
+            await carregarLicencas(); 
         } else { 
             showToast(d?.erro || "Erro ao renovar", "error"); 
         } 
@@ -718,10 +732,10 @@ function alterarSenha() {
         return; 
     } 
     if (nova.length < 6) { 
-        showToast("A nova senha deve ter no mínimo 6 caracteres", "error"); 
+        showToast("Mínimo 6 caracteres", "error"); 
         return; 
     } 
-    showToast("Senha alterada com sucesso!", "success"); 
+    showToast("Senha alterada!", "success"); 
     document.getElementById('senhaAtual').value = ''; 
     document.getElementById('novaSenha').value = ''; 
     document.getElementById('confirmarSenha').value = ''; 
