@@ -1,20 +1,32 @@
-export default function handler(req, res) {
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+);
+
+export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ ok: false, error: "Método não permitido" });
   }
 
   const { chave, machineId } = req.body || {};
 
-  const licencas = {
-    "ZAPMIX-2026-TESTE": {
-      cliente: "Cliente Teste",
-      status: "ATIVA",
-      validade: "2026-12-31",
-      modulos: ["whatsapp", "ndi", "enquete"]
-    }
-  };
+  if (!chave || !machineId) {
+    return res.status(400).json({
+      ok: false,
+      status: "INVALIDA",
+      error: "Chave ou máquina inválida"
+    });
+  }
 
-  if (!chave || !licencas[chave]) {
+  const { data: licenca, error } = await supabase
+    .from("licenses")
+    .select("*")
+    .eq("chave", chave)
+    .single();
+
+  if (error || !licenca) {
     return res.status(403).json({
       ok: false,
       status: "INVALIDA",
@@ -22,12 +34,11 @@ export default function handler(req, res) {
     });
   }
 
-  const licenca = licencas[chave];
-
   if (licenca.status !== "ATIVA") {
     return res.status(403).json({
       ok: false,
-      status: licenca.status
+      status: licenca.status,
+      error: "Licença bloqueada ou inativa"
     });
   }
 
@@ -37,8 +48,24 @@ export default function handler(req, res) {
   if (hoje > validade) {
     return res.status(403).json({
       ok: false,
-      status: "EXPIRADA"
+      status: "EXPIRADA",
+      error: "Licença expirada"
     });
+  }
+
+  if (licenca.machine_id && licenca.machine_id !== machineId) {
+    return res.status(403).json({
+      ok: false,
+      status: "BLOQUEADA",
+      error: "Licença já ativada em outro computador"
+    });
+  }
+
+  if (!licenca.machine_id) {
+    await supabase
+      .from("licenses")
+      .update({ machine_id: machineId })
+      .eq("id", licenca.id);
   }
 
   return res.json({
@@ -47,6 +74,6 @@ export default function handler(req, res) {
     cliente: licenca.cliente,
     validade: licenca.validade,
     machineId,
-    modulos: licenca.modulos
+    modulos: licenca.modulos || []
   });
 }
