@@ -35,7 +35,7 @@ export default async function handler(req, res) {
     return res.json({ ok: true, clientes: data || [] });
   }
 
-  // POST - Criar cliente
+  // POST - Criar novo cliente
   if (req.method === 'POST') {
     const { nome, email, telefone, empresa, observacoes } = req.body;
     
@@ -43,7 +43,6 @@ export default async function handler(req, res) {
       return res.status(400).json({ ok: false, erro: "Nome é obrigatório" });
     }
 
-    // Tentar inserir ignorando RLS
     const { data, error } = await supabase
       .from('clientes')
       .insert({ nome, email, telefone, empresa, observacoes })
@@ -55,6 +54,66 @@ export default async function handler(req, res) {
     }
 
     return res.json({ ok: true, cliente: data?.[0] });
+  }
+
+  // PUT - Atualizar cliente
+  if (req.method === 'PUT') {
+    const { id, nome, email, telefone, empresa, observacoes, status } = req.body;
+    
+    if (!id) {
+      return res.status(400).json({ ok: false, erro: "ID é obrigatório" });
+    }
+
+    const updateData = {};
+    if (nome !== undefined) updateData.nome = nome;
+    if (email !== undefined) updateData.email = email;
+    if (telefone !== undefined) updateData.telefone = telefone;
+    if (empresa !== undefined) updateData.empresa = empresa;
+    if (observacoes !== undefined) updateData.observacoes = observacoes;
+    if (status !== undefined) updateData.status = status;
+    updateData.updated_at = new Date();
+
+    const { data, error } = await supabase
+      .from('clientes')
+      .update(updateData)
+      .eq('id', id)
+      .select();
+
+    if (error) {
+      return res.status(500).json({ ok: false, erro: error.message });
+    }
+
+    return res.json({ ok: true, cliente: data?.[0] });
+  }
+
+  // DELETE - Excluir cliente
+  if (req.method === 'DELETE') {
+    const { id } = req.body;
+    
+    // Verificar se cliente tem licenças
+    const { count, error: countError } = await supabase
+      .from('licenses')
+      .select('*', { count: 'exact', head: true })
+      .eq('cliente_id', id);
+
+    if (countError) {
+      return res.status(500).json({ ok: false, erro: countError.message });
+    }
+
+    if (count > 0) {
+      return res.status(400).json({ ok: false, erro: "Cliente possui licenças vinculadas. Exclua as licenças primeiro." });
+    }
+
+    const { error } = await supabase
+      .from('clientes')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      return res.status(500).json({ ok: false, erro: error.message });
+    }
+
+    return res.json({ ok: true });
   }
 
   return res.status(405).json({ ok: false, erro: "Método não permitido" });
