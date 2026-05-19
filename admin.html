@@ -20,7 +20,6 @@
   --primary: #90d105;
   --primary-dark: #6a9e00;
   --primary-light: #e6f7d4;
-  --secondary: #1e293b;
   --success: #10b981;
   --danger: #ef4444;
   --warning: #f59e0b;
@@ -319,17 +318,18 @@ body {
   color: var(--gray-800);
 }
 
-/* Botões */
+/* Botões - ESTILOS CORRIGIDOS */
 .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   padding: 10px 20px;
-  border-radius: 10px;
+  border-radius: 8px;
   font-weight: 600;
   font-size: 0.85rem;
   cursor: pointer;
-  transition: all 0.2s;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+  transition: all 0.2s ease;
   border: none;
   font-family: 'Inter', sans-serif;
 }
@@ -341,53 +341,102 @@ body {
 
 .btn-primary:hover {
   background: var(--primary-dark);
-  transform: translateY(-2px);
+  transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(144, 209, 5, 0.3);
 }
 
 .btn-secondary {
-  background: var(--gray-100);
-  border: 1px solid var(--gray-200);
-  color: var(--gray-600);
+  background: var(--gray-200);
+  color: var(--gray-700);
+  border: 1px solid var(--gray-300);
 }
 
 .btn-secondary:hover {
-  background: var(--gray-200);
+  background: var(--gray-300);
 }
 
 .btn-danger {
-  background: var(--danger);
-  color: white;
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
 }
 
 .btn-danger:hover {
-  background: #dc2626;
+  background: #fecaca;
 }
 
 .btn-warning {
-  background: var(--warning);
-  color: white;
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
 }
 
 .btn-success {
-  background: var(--success);
-  color: white;
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
 }
 
 .btn-sm {
   padding: 6px 12px;
   font-size: 0.7rem;
+  gap: 4px;
 }
 
 .btn-outline {
   background: transparent;
-  border: 1px solid var(--gray-200);
+  border: 1px solid var(--gray-300);
   color: var(--gray-600);
 }
 
 .btn-outline:hover {
   border-color: var(--primary);
   color: var(--primary);
+  background: var(--primary-light);
+}
+
+/* Botões de ação na tabela */
+.action-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  font-size: 0.8rem;
+}
+
+.action-btn-success {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.action-btn-success:hover {
+  background: #bbf7d0;
+  transform: scale(1.05);
+}
+
+.action-btn-danger {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.action-btn-danger:hover {
+  background: #fecaca;
+  transform: scale(1.05);
+}
+
+.action-btn-warning {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.action-btn-warning:hover {
+  background: #fde68a;
+  transform: scale(1.05);
 }
 
 /* Formulários */
@@ -417,7 +466,7 @@ body {
 input, select, textarea {
   padding: 12px 14px;
   border-radius: 10px;
-  border: 1.5px solid var(--gray-200);
+  border: 1px solid var(--gray-300);
   background: var(--gray-50);
   color: var(--gray-800);
   font-size: 0.85rem;
@@ -479,7 +528,7 @@ tr:hover {
 
 .action-buttons {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   flex-wrap: wrap;
 }
 
@@ -537,8 +586,47 @@ tr:hover {
   color: #0f172a;
 }
 
-/* Modal */
-.modal {
+/* Modal de Confirmação */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-conteudo {
+  background: var(--gray-50);
+  padding: 30px;
+  border-radius: 16px;
+  text-align: center;
+  width: 350px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--gray-200);
+}
+
+.modal-conteudo h2 {
+  color: var(--gray-800);
+  margin-bottom: 16px;
+}
+
+.modal-conteudo p {
+  color: var(--gray-500);
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+.modal-conteudo button {
+  margin: 0 8px;
+}
+
+/* Modal Formulário */
+.modal-form {
   display: none;
   position: fixed;
   top: 0;
@@ -552,11 +640,11 @@ tr:hover {
   justify-content: center;
 }
 
-.modal.active {
+.modal-form.active {
   display: flex;
 }
 
-.modal-content {
+.modal-form-content {
   background: var(--gray-50);
   border-radius: 20px;
   padding: 28px;
@@ -565,14 +653,14 @@ tr:hover {
   border: 1px solid var(--gray-200);
 }
 
-.modal-header {
+.modal-form-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
 }
 
-.modal-header h3 {
+.modal-form-header h3 {
   font-size: 1.2rem;
   color: var(--gray-800);
 }
@@ -585,7 +673,7 @@ tr:hover {
   color: var(--gray-400);
 }
 
-.modal-buttons {
+.modal-form-buttons {
   display: flex;
   gap: 12px;
   justify-content: flex-end;
@@ -606,7 +694,6 @@ tr:hover {
 
 .toast.success { background: var(--success); color: white; }
 .toast.error { background: var(--danger); color: white; }
-.toast.info { background: var(--info); color: white; }
 
 @keyframes slideIn {
   from { transform: translateX(100%); opacity: 0; }
@@ -638,9 +725,18 @@ tr:hover {
   border: 1px solid var(--gray-200);
 }
 
-.login-box img {
+.login-box .logo {
+  width: 60px;
   height: 60px;
-  margin-bottom: 20px;
+  background: var(--primary);
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 auto 20px;
 }
 
 /* Empty State */
@@ -692,7 +788,7 @@ tr:hover {
   }
   
   .action-buttons {
-    flex-direction: column;
+    flex-direction: row;
   }
   
   .table-wrapper table,
@@ -785,15 +881,12 @@ tr:hover {
       <button class="theme-toggle" id="themeToggle">
         <i class="fas fa-moon"></i>
       </button>
-      <button class="notification-btn" id="notificationBtn">
-        <i class="fas fa-bell"></i>
-      </button>
       <div class="user-info" onclick="navegarPagina('perfil')">
         <div class="user-avatar" id="userAvatar">A</div>
         <span class="user-name" id="adminName">Administrador</span>
       </div>
       <button class="btn-logout" onclick="logout()">
-        <i class="fas fa-sign-out-alt"></i>
+        <i class="fas fa-sign-out-alt"></i> Sair
       </button>
     </div>
   </div>
@@ -833,7 +926,6 @@ tr:hover {
         </div>
       </div>
 
-      <!-- Gráficos -->
       <div class="card">
         <div class="card-header">
           <h2><i class="fas fa-chart-pie"></i> Visão Geral</h2>
@@ -901,7 +993,7 @@ tr:hover {
               <tr><th>Cliente</th><th>Chave</th><th>Status</th><th>Validade</th><th>Máquina</th><th>Ações</th></tr>
             </thead>
             <tbody id="listaLicencas">
-              <tr><td colspan="6" class="empty-state"><i class="fas fa-key"></i><br>Nenhuma licença cadastrada</td</td>
+              <tr><td colspan="6" class="empty-state"><i class="fas fa-key"></i><br>Nenhuma licença cadastrada</td</tr>
             </tbody>
           </table>
         </div>
@@ -965,10 +1057,10 @@ tr:hover {
   </div>
 </div>
 
-<!-- Modal Cliente -->
-<div id="modalCliente" class="modal">
-  <div class="modal-content">
-    <div class="modal-header">
+<!-- Modal Formulário Cliente -->
+<div id="modalCliente" class="modal-form">
+  <div class="modal-form-content">
+    <div class="modal-form-header">
       <h3 id="modalClienteTitle">📝 Novo Cliente</h3>
       <button class="close-modal" onclick="fecharModalCliente()">&times;</button>
     </div>
@@ -989,22 +1081,18 @@ tr:hover {
         <label>Empresa</label>
         <input type="text" id="clienteEmpresa" placeholder="Nome da empresa">
       </div>
-      <div class="input-group">
-        <label>Observações</label>
-        <textarea id="clienteObs" rows="3" placeholder="Informações adicionais..."></textarea>
-      </div>
     </div>
-    <div class="modal-buttons">
+    <div class="modal-form-buttons">
       <button class="btn-secondary" onclick="fecharModalCliente()">Cancelar</button>
       <button class="btn-primary" onclick="salvarCliente()">Salvar Cliente</button>
     </div>
   </div>
 </div>
 
-<!-- Modal Licença -->
-<div id="modalLicenca" class="modal">
-  <div class="modal-content">
-    <div class="modal-header">
+<!-- Modal Formulário Licença -->
+<div id="modalLicenca" class="modal-form">
+  <div class="modal-form-content">
+    <div class="modal-form-header">
       <h3>✨ Nova Licença</h3>
       <button class="close-modal" onclick="fecharModalLicenca()">&times;</button>
     </div>
@@ -1031,32 +1119,27 @@ tr:hover {
         </select>
       </div>
     </div>
-    <div class="modal-buttons">
+    <div class="modal-form-buttons">
       <button class="btn-secondary" onclick="fecharModalLicenca()">Cancelar</button>
       <button class="btn-primary" onclick="criarLicenca()">Criar Licença</button>
     </div>
   </div>
 </div>
 
-<!-- Modal Confirmar -->
-<div id="confirmModal" class="modal">
-  <div class="modal-content" style="max-width: 400px;">
-    <div class="modal-header">
-      <h3>⚠️ Confirmar ação</h3>
-      <button class="close-modal" onclick="fecharModalConfirmar()">&times;</button>
-    </div>
-    <p id="confirmMessage" style="margin: 20px 0;">Tem certeza que deseja realizar esta ação?</p>
-    <div class="modal-buttons">
-      <button class="btn-secondary" onclick="fecharModalConfirmar()">Cancelar</button>
-      <button class="btn-danger" id="confirmBtn">Confirmar</button>
-    </div>
+<!-- Modal de Confirmação -->
+<div id="confirmModal" class="modal-overlay">
+  <div class="modal-conteudo">
+    <h2 id="confirmTitle">Confirmar ação</h2>
+    <p id="confirmMessage">Tem certeza que deseja realizar esta ação?</p>
+    <button class="btn-secondary" onclick="fecharModalConfirmar()">Cancelar</button>
+    <button class="btn-primary" id="confirmBtn">Confirmar</button>
   </div>
 </div>
 
 <!-- Login Overlay -->
 <div id="loginOverlay" class="login-overlay">
   <div class="login-box">
-    <div class="sidebar-logo" style="margin: 0 auto 20px;">ZM</div>
+    <div class="logo">ZM</div>
     <h2 style="margin-bottom: 24px;">🔐 Acesso Administrativo</h2>
     <div class="input-group" style="margin-bottom: 20px;">
       <label>Usuário</label>
@@ -1079,7 +1162,6 @@ let licencas = [];
 let licencasFiltradas = [];
 let paginaAtual = 1;
 let itensPorPagina = 10;
-let clienteEditandoId = null;
 let acaoConfirmada = null;
 let statusChart = null;
 
@@ -1089,7 +1171,7 @@ let statusChart = null;
 function showToast(message, type) {
   const toast = document.createElement('div');
   toast.className = `toast ${type}`;
-  toast.innerHTML = type === 'success' ? `✅ ${message}` : type === 'error' ? `❌ ${message}` : `ℹ️ ${message}`;
+  toast.innerHTML = type === 'success' ? `✅ ${message}` : `❌ ${message}`;
   document.body.appendChild(toast);
   setTimeout(() => toast.remove(), 3000);
 }
@@ -1119,36 +1201,16 @@ function escapeHtml(text) {
 }
 
 // ============================================================
-// API
-// ============================================================
-async function api(method, body) {
-  const token = getToken();
-  try {
-    const res = await fetch("/api/admin-licencas", {
-      method,
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + token
-      },
-      body: body ? JSON.stringify(body) : undefined
-    });
-    return await res.json();
-  } catch (error) {
-    return { ok: false, erro: "Erro de conexão" };
-  }
-}
-
-// ============================================================
-// MODAL
+// MODAL DE CONFIRMAÇÃO
 // ============================================================
 function openModalConfirm(message, callback) {
   document.getElementById('confirmMessage').innerText = message;
   acaoConfirmada = callback;
-  document.getElementById('confirmModal').classList.add('active');
+  document.getElementById('confirmModal').style.display = 'flex';
 }
 
 function fecharModalConfirmar() {
-  document.getElementById('confirmModal').classList.remove('active');
+  document.getElementById('confirmModal').style.display = 'none';
   acaoConfirmada = null;
 }
 
@@ -1157,6 +1219,9 @@ document.getElementById('confirmBtn').onclick = () => {
   fecharModalConfirmar();
 };
 
+// ============================================================
+// CLIENTES
+// ============================================================
 function abrirModalCliente(cliente = null) {
   if (cliente) {
     document.getElementById('modalClienteTitle').innerHTML = '✏️ Editar Cliente';
@@ -1164,23 +1229,18 @@ function abrirModalCliente(cliente = null) {
     document.getElementById('clienteEmail').value = cliente.email || '';
     document.getElementById('clienteTelefone').value = cliente.telefone || '';
     document.getElementById('clienteEmpresa').value = cliente.empresa || '';
-    document.getElementById('clienteObs').value = cliente.obs || '';
-    clienteEditandoId = cliente.id;
   } else {
     document.getElementById('modalClienteTitle').innerHTML = '📝 Novo Cliente';
     document.getElementById('clienteNome').value = '';
     document.getElementById('clienteEmail').value = '';
     document.getElementById('clienteTelefone').value = '';
     document.getElementById('clienteEmpresa').value = '';
-    document.getElementById('clienteObs').value = '';
-    clienteEditandoId = null;
   }
   document.getElementById('modalCliente').classList.add('active');
 }
 
 function fecharModalCliente() {
   document.getElementById('modalCliente').classList.remove('active');
-  clienteEditandoId = null;
 }
 
 function salvarCliente() {
@@ -1191,28 +1251,20 @@ function salvarCliente() {
   }
   
   const clienteData = {
-    id: clienteEditandoId || Date.now(),
+    id: Date.now(),
     nome: nome,
     email: document.getElementById('clienteEmail').value,
     telefone: document.getElementById('clienteTelefone').value,
     empresa: document.getElementById('clienteEmpresa').value,
-    obs: document.getElementById('clienteObs').value,
-    dataCadastro: clienteEditandoId ? new Date().toISOString() : new Date().toISOString()
+    dataCadastro: new Date().toISOString()
   };
   
-  if (clienteEditandoId) {
-    const index = clientes.findIndex(c => c.id === clienteEditandoId);
-    if (index !== -1) clientes[index] = clienteData;
-    showToast("Cliente atualizado com sucesso!", "success");
-  } else {
-    clientes.push(clienteData);
-    showToast("Cliente cadastrado com sucesso!", "success");
-  }
-  
+  clientes.push(clienteData);
   salvarClientesLocal();
   fecharModalCliente();
   carregarClientes();
   atualizarSelectClientes();
+  showToast("Cliente cadastrado com sucesso!", "success");
 }
 
 function excluirCliente(id, nome) {
@@ -1256,8 +1308,8 @@ function carregarClientes() {
       <td data-label="Cadastro">${formatarData(c.dataCadastro)}</td>
       <td data-label="Ações">
         <div class="action-buttons">
-          <button class="btn-outline btn-sm" onclick='abrirModalCliente(${JSON.stringify(c).replace(/'/g, "&#39;")})'><i class="fas fa-edit"></i></button>
-          <button class="btn-danger btn-sm" onclick="excluirCliente(${c.id}, '${escapeHtml(c.nome)}')"><i class="fas fa-trash"></i></button>
+          <button class="action-btn action-btn-success" onclick='abrirModalCliente(${JSON.stringify(c).replace(/'/g, "&#39;")})' title="Editar"><i class="fas fa-edit"></i></button>
+          <button class="action-btn action-btn-danger" onclick="excluirCliente(${c.id}, '${escapeHtml(c.nome)}')" title="Excluir"><i class="fas fa-trash"></i></button>
         </div>
        </td>
      </tr>
@@ -1289,7 +1341,7 @@ function fecharModalLicenca() {
   document.getElementById('modalLicenca').classList.remove('active');
 }
 
-async function criarLicenca() {
+function criarLicenca() {
   const clienteId = parseInt(document.getElementById('licencaCliente').value);
   const validade = document.getElementById('licencaValidade').value;
   
@@ -1311,7 +1363,6 @@ async function criarLicenca() {
   
   const chave = document.getElementById('licencaChave').value.trim() || gerarChave();
   
-  // Salvar localmente primeiro
   const novaLicenca = {
     id: Date.now(),
     chave: chave,
@@ -1325,29 +1376,10 @@ async function criarLicenca() {
   
   licencas.push(novaLicenca);
   salvarLicencasLocal();
-  
-  // Tentar salvar na API também
-  try {
-    const data = await api("POST", {
-      chave: chave,
-      cliente: cliente.nome,
-      validade: validade,
-      status: document.getElementById('licencaStatus').value,
-      max_machines: 1
-    });
-    
-    if (data.ok) {
-      showToast("Licença criada com sucesso na API!", "success");
-    } else {
-      showToast("Licença criada localmente, mas com erro na API", "warning");
-    }
-  } catch (error) {
-    showToast("Licença criada localmente", "success");
-  }
-  
   fecharModalLicenca();
   carregarLicencas();
   atualizarStats();
+  showToast("Licença criada com sucesso!", "success");
 }
 
 function atualizarStatusLicenca(id, status) {
@@ -1409,7 +1441,7 @@ function renderizarPaginaLicencas() {
   
   const tbody = document.getElementById('listaLicencas');
   if (licencasPagina.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="6" class="empty-state"><i class="fas fa-key"></i><br>Nenhuma licença encontrada</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" class="empty-state"><i class="fas fa-key"></i><br>Nenhuma licença encontrada</td</tr>';
     return;
   }
   
@@ -1422,13 +1454,13 @@ function renderizarPaginaLicencas() {
       <td data-label="Máquina">${l.machine_id ? l.machine_id.substring(0, 20) + '...' : '💻 Livre'}</td>
       <td data-label="Ações">
         <div class="action-buttons">
-          <button class="btn-success btn-sm" onclick="atualizarStatusLicenca(${l.id}, 'ATIVA')" title="Ativar"><i class="fas fa-check"></i></button>
-          <button class="btn-danger btn-sm" onclick="atualizarStatusLicenca(${l.id}, 'BLOQUEADA')" title="Bloquear"><i class="fas fa-lock"></i></button>
-          <button class="btn-warning btn-sm" onclick="liberarMaquina(${l.id})" title="Liberar PC"><i class="fas fa-desktop"></i></button>
-          <button class="btn-danger btn-sm" onclick="excluirLicenca(${l.id}, '${escapeHtml(l.clienteNome)}')" title="Excluir"><i class="fas fa-trash"></i></button>
+          <button class="action-btn action-btn-success" onclick="atualizarStatusLicenca(${l.id}, 'ATIVA')" title="Ativar"><i class="fas fa-check"></i></button>
+          <button class="action-btn action-btn-danger" onclick="atualizarStatusLicenca(${l.id}, 'BLOQUEADA')" title="Bloquear"><i class="fas fa-lock"></i></button>
+          <button class="action-btn action-btn-warning" onclick="liberarMaquina(${l.id})" title="Liberar PC"><i class="fas fa-desktop"></i></button>
+          <button class="action-btn action-btn-danger" onclick="excluirLicenca(${l.id}, '${escapeHtml(l.clienteNome)}')" title="Excluir"><i class="fas fa-trash"></i></button>
         </div>
-      </td>
-    </tr>
+       </td>
+     </tr>
   `).join('');
   
   renderizarPaginacaoLicencas();
@@ -1470,7 +1502,6 @@ function atualizarStats() {
   document.getElementById('statAtivas').innerText = licencas.filter(l => l.status === 'ATIVA').length;
   document.getElementById('statMaquinas').innerText = licencas.filter(l => l.machine_id).length;
   
-  // Gráfico
   const ativas = licencas.filter(l => l.status === 'ATIVA').length;
   const bloqueadas = licencas.filter(l => l.status === 'BLOQUEADA').length;
   const expiradas = licencas.filter(l => l.status === 'EXPIRADA').length;
