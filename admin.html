@@ -755,174 +755,609 @@ let ordemDirecao = 'asc';
 // ============================================================
 // FUNÇÕES UTILITÁRIAS
 // ============================================================
-function showToast(msg, type) { let t = document.createElement('div'); t.className = `toast ${type}`; t.innerHTML = type === 'success' ? `✅ ${msg}` : `❌ ${msg}`; document.body.appendChild(t); setTimeout(() => t.remove(), 3000); }
-function getToken() { return localStorage.getItem("zapmix_admin_token") || ""; }
-function escapeHtml(t) { if (!t) return ""; let d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
-function formatarData(d) { return d ? new Date(d).toLocaleDateString('pt-BR') : "N/A"; }
-function gerarChave() { let b = new Uint8Array(8); crypto.getRandomValues(b); let h = Array.from(b, x => x.toString(16).padStart(2,'0')).join('').toUpperCase(); return `ZAPMIX-${h.slice(0,4)}-${h.slice(4,8)}-${h.slice(8,12)}`; }
+function showToast(msg, type) { 
+    let t = document.createElement('div'); 
+    t.className = `toast ${type}`; 
+    t.innerHTML = type === 'success' ? `✅ ${msg}` : `❌ ${msg}`; 
+    document.body.appendChild(t); 
+    setTimeout(() => t.remove(), 3000); 
+}
+
+function getToken() { 
+    return localStorage.getItem("zapmix_admin_token") || ""; 
+}
+
+function escapeHtml(t) { 
+    if (!t) return ""; 
+    let d = document.createElement('div'); 
+    d.textContent = t; 
+    return d.innerHTML; 
+}
+
+function formatarData(d) { 
+    return d ? new Date(d).toLocaleDateString('pt-BR') : "N/A"; 
+}
+
+function gerarChave() { 
+    let b = new Uint8Array(8); 
+    crypto.getRandomValues(b); 
+    let h = Array.from(b, x => x.toString(16).padStart(2,'0')).join('').toUpperCase(); 
+    return `ZAPMIX-${h.slice(0,4)}-${h.slice(4,8)}-${h.slice(8,12)}`; 
+}
 
 // ============================================================
 // API
 // ============================================================
-async function apiClientes(method, body) { let token = getToken(); let res = await fetch("/api/clientes", { method, headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token }, body: body ? JSON.stringify(body) : undefined }); return await res.json(); }
-async function apiLicencas(method, body) { let token = getToken(); let res = await fetch("/api/admin-licencas", { method, headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token }, body: body ? JSON.stringify(body) : undefined }); return await res.json(); }
+async function apiClientes(method, body) { 
+    let token = getToken(); 
+    let res = await fetch("/api/clientes", { 
+        method, 
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token }, 
+        body: body ? JSON.stringify(body) : undefined 
+    }); 
+    return await res.json(); 
+}
+
+async function apiLicencas(method, body) { 
+    let token = getToken(); 
+    let res = await fetch("/api/admin-licencas", { 
+        method, 
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token }, 
+        body: body ? JSON.stringify(body) : undefined 
+    }); 
+    return await res.json(); 
+}
 
 // ============================================================
 // CLIENTES
 // ============================================================
 async function carregarClientes() {
-  let token = getToken();
-  if (!token) return;
-  let data = await apiClientes("GET");
-  if (data.ok && data.clientes) clientes = data.clientes;
-  
-  let select = document.getElementById('novaLicencaCliente');
-  if (select) select.innerHTML = '<option value="">Selecione um cliente</option>' + clientes.map(c => `<option value="${c.id}">${escapeHtml(c.nome)}</option>`).join('');
-  
-  let searchTerm = document.getElementById('searchCliente')?.value.toLowerCase() || '';
-  let filtered = clientes.filter(c => c.nome.toLowerCase().includes(searchTerm) || (c.email && c.email.toLowerCase().includes(searchTerm)));
-  
-  let tbody = document.getElementById('listaClientes');
-  if (filtered.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="empty-state">Nenhum cliente</td</tr>'; return; }
-  
-  tbody.innerHTML = filtered.map(c => `<tr><td><strong>${escapeHtml(c.nome)}</strong><br><small>${escapeHtml(c.empresa || '')}</small></td><td>${escapeHtml(c.email || '-')}</td><td>${escapeHtml(c.telefone || '-')}</td><td>${escapeHtml(c.empresa || '-')}</td><td>${licencas.filter(l => l.cliente_id === c.id).length}</td><td><span class="status-badge status-ATIVO">Ativo</span></td><td><div class="action-buttons"><button class="btn-success btn-sm" onclick="editarCliente(${c.id})">✏️</button><button class="btn-danger btn-sm" onclick="excluirCliente(${c.id}, '${escapeHtml(c.nome)}')">🗑️</button></div></td></tr>`).join('');
-  atualizarStats();
+    let token = getToken();
+    if (!token) {
+        console.log("Sem token, não carrega clientes");
+        return;
+    }
+    
+    try {
+        console.log("Carregando clientes...");
+        let data = await apiClientes("GET");
+        console.log("Resposta clientes:", data);
+        
+        if (data.ok && data.clientes) {
+            clientes = data.clientes;
+        } else {
+            clientes = [];
+        }
+    } catch(e) {
+        console.error("Erro ao carregar clientes:", e);
+        clientes = [];
+    }
+    
+    // Atualizar select de clientes
+    let select = document.getElementById('novaLicencaCliente');
+    if (select) {
+        select.innerHTML = '<option value="">Selecione um cliente</option>' + 
+            clientes.map(c => `<option value="${c.id}">${escapeHtml(c.nome)}</option>`).join('');
+    }
+    
+    // Renderizar tabela de clientes
+    let tbody = document.getElementById('listaClientes');
+    if (!tbody) return;
+    
+    if (clientes.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="empty-state"><i class="fas fa-users"></i><br>Nenhum cliente cadastrado</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = clientes.map(c => `
+        <tr>
+            <td data-label="Nome"><strong>${escapeHtml(c.nome)}</strong><br><small>${escapeHtml(c.empresa || '')}</small></td>
+            <td data-label="Email">${escapeHtml(c.email || '-')}</td>
+            <td data-label="Telefone">${escapeHtml(c.telefone || '-')}</td>
+            <td data-label="Empresa">${escapeHtml(c.empresa || '-')}</td>
+            <td data-label="Licenças">${licencas.filter(l => l.cliente_id === c.id).length}</td>
+            <td data-label="Status"><span class="status-badge status-ATIVO">Ativo</span></td>
+            <td data-label="Ações">
+                <div class="action-buttons">
+                    <button class="btn-success btn-sm" onclick="editarCliente(${c.id})"><i class="fas fa-edit"></i> Editar</button>
+                    <button class="btn-danger btn-sm" onclick="excluirCliente(${c.id}, '${escapeHtml(c.nome)}')"><i class="fas fa-trash"></i> Excluir</button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+    
+    atualizarStats();
 }
-
-function abrirModalCliente() { clienteEditandoId = null; document.getElementById('modalClienteTitle').innerHTML = '📝 Novo Cliente'; document.getElementById('clienteNome').value = ''; document.getElementById('clienteEmail').value = ''; document.getElementById('clienteTelefone').value = ''; document.getElementById('clienteEmpresa').value = ''; document.getElementById('modalCliente').classList.add('active'); }
-function fecharModalCliente() { document.getElementById('modalCliente').classList.remove('active'); }
-
-async function salvarCliente() {
-  let nome = document.getElementById('clienteNome').value.trim();
-  if (!nome) { showToast("Nome obrigatório", "error"); return; }
-  let data = await apiClientes("POST", { nome, email: document.getElementById('clienteEmail').value, telefone: document.getElementById('clienteTelefone').value, empresa: document.getElementById('clienteEmpresa').value });
-  if (data.ok) { showToast("Cliente salvo!", "success"); fecharModalCliente(); carregarClientes(); } else showToast(data.erro, "error");
-}
-
-function editarCliente(id) { let c = clientes.find(c => c.id === id); if (c) { clienteEditandoId = c.id; document.getElementById('modalClienteTitle').innerHTML = '✏️ Editar Cliente'; document.getElementById('clienteNome').value = c.nome; document.getElementById('clienteEmail').value = c.email || ''; document.getElementById('clienteTelefone').value = c.telefone || ''; document.getElementById('clienteEmpresa').value = c.empresa || ''; document.getElementById('modalCliente').classList.add('active'); } }
-
-async function excluirCliente(id, nome) { openModalConfirm(`Excluir "${nome}"?`, async () => { let d = await apiClientes("DELETE", { id }); if (d.ok) { showToast("Cliente excluído", "success"); carregarClientes(); } else showToast(d.erro, "error"); }); }
 
 // ============================================================
 // LICENÇAS
 // ============================================================
 async function carregarLicencas() {
-  let token = getToken();
-  if (!token) return;
-  let data = await apiLicencas("GET");
-  if (data.ok) licencas = data.licencas || [];
-  document.getElementById('statTotalLicencas').innerText = licencas.length;
-  document.getElementById('statAtivas').innerText = licencas.filter(l => l.status === 'ATIVA').length;
-  document.getElementById('statMaquinas').innerText = licencas.filter(l => l.machine_id).length;
-  document.getElementById('statClientes').innerText = clientes.length;
-  
-  let searchTerm = document.getElementById('searchLicenca')?.value.toLowerCase() || '';
-  let statusFilter = document.getElementById('filterStatusLicenca')?.value || 'todos';
-  licencasFiltradas = licencas.filter(l => (l.cliente || '').toLowerCase().includes(searchTerm) && (statusFilter === 'todos' || l.status === statusFilter));
-  paginaAtual = 1;
-  renderizarLicencas();
+    let token = getToken();
+    if (!token) {
+        console.log("Sem token, não carrega licenças");
+        return;
+    }
+    
+    try {
+        console.log("Carregando licenças...");
+        let data = await apiLicencas("GET");
+        console.log("Resposta licenças:", data);
+        
+        if (data.ok && data.licencas) {
+            licencas = data.licencas;
+        } else {
+            licencas = [];
+        }
+    } catch(e) {
+        console.error("Erro ao carregar licenças:", e);
+        licencas = [];
+    }
+    
+    // Atualizar stats
+    document.getElementById('statTotalLicencas').innerText = licencas.length;
+    document.getElementById('statAtivas').innerText = licencas.filter(l => l.status === 'ATIVA').length;
+    document.getElementById('statMaquinas').innerText = licencas.filter(l => l.machine_id).length;
+    document.getElementById('statClientes').innerText = clientes.length;
+    
+    // Aplicar filtros
+    let searchTerm = document.getElementById('searchLicenca')?.value.toLowerCase() || '';
+    let statusFilter = document.getElementById('filterStatusLicenca')?.value || 'todos';
+    
+    licencasFiltradas = licencas.filter(l => {
+        const matchSearch = (l.cliente || '').toLowerCase().includes(searchTerm) || 
+                           (l.chave || '').toLowerCase().includes(searchTerm);
+        const matchStatus = statusFilter === 'todos' || l.status === statusFilter;
+        return matchSearch && matchStatus;
+    });
+    
+    paginaAtual = 1;
+    renderizarLicencas();
 }
 
-function ordenarLicencas(coluna) { if (ordemColuna === coluna) ordemDirecao = ordemDirecao === 'asc' ? 'desc' : 'asc'; else { ordemColuna = coluna; ordemDirecao = 'asc'; } renderizarLicencas(); }
+function ordenarLicencas(coluna) { 
+    if (ordemColuna === coluna) {
+        ordemDirecao = ordemDirecao === 'asc' ? 'desc' : 'asc';
+    } else { 
+        ordemColuna = coluna; 
+        ordemDirecao = 'asc'; 
+    }
+    renderizarLicencas(); 
+}
 
 function renderizarLicencas() {
-  licencasFiltradas.sort((a, b) => {
-    let valA = a[ordemColuna] || '', valB = b[ordemColuna] || '';
-    if (ordemColuna === 'validade') { valA = new Date(valA) || 0; valB = new Date(valB) || 0; }
-    if (valA < valB) return ordemDirecao === 'asc' ? -1 : 1;
-    if (valA > valB) return ordemDirecao === 'asc' ? 1 : -1;
-    return 0;
-  });
-  
-  let start = (paginaAtual-1) * itensPorPagina;
-  let pagina = licencasFiltradas.slice(start, start + itensPorPagina);
-  let tbody = document.getElementById('listaLicencas');
-  if (pagina.length === 0) { tbody.innerHTML = '<table><td colspan="6" class="empty-state">Nenhuma licença</td></tr>'; return; }
-  
-  tbody.innerHTML = pagina.map(l => `<tr><td><strong>${escapeHtml(l.cliente)}</strong>${l.ultima_renovacao ? `<br><small>Renovada: ${formatarData(l.ultima_renovacao)}</small>` : ''}${l.renovacoes ? `<br><small>${l.renovacoes}x renovada</small>` : ''}</td><td><code>${escapeHtml(l.chave)}</code></td><td><span class="status-badge status-${l.status}">${l.status}</span></td><td>${formatarData(l.validade)}</td><td>${l.machine_id ? l.machine_id.substring(0,20)+'...' : '💻 Livre'}</td><td><div class="action-buttons"><button class="btn-success btn-sm" onclick="atualizarStatus('${l.id}','ATIVA')">✅</button><button class="btn-danger btn-sm" onclick="atualizarStatus('${l.id}','BLOQUEADA')">🔒</button><button class="btn-warning btn-sm" onclick="liberarMaquina('${l.id}')">🖥️</button><button class="btn-primary btn-sm" onclick="abrirModalRenovacao('${l.id}', '${escapeHtml(l.cliente)}', '${l.validade}')">🔄</button><button class="btn-danger btn-sm" onclick="excluirLicenca('${l.id}','${escapeHtml(l.cliente)}')">🗑️</button></div></td></tr>`).join('');
-  
-  let totalPaginas = Math.ceil(licencasFiltradas.length / itensPorPagina);
-  let div = document.getElementById('paginationLicencas');
-  if (totalPaginas <= 1) { div.innerHTML = ''; return; }
-  let html = `<button class="page-btn" onclick="mudarPagina(${paginaAtual-1})" ${paginaAtual===1?'disabled':''}>«</button>`;
-  for(let i=1; i<=Math.min(totalPaginas,5); i++) html += `<button class="page-btn ${paginaAtual===i?'active':''}" onclick="mudarPagina(${i})">${i}</button>`;
-  html += `<button class="page-btn" onclick="mudarPagina(${paginaAtual+1})" ${paginaAtual===totalPaginas?'disabled':''}>»</button>`;
-  div.innerHTML = html;
+    // Ordenar
+    let sorted = [...licencasFiltradas];
+    sorted.sort((a, b) => {
+        let valA = a[ordemColuna] || '', valB = b[ordemColuna] || '';
+        if (ordemColuna === 'validade') { 
+            valA = new Date(valA) || 0; 
+            valB = new Date(valB) || 0; 
+        }
+        if (valA < valB) return ordemDirecao === 'asc' ? -1 : 1;
+        if (valA > valB) return ordemDirecao === 'asc' ? 1 : -1;
+        return 0;
+    });
+    
+    let start = (paginaAtual-1) * itensPorPagina;
+    let pagina = sorted.slice(start, start + itensPorPagina);
+    let tbody = document.getElementById('listaLicencas');
+    
+    if (!tbody) return;
+    
+    if (pagina.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="empty-state"><i class="fas fa-key"></i><br>Nenhuma licença encontrada</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = pagina.map(l => `
+        <tr>
+            <td data-label="Cliente"><strong>${escapeHtml(l.cliente)}</strong></td>
+            <td data-label="Chave"><code>${escapeHtml(l.chave)}</code></td>
+            <td data-label="Status"><span class="status-badge status-${l.status}">${l.status}</span></td>
+            <td data-label="Validade">${formatarData(l.validade)}</td>
+            <td data-label="Máquina">${l.machine_id ? l.machine_id.substring(0,20)+'...' : '💻 Livre'}</td>
+            <td data-label="Ações">
+                <div class="action-buttons">
+                    <button class="btn-success btn-sm" onclick="atualizarStatus('${l.id}','ATIVA')">✅ Ativar</button>
+                    <button class="btn-danger btn-sm" onclick="atualizarStatus('${l.id}','BLOQUEADA')">🔒 Bloquear</button>
+                    <button class="btn-warning btn-sm" onclick="liberarMaquina('${l.id}')">🖥️ Liberar</button>
+                    <button class="btn-primary btn-sm" onclick="abrirModalRenovacao('${l.id}', '${escapeHtml(l.cliente)}', '${l.validade}')">🔄 Renovar</button>
+                    <button class="btn-danger btn-sm" onclick="excluirLicenca('${l.id}','${escapeHtml(l.cliente)}')">🗑️ Excluir</button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+    
+    // Paginação
+    let totalPaginas = Math.ceil(licencasFiltradas.length / itensPorPagina);
+    let div = document.getElementById('paginationLicencas');
+    if (!div) return;
+    
+    if (totalPaginas <= 1) { 
+        div.innerHTML = ''; 
+        return; 
+    }
+    
+    let html = `<button class="page-btn" onclick="mudarPagina(${paginaAtual-1})" ${paginaAtual===1?'disabled':''}>«</button>`;
+    for(let i=1; i<=Math.min(totalPaginas,5); i++) {
+        html += `<button class="page-btn ${paginaAtual===i?'active':''}" onclick="mudarPagina(${i})">${i}</button>`;
+    }
+    html += `<button class="page-btn" onclick="mudarPagina(${paginaAtual+1})" ${paginaAtual===totalPaginas?'disabled':''}>»</button>`;
+    div.innerHTML = html;
 }
 
-function mudarPagina(p) { let total = Math.ceil(licencasFiltradas.length / itensPorPagina); if(p<1 || p>total) return; paginaAtual=p; renderizarLicencas(); }
+function mudarPagina(p) { 
+    let total = Math.ceil(licencasFiltradas.length / itensPorPagina); 
+    if(p<1 || p>total) return; 
+    paginaAtual=p; 
+    renderizarLicencas(); 
+}
 
-async function criarLicenca() { let cid = document.getElementById('novaLicencaCliente').value, validade = document.getElementById('novaLicencaValidade').value; if(!cid||!validade){ showToast("Selecione cliente e data","error"); return; } let cli = clientes.find(c=>c.id==cid); let d = await apiLicencas("POST",{chave:document.getElementById('novaLicencaChave').value||gerarChave(), cliente:cli.nome, cliente_id:parseInt(cid), validade, status:document.getElementById('novaLicencaStatus').value, max_machines:1, modulos:["whatsapp","ndi","enquete"]}); if(d.ok){ showToast("Licença criada!","success"); document.getElementById('novaLicencaChave').value=''; document.getElementById('novaLicencaValidade').value=''; mostrarTab('licencas'); carregarLicencas(); } else showToast(d.erro,"error"); }
+// ============================================================
+// CRUD LICENÇAS
+// ============================================================
+async function criarLicenca() { 
+    let cid = document.getElementById('novaLicencaCliente').value; 
+    let validade = document.getElementById('novaLicencaValidade').value; 
+    if(!cid || !validade){ 
+        showToast("Selecione cliente e data","error"); 
+        return; 
+    } 
+    let cli = clientes.find(c => c.id == cid); 
+    if(!cli){
+        showToast("Cliente não encontrado","error");
+        return;
+    }
+    let d = await apiLicencas("POST",{
+        chave: document.getElementById('novaLicencaChave').value || gerarChave(), 
+        cliente: cli.nome, 
+        cliente_id: parseInt(cid), 
+        validade, 
+        status: document.getElementById('novaLicencaStatus').value, 
+        max_machines: 1, 
+        modulos: ["whatsapp","ndi","enquete"]
+    }); 
+    if(d.ok){ 
+        showToast("Licença criada!","success"); 
+        document.getElementById('novaLicencaChave').value=''; 
+        document.getElementById('novaLicencaValidade').value=''; 
+        carregarLicencas(); 
+    } else { 
+        showToast(d.erro || "Erro ao criar","error"); 
+    } 
+}
 
-async function atualizarStatus(id, status) { let d = await apiLicencas("PUT", { id, status }); if(d.ok){ showToast(`Licença ${status.toLowerCase()}`, "success"); carregarLicencas(); } else showToast(d.erro, "error"); }
-async function liberarMaquina(id) { let d = await apiLicencas("PUT", { id, machine_id: null }); if(d.ok){ showToast("Máquina liberada", "success"); carregarLicencas(); } else showToast(d.erro, "error"); }
-async function excluirLicenca(id, cliente) { openModalConfirm(`Excluir licença de ${cliente}?`, async()=>{ let d=await apiLicencas("DELETE",{id}); if(d.ok){ showToast("Licença excluída","success"); carregarLicencas(); } else showToast(d.erro,"error"); }); }
+async function atualizarStatus(id, status) { 
+    let d = await apiLicencas("PUT", { id, status }); 
+    if(d.ok){ 
+        showToast(`Licença ${status.toLowerCase()}`, "success"); 
+        carregarLicencas(); 
+    } else { 
+        showToast(d.erro, "error"); 
+    } 
+}
+
+async function liberarMaquina(id) { 
+    let d = await apiLicencas("PUT", { id, machine_id: null }); 
+    if(d.ok){ 
+        showToast("Máquina liberada", "success"); 
+        carregarLicencas(); 
+    } else { 
+        showToast(d.erro, "error"); 
+    } 
+}
+
+async function excluirLicenca(id, cliente) { 
+    openModalConfirm(`Excluir licença de ${cliente}?`, async() => { 
+        let d = await apiLicencas("DELETE", { id }); 
+        if(d.ok){ 
+            showToast("Licença excluída","success"); 
+            carregarLicencas(); 
+        } else { 
+            showToast(d.erro,"error"); 
+        } 
+    }); 
+}
 
 // ============================================================
 // RENOVAÇÃO
 // ============================================================
 function abrirModalRenovacao(id, cliente, validadeAtual) {
-  window.licencaRenovando = id;
-  let modal = document.getElementById('modalRenovacao');
-  if (!modal) {
-    modal = document.createElement('div');
-    modal.id = 'modalRenovacao';
-    modal.className = 'modal';
-    modal.innerHTML = `<div class="modal-content"><div class="modal-header"><h3>🔄 Renovar Licença</h3><button class="close-modal" onclick="fecharModalRenovacao()">&times;</button></div><p><strong>Cliente:</strong> <span id="renovacaoCliente"></span></p><p><strong>Validade atual:</strong> <span id="renovacaoValidadeAtual"></span></p><div class="input-group"><label>Período</label><select id="periodoRenovacao"><option value="30">+30 dias</option><option value="60">+60 dias</option><option value="90" selected>+90 dias</option><option value="180">+180 dias</option><option value="365">+365 dias</option></select></div><div class="input-group"><label>Nova data</label><input type="date" id="novaDataValidade" readonly></div><div class="modal-buttons"><button class="btn-secondary" onclick="fecharModalRenovacao()">Cancelar</button><button class="btn-primary" onclick="confirmarRenovacao()">Confirmar</button></div></div>`;
-    document.body.appendChild(modal);
-  }
-  document.getElementById('renovacaoCliente').innerText = cliente;
-  document.getElementById('renovacaoValidadeAtual').innerText = formatarData(validadeAtual);
-  let periodoSelect = document.getElementById('periodoRenovacao');
-  let novaDataInput = document.getElementById('novaDataValidade');
-  let atualizarData = () => { let dias = parseInt(periodoSelect.value); let novaData = new Date(validadeAtual); novaData.setDate(novaData.getDate() + dias); novaDataInput.value = novaData.toISOString().split('T')[0]; };
-  periodoSelect.onchange = atualizarData;
-  atualizarData();
-  modal.classList.add('active');
+    window.licencaRenovando = id;
+    
+    let modal = document.getElementById('modalRenovacao');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'modalRenovacao';
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-content" style="max-width:450px; text-align:left;">
+                <div class="modal-header">
+                    <h3>🔄 Renovar Licença</h3>
+                    <button class="close-modal" onclick="fecharModalRenovacao()">&times;</button>
+                </div>
+                <p><strong>Cliente:</strong> <span id="renovacaoCliente"></span></p>
+                <p><strong>Validade atual:</strong> <span id="renovacaoValidadeAtual"></span></p>
+                <div class="input-group">
+                    <label>Período de Renovação</label>
+                    <select id="periodoRenovacao">
+                        <option value="30">+ 30 dias</option>
+                        <option value="60">+ 60 dias</option>
+                        <option value="90" selected>+ 90 dias</option>
+                        <option value="180">+ 180 dias (6 meses)</option>
+                        <option value="365">+ 365 dias (1 ano)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Nova data de validade</label>
+                    <input type="date" id="novaDataValidade" readonly>
+                </div>
+                <div class="modal-buttons">
+                    <button class="btn-secondary" onclick="fecharModalRenovacao()">Cancelar</button>
+                    <button class="btn-primary" onclick="confirmarRenovacao()">Confirmar</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    }
+    
+    document.getElementById('renovacaoCliente').innerText = cliente;
+    document.getElementById('renovacaoValidadeAtual').innerText = formatarData(validadeAtual);
+    
+    let periodoSelect = document.getElementById('periodoRenovacao');
+    let novaDataInput = document.getElementById('novaDataValidade');
+    
+    let atualizarData = () => { 
+        let dias = parseInt(periodoSelect.value); 
+        let novaData = new Date(validadeAtual); 
+        novaData.setDate(novaData.getDate() + dias); 
+        novaDataInput.value = novaData.toISOString().split('T')[0]; 
+    };
+    
+    periodoSelect.onchange = atualizarData;
+    atualizarData();
+    
+    modal.classList.add('active');
 }
-function fecharModalRenovacao() { let modal = document.getElementById('modalRenovacao'); if (modal) modal.classList.remove('active'); window.licencaRenovando = null; }
-async function confirmarRenovacao() { let id = window.licencaRenovando; if (!id) return; let novaData = document.getElementById('novaDataValidade').value; let dias = parseInt(document.getElementById('periodoRenovacao').value); openModalConfirm(`Renovar por ${dias} dias?`, async () => { let d = await apiLicencas("PUT", { id, validade: novaData, status: 'ATIVA', ultima_renovacao: new Date().toISOString().split('T')[0] }); if (d.ok) { showToast("Licença renovada!", "success"); fecharModalRenovacao(); carregarLicencas(); } else showToast(d.erro, "error"); }); }
+
+function fecharModalRenovacao() { 
+    let modal = document.getElementById('modalRenovacao'); 
+    if (modal) modal.classList.remove('active'); 
+    window.licencaRenovando = null; 
+}
+
+async function confirmarRenovacao() { 
+    let id = window.licencaRenovando; 
+    if (!id) return; 
+    let novaData = document.getElementById('novaDataValidade').value; 
+    let dias = parseInt(document.getElementById('periodoRenovacao').value); 
+    openModalConfirm(`Renovar por ${dias} dias?`, async () => { 
+        let d = await apiLicencas("PUT", { 
+            id, 
+            validade: novaData, 
+            status: 'ATIVA', 
+            ultima_renovacao: new Date().toISOString().split('T')[0] 
+        }); 
+        if (d.ok) { 
+            showToast("Licença renovada!", "success"); 
+            fecharModalRenovacao(); 
+            carregarLicencas(); 
+        } else { 
+            showToast(d.erro, "error"); 
+        } 
+    }); 
+}
+
+// ============================================================
+// CRUD CLIENTES
+// ============================================================
+function abrirModalCliente() { 
+    clienteEditandoId = null; 
+    document.getElementById('modalClienteTitle').innerHTML = '📝 Novo Cliente'; 
+    document.getElementById('clienteNome').value = ''; 
+    document.getElementById('clienteEmail').value = ''; 
+    document.getElementById('clienteTelefone').value = ''; 
+    document.getElementById('clienteEmpresa').value = ''; 
+    document.getElementById('modalCliente').classList.add('active'); 
+}
+
+function fecharModalCliente() { 
+    document.getElementById('modalCliente').classList.remove('active'); 
+}
+
+async function salvarCliente() {
+    let nome = document.getElementById('clienteNome').value.trim();
+    if (!nome) { 
+        showToast("Nome obrigatório", "error"); 
+        return; 
+    }
+    
+    let data = await apiClientes("POST", { 
+        nome, 
+        email: document.getElementById('clienteEmail').value, 
+        telefone: document.getElementById('clienteTelefone').value, 
+        empresa: document.getElementById('clienteEmpresa').value 
+    });
+    
+    if (data.ok) { 
+        showToast("Cliente salvo!", "success"); 
+        fecharModalCliente(); 
+        carregarClientes(); 
+    } else { 
+        showToast(data.erro || "Erro ao salvar", "error"); 
+    }
+}
+
+function editarCliente(id) { 
+    let c = clientes.find(c => c.id === id); 
+    if (c) { 
+        clienteEditandoId = c.id; 
+        document.getElementById('modalClienteTitle').innerHTML = '✏️ Editar Cliente'; 
+        document.getElementById('clienteNome').value = c.nome; 
+        document.getElementById('clienteEmail').value = c.email || ''; 
+        document.getElementById('clienteTelefone').value = c.telefone || ''; 
+        document.getElementById('clienteEmpresa').value = c.empresa || ''; 
+        document.getElementById('modalCliente').classList.add('active'); 
+    } 
+}
+
+async function excluirCliente(id, nome) { 
+    openModalConfirm(`Excluir "${nome}"?`, async () => { 
+        let d = await apiClientes("DELETE", { id }); 
+        if (d.ok) { 
+            showToast("Cliente excluído", "success"); 
+            carregarClientes(); 
+        } else { 
+            showToast(d.erro || "Cliente possui licenças", "error"); 
+        } 
+    }); 
+}
 
 // ============================================================
 // PERFIL
 // ============================================================
-function carregarPerfil() { let p = JSON.parse(localStorage.getItem('zapmix_admin_perfil') || '{}'); document.getElementById('perfilNome').value = p.nome || 'Administrador'; document.getElementById('perfilEmail').value = p.email || 'admin@zapmix.com'; document.getElementById('perfilTelefone').value = p.telefone || ''; document.getElementById('perfilCargo').value = p.cargo || 'Administrador'; }
-function salvarPerfil() { let p = { nome: document.getElementById('perfilNome').value, email: document.getElementById('perfilEmail').value, telefone: document.getElementById('perfilTelefone').value, cargo: document.getElementById('perfilCargo').value }; localStorage.setItem('zapmix_admin_perfil', JSON.stringify(p)); showToast("Perfil atualizado!", "success"); }
-function cancelarEdicaoPerfil() { carregarPerfil(); }
-function alterarSenha() { let atual = document.getElementById('senhaAtual').value, nova = document.getElementById('novaSenha').value, confirmar = document.getElementById('confirmarSenha').value; if (!atual || !nova || !confirmar) { showToast("Preencha todos", "error"); return; } if (nova !== confirmar) { showToast("Senhas não coincidem", "error"); return; } if (nova.length < 6) { showToast("Mínimo 6 caracteres", "error"); return; } showToast("Senha alterada!", "success"); document.getElementById('senhaAtual').value = ''; document.getElementById('novaSenha').value = ''; document.getElementById('confirmarSenha').value = ''; }
+function carregarPerfil() { 
+    let p = JSON.parse(localStorage.getItem('zapmix_admin_perfil') || '{}'); 
+    document.getElementById('perfilNome').value = p.nome || 'Administrador'; 
+    document.getElementById('perfilEmail').value = p.email || 'admin@zapmix.com'; 
+    document.getElementById('perfilTelefone').value = p.telefone || ''; 
+    document.getElementById('perfilCargo').value = p.cargo || 'Administrador'; 
+}
 
-// ============================================================
-// NAVEGAÇÃO
-// ============================================================
-function mostrarTab(tab) {
-  document.getElementById('tabClientes').style.display = 'none';
-  document.getElementById('tabLicencas').style.display = 'none';
-  document.getElementById('tabNovaLicenca').style.display = 'none';
-  document.getElementById('tabPerfil').style.display = 'none';
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  if (tab === 'clientes') { document.getElementById('tabClientes').style.display = 'block'; document.querySelector('.tab-btn:first-child').classList.add('active'); carregarClientes(); carregarLicencas(); }
-  else if (tab === 'licencas') { document.getElementById('tabLicencas').style.display = 'block'; document.querySelector('.tab-btn:nth-child(2)').classList.add('active'); carregarLicencas(); }
-  else if (tab === 'nova-licenca') { document.getElementById('tabNovaLicenca').style.display = 'block'; document.querySelector('.tab-btn:nth-child(3)').classList.add('active'); carregarClientes(); }
-  else if (tab === 'perfil') { document.getElementById('tabPerfil').style.display = 'block'; document.querySelector('.tab-btn:nth-child(4)').classList.add('active'); carregarPerfil(); }
+function salvarPerfil() { 
+    let p = { 
+        nome: document.getElementById('perfilNome').value, 
+        email: document.getElementById('perfilEmail').value, 
+        telefone: document.getElementById('perfilTelefone').value, 
+        cargo: document.getElementById('perfilCargo').value 
+    }; 
+    localStorage.setItem('zapmix_admin_perfil', JSON.stringify(p)); 
+    showToast("Perfil atualizado!", "success"); 
+}
+
+function cancelarEdicaoPerfil() { 
+    carregarPerfil(); 
+}
+
+function alterarSenha() { 
+    let atual = document.getElementById('senhaAtual').value; 
+    let nova = document.getElementById('novaSenha').value; 
+    let confirmar = document.getElementById('confirmarSenha').value; 
+    if (!atual || !nova || !confirmar) { 
+        showToast("Preencha todos os campos", "error"); 
+        return; 
+    } 
+    if (nova !== confirmar) { 
+        showToast("As senhas não coincidem", "error"); 
+        return; 
+    } 
+    if (nova.length < 6) { 
+        showToast("A nova senha deve ter no mínimo 6 caracteres", "error"); 
+        return; 
+    } 
+    showToast("Senha alterada com sucesso!", "success"); 
+    document.getElementById('senhaAtual').value = ''; 
+    document.getElementById('novaSenha').value = ''; 
+    document.getElementById('confirmarSenha').value = ''; 
 }
 
 // ============================================================
 // STATS
 // ============================================================
-function atualizarStats() { document.getElementById('statClientes').innerText = clientes.length; document.getElementById('statTotalLicencas').innerText = licencas.length; document.getElementById('statAtivas').innerText = licencas.filter(l => l.status === 'ATIVA').length; document.getElementById('statMaquinas').innerText = licencas.filter(l => l.machine_id).length; }
+function atualizarStats() { 
+    document.getElementById('statClientes').innerText = clientes.length; 
+    document.getElementById('statTotalLicencas').innerText = licencas.length; 
+    document.getElementById('statAtivas').innerText = licencas.filter(l => l.status === 'ATIVA').length; 
+    document.getElementById('statMaquinas').innerText = licencas.filter(l => l.machine_id).length; 
+}
+
+// ============================================================
+// NAVEGAÇÃO
+// ============================================================
+function mostrarTab(tab) {
+    document.getElementById('tabClientes').style.display = 'none';
+    document.getElementById('tabLicencas').style.display = 'none';
+    document.getElementById('tabNovaLicenca').style.display = 'none';
+    document.getElementById('tabPerfil').style.display = 'none';
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    
+    if (tab === 'clientes') { 
+        document.getElementById('tabClientes').style.display = 'block'; 
+        document.querySelector('.tab-btn:first-child').classList.add('active'); 
+        carregarClientes(); 
+        carregarLicencas(); 
+    } else if (tab === 'licencas') { 
+        document.getElementById('tabLicencas').style.display = 'block'; 
+        document.querySelector('.tab-btn:nth-child(2)').classList.add('active'); 
+        carregarLicencas(); 
+    } else if (tab === 'nova-licenca') { 
+        document.getElementById('tabNovaLicenca').style.display = 'block'; 
+        document.querySelector('.tab-btn:nth-child(3)').classList.add('active'); 
+        carregarClientes(); 
+    } else if (tab === 'perfil') { 
+        document.getElementById('tabPerfil').style.display = 'block'; 
+        document.querySelector('.tab-btn:nth-child(4)').classList.add('active'); 
+        carregarPerfil(); 
+    }
+}
 
 // ============================================================
 // MODAL CONFIRMAÇÃO
 // ============================================================
-function openModalConfirm(msg, cb) { document.getElementById('confirmMessage').innerText = msg; acaoConfirmada = cb; document.getElementById('confirmModal').classList.add('active'); }
-function fecharModalConfirmar() { document.getElementById('confirmModal').classList.remove('active'); acaoConfirmada = null; }
-document.getElementById('confirmBtn').onclick = () => { if (acaoConfirmada) acaoConfirmada(); fecharModalConfirmar(); };
+function openModalConfirm(msg, cb) { 
+    document.getElementById('confirmMessage').innerText = msg; 
+    acaoConfirmada = cb; 
+    document.getElementById('confirmModal').classList.add('active'); 
+}
+
+function fecharModalConfirmar() { 
+    document.getElementById('confirmModal').classList.remove('active'); 
+    acaoConfirmada = null; 
+}
+
+document.getElementById('confirmBtn').onclick = () => { 
+    if (acaoConfirmada) acaoConfirmada(); 
+    fecharModalConfirmar(); 
+};
 
 // ============================================================
 // LOGIN / LOGOUT
 // ============================================================
-async function login() { let u = document.getElementById('usuario').value.trim(), s = document.getElementById('senha').value.trim(); if (!u || !s) { showToast("Preencha usuário e senha", "error"); return; } try { let res = await fetch("/api/admin-login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ usuario: u, senha: s }) }); let data = await res.json(); if (!data.ok) { showToast(data.erro || "Erro no login", "error"); return; } localStorage.setItem("zapmix_admin_token", data.token); showToast("Login realizado!", "success"); document.getElementById('loginOverlay').style.display = 'none'; document.getElementById('adminHeader').style.display = 'flex'; document.getElementById('adminContent').style.display = 'block'; mostrarTab('clientes'); carregarLicencas(); } catch(e) { showToast("Erro de conexão", "error"); } }
-function logout() { localStorage.removeItem('zapmix_admin_token'); location.reload(); }
+async function login() { 
+    let u = document.getElementById('usuario').value.trim(); 
+    let s = document.getElementById('senha').value.trim(); 
+    if (!u || !s) { 
+        showToast("Preencha usuário e senha", "error"); 
+        return; 
+    } 
+    try { 
+        let res = await fetch("/api/admin-login", { 
+            method: "POST", 
+            headers: { "Content-Type": "application/json" }, 
+            body: JSON.stringify({ usuario: u, senha: s }) 
+        }); 
+        let data = await res.json(); 
+        if (!data.ok) { 
+            showToast(data.erro || "Usuário ou senha inválidos", "error"); 
+            return; 
+        } 
+        localStorage.setItem("zapmix_admin_token", data.token); 
+        showToast("Login realizado!", "success"); 
+        document.getElementById('loginOverlay').style.display = 'none'; 
+        document.getElementById('adminHeader').style.display = 'flex'; 
+        document.getElementById('adminContent').style.display = 'block'; 
+        mostrarTab('clientes'); 
+        carregarLicencas(); 
+    } catch(e) { 
+        showToast("Erro de conexão", "error"); 
+    } 
+}
+
+function logout() { 
+    localStorage.removeItem('zapmix_admin_token'); 
+    location.reload(); 
+}
 
 // ============================================================
 // EVENTOS
@@ -931,8 +1366,22 @@ document.getElementById('searchCliente')?.addEventListener('keyup', carregarClie
 document.getElementById('searchLicenca')?.addEventListener('keyup', carregarLicencas);
 document.getElementById('filterStatusLicenca')?.addEventListener('change', carregarLicencas);
 
-if (getToken()) { document.getElementById('loginOverlay').style.display = 'none'; document.getElementById('adminHeader').style.display = 'flex'; document.getElementById('adminContent').style.display = 'block'; carregarClientes(); carregarLicencas(); } else { document.getElementById('loginOverlay').style.display = 'flex'; }
-setInterval(() => { if (getToken()) carregarLicencas(); }, 60000);
+// ============================================================
+// INICIALIZAÇÃO
+// ============================================================
+if (getToken()) { 
+    document.getElementById('loginOverlay').style.display = 'none'; 
+    document.getElementById('adminHeader').style.display = 'flex'; 
+    document.getElementById('adminContent').style.display = 'block'; 
+    carregarClientes(); 
+    carregarLicencas(); 
+} else { 
+    document.getElementById('loginOverlay').style.display = 'flex'; 
+}
+
+setInterval(() => { 
+    if (getToken()) carregarLicencas(); 
+}, 60000);
 </script>
 </body>
 </html>
