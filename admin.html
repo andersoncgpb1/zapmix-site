@@ -137,14 +137,14 @@ code{background:#f1f5f9;padding:4px 8px;border-radius:6px;font-family:monospace;
   <div id="tabClientes" class="card">
     <div class="card-header"><h2>👥 Gerenciar Clientes</h2><button class="btn-primary" onclick="abrirModalCliente()"><i class="fas fa-plus"></i> Novo Cliente</button></div>
     <div class="search-bar"><div class="search-input"><i class="fas fa-search"></i><input type="text" id="searchCliente" placeholder="Buscar cliente..."></div></div>
-    <div class="table-wrapper"><table id="tabelaClientes"><thead><tr><th>Nome</th><th>Email</th><th>Telefone</th><th>Empresa</th><th>Licenças</th><th>Status</th><th>Ações</th></tr></thead><tbody id="listaClientes"><tr><td colspan="7" class="empty-state"><i class="fas fa-spinner fa-spin"></i> Carregando clientes...</td></tr></tbody></table></div>
+    <div class="table-wrapper"><table id="tabelaClientes"><thead><tr><th>Nome</th><th>Email</th><th>Telefone</th><th>Empresa</th><th>Licenças</th><th>Status</th><th>Ações</th></tr></thead><tbody id="listaClientes"><tr><td colspan="7" class="empty-state"><i class="fas fa-spinner fa-spin"></i> Carregando clientes...</td</tr></tbody></table></div>
   </div>
 
   <!-- Tab Licenças -->
   <div id="tabLicencas" class="card" style="display:none;">
     <div class="card-header"><h2>🔑 Gerenciar Licenças</h2><button class="btn-secondary" onclick="carregarLicencas()"><i class="fas fa-sync-alt"></i> Atualizar</button></div>
     <div class="search-bar"><div class="search-input"><i class="fas fa-search"></i><input type="text" id="searchLicenca" placeholder="Buscar licença..."></div><select id="filterStatusLicenca"><option value="todos">Todos os status</option><option value="ATIVA">✅ Ativas</option><option value="BLOQUEADA">🔒 Bloqueadas</option><option value="EXPIRADA">⏰ Expiradas</option></select></div>
-    <div class="table-wrapper"><table><thead><th onclick="ordenarLicencas('cliente')">Cliente <i class="fas fa-sort"></i></th><th onclick="ordenarLicencas('chave')">Chave <i class="fas fa-sort"></i></th><th onclick="ordenarLicencas('status')">Status <i class="fas fa-sort"></i></th><th onclick="ordenarLicencas('validade')">Validade <i class="fas fa-sort"></i></th><th>Máquina</th><th>Ações</th></thead><tbody id="listaLicencas"><tr><td colspan="6" class="empty-state"><i class="fas fa-spinner fa-spin"></i> Carregando licenças...</td></tr></tbody></table></div>
+    <div class="table-wrapper"><table><thead><th onclick="ordenarLicencas('cliente')">Cliente <i class="fas fa-sort"></i></th><th onclick="ordenarLicencas('chave')">Chave <i class="fas fa-sort"></i></th><th onclick="ordenarLicencas('status')">Status <i class="fas fa-sort"></i></th><th onclick="ordenarLicencas('validade')">Validade <i class="fas fa-sort"></i></th><th>Máquina</th><th>Ações</th></thead><tbody id="listaLicencas"><tr><td colspan="6" class="empty-state"><i class="fas fa-spinner fa-spin"></i> Carregando licenças...</td</tr></tbody></table></div>
     <div class="pagination" id="paginationLicencas"></div>
   </div>
 
@@ -200,20 +200,26 @@ code{background:#f1f5f9;padding:4px 8px;border-radius:6px;font-family:monospace;
   <div class="modal-content"><h3>⚠️ Confirmar</h3><p id="confirmMessage">Tem certeza?</p><div class="modal-buttons"><button class="btn-secondary" onclick="fecharModalConfirmar()">Cancelar</button><button class="btn-danger" id="confirmBtn">Confirmar</button></div></div>
 </div>
 
+<!-- Modal Renovação -->
+<div id="modalRenovacao" class="modal"></div>
+
 <script>
 // ============================================================
-// DADOS FIXOS (FALLBACK) - SEUS CLIENTES E LICENÇAS
+// DADOS FIXOS (FALLBACK)
 // ============================================================
 const DADOS_FIXOS = {
     clientes: [
         { id: 1, nome: "Anderson Souza", email: "anderson@email.com", telefone: "(83) 98628-0769", empresa: "ZapMix" },
         { id: 2, nome: "Silas Laurentino", email: "silas@email.com", telefone: "(83) 98888-8888", empresa: "Comunicação" },
-        { id: 3, nome: "Ricardo Maia", email: "ricardo@email.com", telefone: "(83) 99999-9999", empresa: "TV Produções" }
+        { id: 3, nome: "Ricardo Maia", email: "ricardo@email.com", telefone: "(83) 99999-9999", empresa: "TV Produções" },
+        { id: 7, nome: "Victor Araújo", email: "victor@email.com", telefone: "(83) 97777-7777", empresa: "Araújo Produções" }
     ],
     licencas: [
-        { id: 1, chave: "ZAPMIX-1B95-688C-C1AC", cliente: "Anderson Souza", cliente_id: 1, validade: "2027-05-18", status: "ATIVA", machine_id: "60f2d24938325f835509..." },
+        { id: 1, chave: "ZAPMIX-1B95-688C-C1AC", cliente: "Anderson Souza", cliente_id: 1, validade: "2027-05-18", status: "ATIVA", machine_id: "7727d36eb058862c1d9ed0717b215b86a7d39f58af42bc853c52b409420e" },
         { id: 2, chave: "ZAPMIX-62A0-A318-9E44", cliente: "Silas Laurentino", cliente_id: 2, validade: "2026-07-17", status: "ATIVA", machine_id: null },
-        { id: 3, chave: "ZAPMIX-47B6-66DC-4A21", cliente: "Ricardo Maia", cliente_id: 3, validade: "2026-07-17", status: "ATIVA", machine_id: "2c33867261918183cbf5..." }
+        { id: 3, chave: "ZAPMIX-47B6-66DC-4A21", cliente: "Ricardo Maia", cliente_id: 3, validade: "2026-07-17", status: "ATIVA", machine_id: null },
+        { id: 4, chave: "ZAPMIX-D93F-4196-9289", cliente: "Victor Araújo", cliente_id: 7, validade: "2026-07-19", status: "ATIVA", machine_id: "bbfa133fc3fb91da0a8ab5a814b4512ea58b31379ddddb93db0eebd8c64171" },
+        { id: 5, chave: "ZAPMIX-1C35-C8A3-7E7B", cliente: "Anderson Souza", cliente_id: 1, validade: "2026-06-02", status: "ATIVA", machine_id: null }
     ]
 };
 
@@ -264,7 +270,7 @@ function gerarChave() {
 }
 
 // ============================================================
-// API (com fallback para dados fixos)
+// API
 // ============================================================
 async function apiClientes(method, body) { 
     let token = getToken(); 
@@ -330,7 +336,7 @@ async function carregarClientes() {
     if (!tbody) return;
     
     if (clientes.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" class="empty-state"><i class="fas fa-users"></i><br>Nenhum cliente cadastrado</td</tr>';
+        tbody.innerHTML = '<tr><td colspan="7" class="empty-state"><i class="fas fa-users"></i><br>Nenhum cliente cadastrado</td<tr>';
         return;
     }
     
@@ -352,6 +358,68 @@ async function carregarClientes() {
     `).join('');
     
     atualizarStats();
+}
+
+function abrirModalCliente() { 
+    clienteEditandoId = null; 
+    document.getElementById('modalClienteTitle').innerHTML = '📝 Novo Cliente'; 
+    document.getElementById('clienteNome').value = ''; 
+    document.getElementById('clienteEmail').value = ''; 
+    document.getElementById('clienteTelefone').value = ''; 
+    document.getElementById('clienteEmpresa').value = ''; 
+    document.getElementById('modalCliente').classList.add('active'); 
+}
+
+function fecharModalCliente() { 
+    document.getElementById('modalCliente').classList.remove('active'); 
+}
+
+async function salvarCliente() {
+    let nome = document.getElementById('clienteNome').value.trim();
+    if (!nome) { 
+        showToast("Nome obrigatório", "error"); 
+        return; 
+    }
+    
+    let data = await apiClientes("POST", { 
+        nome, 
+        email: document.getElementById('clienteEmail').value, 
+        telefone: document.getElementById('clienteTelefone').value, 
+        empresa: document.getElementById('clienteEmpresa').value 
+    });
+    
+    if (data.ok) { 
+        showToast("Cliente salvo!", "success"); 
+        fecharModalCliente(); 
+        carregarClientes(); 
+    } else { 
+        showToast(data.erro || "Erro ao salvar", "error"); 
+    }
+}
+
+function editarCliente(id) { 
+    let c = clientes.find(c => c.id === id); 
+    if (c) { 
+        clienteEditandoId = c.id; 
+        document.getElementById('modalClienteTitle').innerHTML = '✏️ Editar Cliente'; 
+        document.getElementById('clienteNome').value = c.nome; 
+        document.getElementById('clienteEmail').value = c.email || ''; 
+        document.getElementById('clienteTelefone').value = c.telefone || ''; 
+        document.getElementById('clienteEmpresa').value = c.empresa || ''; 
+        document.getElementById('modalCliente').classList.add('active'); 
+    } 
+}
+
+async function excluirCliente(id, nome) { 
+    openModalConfirm(`Excluir "${nome}"?`, async () => { 
+        let d = await apiClientes("DELETE", { id }); 
+        if (d.ok) { 
+            showToast("Cliente excluído", "success"); 
+            carregarClientes(); 
+        } else { 
+            showToast(d.erro || "Cliente possui licenças", "error"); 
+        } 
+    }); 
 }
 
 // ============================================================
@@ -427,24 +495,28 @@ function renderizarLicencas() {
         return;
     }
     
-    tbody.innerHTML = pagina.map(l => `
+    tbody.innerHTML = pagina.map(l => {
+        const diffDias = Math.ceil((new Date(l.validade) - new Date()) / (1000 * 60 * 60 * 24));
+        const precisaRenovar = diffDias <= 30 && diffDias > 0;
+        
+        return `
         <tr>
-            <td data-label="Cliente"><strong>${escapeHtml(l.cliente)}</strong>${l.ultima_renovacao ? `<br><small>Renovada: ${formatarData(l.ultima_renovacao)}</small>` : ''}${l.renovacoes ? `<br><small>${l.renovacoes}x</small>` : ''}</td>
+            <td data-label="Cliente"><strong>${escapeHtml(l.cliente)}</strong>${l.ultima_renovacao ? `<br><small>Renovada: ${formatarData(l.ultima_renovacao)}</small>` : ''}${l.renovacoes ? `<br><small>${l.renovacoes}x</small>` : ''}${precisaRenovar ? `<br><small class="status-badge status-EXPIRADA">Expira em ${diffDias} dias</small>` : ''}</td>
             <td data-label="Chave"><code>${escapeHtml(l.chave)}</code></td>
             <td data-label="Status"><span class="status-badge status-${l.status}">${l.status}</span></td>
             <td data-label="Validade">${formatarData(l.validade)}</td>
             <td data-label="Máquina">${l.machine_id ? l.machine_id.substring(0,20)+'...' : '💻 Livre'}</td>
             <td data-label="Ações">
                 <div class="action-buttons">
-                    <button class="btn-success btn-sm" onclick="atualizarStatus('${l.id}','ATIVA')">✅ Ativar</button>
-                    <button class="btn-danger btn-sm" onclick="atualizarStatus('${l.id}','BLOQUEADA')">🔒 Bloquear</button>
-                    <button class="btn-warning btn-sm" onclick="liberarMaquina('${l.id}')">🖥️ Liberar</button>
-                    <button class="btn-primary btn-sm" onclick="abrirModalRenovacao('${l.id}', '${escapeHtml(l.cliente)}', '${l.validade}')">🔄 Renovar</button>
-                    <button class="btn-danger btn-sm" onclick="excluirLicenca('${l.id}','${escapeHtml(l.cliente)}')">🗑️ Excluir</button>
+                    <button class="btn-success btn-sm" onclick="atualizarStatus('${l.id}','ATIVA')" title="Ativar"><i class="fas fa-check"></i> Ativar</button>
+                    <button class="btn-danger btn-sm" onclick="atualizarStatus('${l.id}','BLOQUEADA')" title="Bloquear"><i class="fas fa-lock"></i> Bloquear</button>
+                    <button class="btn-warning btn-sm" onclick="liberarMaquina('${l.id}')" title="Liberar PC"><i class="fas fa-desktop"></i> Liberar</button>
+                    ${precisaRenovar ? `<button class="btn-primary btn-sm" onclick="abrirModalRenovacao('${l.id}', '${escapeHtml(l.cliente)}', '${l.validade}')" title="Renovar"><i class="fas fa-sync-alt"></i> Renovar</button>` : ''}
+                    <button class="btn-danger btn-sm" onclick="excluirLicenca('${l.id}','${escapeHtml(l.cliente)}')" title="Excluir"><i class="fas fa-trash"></i> Excluir</button>
                 </div>
             </td>
-        </tr>
-    `).join('');
+        </table>
+    `}).join('');
     
     // Paginação
     let totalPaginas = Math.ceil(licencasFiltradas.length / itensPorPagina);
@@ -495,45 +567,57 @@ async function criarLicenca() {
         max_machines: 1, 
         modulos: ["whatsapp","ndi","enquete"]
     }); 
-    if(d.ok){ 
+    if(d && d.ok){ 
         showToast("Licença criada!","success"); 
         document.getElementById('novaLicencaChave').value=''; 
         document.getElementById('novaLicencaValidade').value=''; 
         carregarLicencas(); 
     } else { 
-        showToast(d.erro || "Erro ao criar","error"); 
+        showToast(d?.erro || "Erro ao criar","error"); 
     } 
 }
 
 async function atualizarStatus(id, status) { 
-    let d = await apiLicencas("PUT", { id, status }); 
-    if(d.ok){ 
-        showToast(`Licença ${status.toLowerCase()}`, "success"); 
-        carregarLicencas(); 
-    } else { 
-        showToast(d.erro, "error"); 
-    } 
+    try {
+        const d = await apiLicencas("PUT", { id, status }); 
+        if(d && d.ok){ 
+            showToast(`Licença ${status === 'ATIVA' ? 'ativada' : 'bloqueada'}!`, "success"); 
+            carregarLicencas(); 
+        } else { 
+            showToast(d?.erro || "Erro ao atualizar", "error"); 
+        } 
+    } catch(e) {
+        showToast("Erro ao atualizar", "error");
+    }
 }
 
 async function liberarMaquina(id) { 
-    let d = await apiLicencas("PUT", { id, machine_id: null }); 
-    if(d.ok){ 
-        showToast("Máquina liberada", "success"); 
-        carregarLicencas(); 
-    } else { 
-        showToast(d.erro, "error"); 
-    } 
+    try {
+        const d = await apiLicencas("PUT", { id, machine_id: null }); 
+        if(d && d.ok){ 
+            showToast("Máquina liberada!", "success"); 
+            carregarLicencas(); 
+        } else { 
+            showToast(d?.erro || "Erro ao liberar", "error"); 
+        } 
+    } catch(e) {
+        showToast("Erro ao liberar", "error");
+    }
 }
 
 async function excluirLicenca(id, cliente) { 
-    openModalConfirm(`Excluir licença de ${cliente}?`, async() => { 
-        let d = await apiLicencas("DELETE", { id }); 
-        if(d.ok){ 
-            showToast("Licença excluída","success"); 
-            carregarLicencas(); 
-        } else { 
-            showToast(d.erro,"error"); 
-        } 
+    openModalConfirm(`Excluir licença de ${cliente}?`, async () => { 
+        try {
+            const d = await apiLicencas("DELETE", { id }); 
+            if(d && d.ok){ 
+                showToast("Licença excluída!", "success"); 
+                carregarLicencas(); 
+            } else { 
+                showToast(d?.erro || "Erro ao excluir", "error"); 
+            } 
+        } catch(e) {
+            showToast("Erro ao excluir", "error");
+        }
     }); 
 }
 
@@ -544,22 +628,17 @@ function abrirModalRenovacao(id, cliente, validadeAtual) {
     window.licencaRenovando = id;
     
     let modal = document.getElementById('modalRenovacao');
-    if (!modal) {
-        modal = document.createElement('div');
-        modal.id = 'modalRenovacao';
-        modal.className = 'modal';
-        modal.innerHTML = `
-            <div class="modal-content" style="max-width:450px; text-align:left;">
-                <div class="modal-header"><h3>🔄 Renovar Licença</h3><button class="close-modal" onclick="fecharModalRenovacao()">&times;</button></div>
-                <p><strong>Cliente:</strong> <span id="renovacaoCliente"></span></p>
-                <p><strong>Validade atual:</strong> <span id="renovacaoValidadeAtual"></span></p>
-                <div class="input-group"><label>Período</label><select id="periodoRenovacao"><option value="30">+30 dias</option><option value="60">+60 dias</option><option value="90" selected>+90 dias</option><option value="180">+180 dias</option><option value="365">+365 dias</option></select></div>
-                <div class="input-group"><label>Nova data</label><input type="date" id="novaDataValidade" readonly></div>
-                <div class="modal-buttons"><button class="btn-secondary" onclick="fecharModalRenovacao()">Cancelar</button><button class="btn-primary" onclick="confirmarRenovacao()">Confirmar</button></div>
-            </div>
-        `;
-        document.body.appendChild(modal);
-    }
+    modal.className = 'modal';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width:450px; text-align:left;">
+            <div class="modal-header"><h3>🔄 Renovar Licença</h3><button class="close-modal" onclick="fecharModalRenovacao()">&times;</button></div>
+            <p><strong>Cliente:</strong> <span id="renovacaoCliente"></span></p>
+            <p><strong>Validade atual:</strong> <span id="renovacaoValidadeAtual"></span></p>
+            <div class="input-group"><label>Período</label><select id="periodoRenovacao"><option value="30">+30 dias</option><option value="60">+60 dias</option><option value="90" selected>+90 dias</option><option value="180">+180 dias</option><option value="365">+365 dias</option></select></div>
+            <div class="input-group"><label>Nova data</label><input type="date" id="novaDataValidade" readonly></div>
+            <div class="modal-buttons"><button class="btn-secondary" onclick="fecharModalRenovacao()">Cancelar</button><button class="btn-primary" onclick="confirmarRenovacao()">Confirmar</button></div>
+        </div>
+    `;
     
     document.getElementById('renovacaoCliente').innerText = cliente;
     document.getElementById('renovacaoValidadeAtual').innerText = formatarData(validadeAtual);
@@ -590,77 +669,12 @@ async function confirmarRenovacao() {
     let dias = parseInt(document.getElementById('periodoRenovacao').value); 
     openModalConfirm(`Renovar por ${dias} dias?`, async () => { 
         let d = await apiLicencas("PUT", { id, validade: novaData, status: 'ATIVA', ultima_renovacao: new Date().toISOString().split('T')[0] }); 
-        if (d.ok) { 
+        if (d && d.ok) { 
             showToast("Licença renovada!", "success"); 
             fecharModalRenovacao(); 
             carregarLicencas(); 
         } else { 
-            showToast(d.erro, "error"); 
-        } 
-    }); 
-}
-
-// ============================================================
-// CRUD CLIENTES
-// ============================================================
-function abrirModalCliente() { 
-    clienteEditandoId = null; 
-    document.getElementById('modalClienteTitle').innerHTML = '📝 Novo Cliente'; 
-    document.getElementById('clienteNome').value = ''; 
-    document.getElementById('clienteEmail').value = ''; 
-    document.getElementById('clienteTelefone').value = ''; 
-    document.getElementById('clienteEmpresa').value = ''; 
-    document.getElementById('modalCliente').classList.add('active'); 
-}
-
-function fecharModalCliente() { 
-    document.getElementById('modalCliente').classList.remove('active'); 
-}
-
-async function salvarCliente() {
-    let nome = document.getElementById('clienteNome').value.trim();
-    if (!nome) { 
-        showToast("Nome obrigatório", "error"); 
-        return; 
-    }
-    
-    let data = await apiClientes("POST", { 
-        nome, 
-        email: document.getElementById('clienteEmail').value, 
-        telefone: document.getElementById('clienteTelefone').value, 
-        empresa: document.getElementById('clienteEmpresa').value 
-    });
-    
-    if (data.ok) { 
-        showToast("Cliente salvo!", "success"); 
-        fecharModalCliente(); 
-        carregarClientes(); 
-    } else { 
-        showToast(data.erro || "Erro ao salvar", "error"); 
-    }
-}
-
-function editarCliente(id) { 
-    let c = clientes.find(c => c.id === id); 
-    if (c) { 
-        clienteEditandoId = c.id; 
-        document.getElementById('modalClienteTitle').innerHTML = '✏️ Editar Cliente'; 
-        document.getElementById('clienteNome').value = c.nome; 
-        document.getElementById('clienteEmail').value = c.email || ''; 
-        document.getElementById('clienteTelefone').value = c.telefone || ''; 
-        document.getElementById('clienteEmpresa').value = c.empresa || ''; 
-        document.getElementById('modalCliente').classList.add('active'); 
-    } 
-}
-
-async function excluirCliente(id, nome) { 
-    openModalConfirm(`Excluir "${nome}"?`, async () => { 
-        let d = await apiClientes("DELETE", { id }); 
-        if (d.ok) { 
-            showToast("Cliente excluído", "success"); 
-            carregarClientes(); 
-        } else { 
-            showToast(d.erro || "Cliente possui licenças", "error"); 
+            showToast(d?.erro || "Erro ao renovar", "error"); 
         } 
     }); 
 }
