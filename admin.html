@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#90d105">
 <title>ZapMix Admin | Painel de Controle</title>
-<link rel="icon" type="image/png" href="/public/media/favicon.png">
+<link rel="icon" type="image/png" href="/assets/favicon.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -98,6 +98,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  cursor: pointer;
 }
 
 .stat-card:hover {
@@ -134,6 +135,32 @@ body {
   color: #90d105;
 }
 
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  border-bottom: 2px solid #e2e8f0;
+  flex-wrap: wrap;
+}
+
+.tab-btn {
+  padding: 12px 24px;
+  border-radius: 12px 12px 0 0;
+  margin-bottom: -2px;
+  background: transparent;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  color: #64748b;
+}
+
+.tab-btn.active {
+  background: #90d105;
+  color: #0f2e00;
+}
+
 .card {
   background: #ffffff;
   border-radius: 28px;
@@ -144,18 +171,22 @@ body {
   transition: all 0.2s;
 }
 
-.card:hover {
-  border-color: #cbd5e1;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 16px;
 }
 
-.card h2 {
+.card-header h2 {
   font-size: 1.25rem;
   font-weight: 700;
-  margin-bottom: 20px;
   border-left: 4px solid #90d105;
   padding-left: 16px;
   color: #0f172a;
+  margin: 0;
 }
 
 .form-grid {
@@ -179,7 +210,7 @@ body {
   margin-bottom: 6px;
 }
 
-input, select {
+input, select, textarea {
   padding: 12px 14px;
   border-radius: 12px;
   border: 1.5px solid #e2e8f0;
@@ -189,13 +220,13 @@ input, select {
   font-family: 'Inter', sans-serif;
 }
 
-input:focus, select:focus {
+input:focus, select:focus, textarea:focus {
   outline: none;
   border-color: #90d105;
   box-shadow: 0 0 0 3px rgba(144, 209, 5, 0.1);
 }
 
-/* Botões - ESTILO ORIGINAL MANTIDO */
+/* Botões */
 button {
   padding: 10px 20px;
   border-radius: 12px;
@@ -292,7 +323,6 @@ button {
   border-radius: 12px;
   border: 1.5px solid #e2e8f0;
   background: #f8fafc;
-  font-family: 'Inter', sans-serif;
 }
 
 .table-wrapper {
@@ -339,7 +369,7 @@ tr:hover {
   font-weight: 600;
 }
 
-.status-ATIVA {
+.status-ATIVA, .status-ATIVO {
   background: #dcfce7;
   color: #15803d;
 }
@@ -395,6 +425,61 @@ code {
   color: #0f2e00;
 }
 
+/* Modal */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal.active {
+  display: flex;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 24px;
+  padding: 32px;
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.modal-header h3 {
+  margin: 0;
+}
+
+.close-modal {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #94a3b8;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
 .toast {
   position: fixed;
   top: 20px;
@@ -435,50 +520,6 @@ code {
 
 @keyframes spin {
   to { transform: rotate(360deg); }
-}
-
-/* Modal */
-.modal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-  z-index: 1000;
-  align-items: center;
-  justify-content: center;
-}
-
-.modal.active {
-  display: flex;
-}
-
-.modal-content {
-  background: white;
-  border-radius: 24px;
-  padding: 32px;
-  max-width: 400px;
-  width: 90%;
-  text-align: center;
-}
-
-.modal-content h3 {
-  margin-bottom: 16px;
-  color: #0f172a;
-}
-
-.modal-content p {
-  margin-bottom: 24px;
-  color: #64748b;
-}
-
-.modal-buttons {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
 }
 
 .login-overlay {
@@ -531,10 +572,8 @@ code {
   .card { padding: 20px; }
   .action-buttons { flex-direction: column; }
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
-}
-
-@media (max-width: 1024px) {
-  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .tabs { flex-wrap: wrap; }
+  .tab-btn { flex: 1; text-align: center; }
 }
 </style>
 </head>
@@ -543,7 +582,7 @@ code {
 <!-- Tela de Login -->
 <div id="loginOverlay" class="login-overlay">
   <div class="login-box">
-    <img src="/public/media/logo.png" alt="ZapMix" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'60\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%2390d105\'/%3E%3Ctext x=\'50\' y=\'67\' font-size=\'40\' text-anchor=\'middle\' fill=\'%230f172a\' font-weight=\'bold\'%3EZM%3C/text%3E%3C/svg%3E'">
+    <img src="/assets/logo.png" alt="ZapMix" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'60\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%2390d105\'/%3E%3Ctext x=\'50\' y=\'67\' font-size=\'40\' text-anchor=\'middle\' fill=\'%230f172a\' font-weight=\'bold\'%3EZM%3C/text%3E%3C/svg%3E'">
     <h2>🔐 Acesso Administrativo</h2>
     <div class="input-group" style="margin-bottom: 20px;">
       <label>Usuário</label>
@@ -560,7 +599,7 @@ code {
 <!-- Header Admin -->
 <div class="admin-header" id="adminHeader" style="display: none;">
   <div class="logo-area">
-    <img src="/public/media/logo.png" alt="ZapMix" class="logo-img" onerror="this.style.display='none'">
+    <img src="/assets/logo.png" alt="ZapMix" class="logo-img" onerror="this.style.display='none'">
     <div class="logo-text">
       <h1>ZapMix</h1>
       <span>Admin</span>
@@ -577,589 +616,323 @@ code {
 <div class="admin-container" id="adminContent" style="display: none;">
   <!-- Stats Cards -->
   <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-info">
-        <h3>Total de Licenças</h3>
-        <div class="stat-number" id="statTotal">0</div>
-      </div>
+    <div class="stat-card" onclick="mostrarTab('clientes')">
+      <div class="stat-info"><h3>Total de Clientes</h3><div class="stat-number" id="statClientes">0</div></div>
+      <div class="stat-icon"><i class="fas fa-users"></i></div>
+    </div>
+    <div class="stat-card" onclick="mostrarTab('licencas')">
+      <div class="stat-info"><h3>Total de Licenças</h3><div class="stat-number" id="statTotalLicencas">0</div></div>
       <div class="stat-icon"><i class="fas fa-key"></i></div>
     </div>
-    <div class="stat-card">
-      <div class="stat-info">
-        <h3>Licenças Ativas</h3>
-        <div class="stat-number" id="statAtivas">0</div>
-      </div>
+    <div class="stat-card" onclick="mostrarTab('licencas')">
+      <div class="stat-info"><h3>Licenças Ativas</h3><div class="stat-number" id="statAtivas">0</div></div>
       <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
     </div>
     <div class="stat-card">
-      <div class="stat-info">
-        <h3>Licenças Bloqueadas</h3>
-        <div class="stat-number" id="statBloqueadas">0</div>
-      </div>
-      <div class="stat-icon"><i class="fas fa-ban"></i></div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-info">
-        <h3>Máquinas Ativas</h3>
-        <div class="stat-number" id="statMaquinas">0</div>
-      </div>
+      <div class="stat-info"><h3>Máquinas Ativas</h3><div class="stat-number" id="statMaquinas">0</div></div>
       <div class="stat-icon"><i class="fas fa-desktop"></i></div>
     </div>
   </div>
 
-  <div class="card">
-    <h2>✨ Criar Nova Licença</h2>
-    <div class="form-grid">
-      <div class="input-group">
-        <label>🔑 Chave da Licença (opcional)</label>
-        <input id="chave" placeholder="Deixe em branco para gerar automática">
-      </div>
-      <div class="input-group">
-        <label>👤 Cliente *</label>
-        <input id="cliente" placeholder="Nome do cliente">
-      </div>
-      <div class="input-group">
-        <label>📅 Data de Validade *</label>
-        <input id="validade" type="date">
-      </div>
-      <div class="input-group">
-        <label>📊 Status</label>
-        <select id="status">
-          <option value="ATIVA">✅ ATIVA</option>
-          <option value="BLOQUEADA">🔒 BLOQUEADA</option>
-          <option value="EXPIRADA">⏰ EXPIRADA</option>
-        </select>
-      </div>
-    </div>
-    <button class="btn-primary" onclick="criarLicenca()">➕ Criar Licença</button>
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="mostrarTab('clientes')">👥 Clientes</button>
+    <button class="tab-btn" onclick="mostrarTab('licencas')">🔑 Licenças</button>
+    <button class="tab-btn" onclick="mostrarTab('nova-licenca')">✨ Nova Licença</button>
+    <button class="tab-btn" onclick="mostrarTab('perfil')">👤 Perfil</button>
   </div>
 
-  <div class="card">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-      <h2 style="margin-bottom: 0;">📋 Gerenciar Licenças</h2>
-      <button class="btn-secondary" onclick="carregar()">🔄 Atualizar Lista</button>
+  <!-- Tab Clientes -->
+  <div id="tabClientes" class="card">
+    <div class="card-header">
+      <h2>👥 Gerenciar Clientes</h2>
+      <button class="btn-primary" onclick="abrirModalCliente()"><i class="fas fa-plus"></i> Novo Cliente</button>
     </div>
-
-    <!-- Search e Filtro -->
     <div class="search-bar">
-      <div class="search-input">
-        <i class="fas fa-search"></i>
-        <input type="text" id="searchInput" placeholder="Buscar por cliente ou chave...">
-      </div>
-      <div class="filter-group">
-        <select id="filterStatus">
-          <option value="todos">📊 Todos os status</option>
-          <option value="ATIVA">✅ ATIVA</option>
-          <option value="BLOQUEADA">🔒 BLOQUEADA</option>
-          <option value="EXPIRADA">⏰ EXPIRADA</option>
-        </select>
-      </div>
+      <div class="search-input"><i class="fas fa-search"></i><input type="text" id="searchCliente" placeholder="Buscar cliente..."></div>
     </div>
+    <div class="table-wrapper">
+      <table id="tabelaClientes">
+        <thead><tr><th>Nome</th><th>Email</th><th>Telefone</th><th>Empresa</th><th>Licenças</th><th>Status</th><th>Ações</th></tr></thead>
+        <tbody id="listaClientes"><tr><td colspan="7" class="empty-state"><i class="fas fa-spinner fa-spin"></i> Carregando...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
 
+  <!-- Tab Licenças -->
+  <div id="tabLicencas" class="card" style="display: none;">
+    <div class="card-header">
+      <h2>🔑 Gerenciar Licenças</h2>
+      <button class="btn-secondary" onclick="carregarLicencas()"><i class="fas fa-sync-alt"></i> Atualizar</button>
+    </div>
+    <div class="search-bar">
+      <div class="search-input"><i class="fas fa-search"></i><input type="text" id="searchLicenca" placeholder="Buscar licença..."></div>
+      <select id="filterStatusLicenca">
+        <option value="todos">Todos os status</option>
+        <option value="ATIVA">✅ Ativas</option>
+        <option value="BLOQUEADA">🔒 Bloqueadas</option>
+        <option value="EXPIRADA">⏰ Expiradas</option>
+      </select>
+    </div>
     <div class="table-wrapper">
       <table>
-        <thead>
-          <tr>
-            <th onclick="ordenarTabela('cliente')">Cliente <i class="fas fa-sort"></i></th>
-            <th onclick="ordenarTabela('chave')">Chave <i class="fas fa-sort"></i></th>
-            <th onclick="ordenarTabela('status')">Status <i class="fas fa-sort"></i></th>
-            <th onclick="ordenarTabela('validade')">Validade <i class="fas fa-sort"></i></th>
-            <th>Máquina</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody id="lista"><tr><td colspan="6" style="text-align: center;">Faça login para carregar...</td</tr></tbody>
-      :</table>
+        <thead><tr><th onclick="ordenarLicencas('cliente')">Cliente <i class="fas fa-sort"></i></th><th onclick="ordenarLicencas('chave')">Chave <i class="fas fa-sort"></i></th><th onclick="ordenarLicencas('status')">Status <i class="fas fa-sort"></i></th><th onclick="ordenarLicencas('validade')">Validade <i class="fas fa-sort"></i></th><th>Máquina</th><th>Ações</th></tr></thead>
+        <tbody id="listaLicencas"><tr><td colspan="6" class="empty-state"><i class="fas fa-spinner fa-spin"></i> Carregando...</td></tr></tbody>
+      </table>
     </div>
+    <div class="pagination" id="paginationLicencas"></div>
+  </div>
 
-    <!-- Pagination -->
-    <div class="pagination" id="pagination"></div>
+  <!-- Tab Nova Licença -->
+  <div id="tabNovaLicenca" class="card" style="display: none;">
+    <h2>✨ Criar Nova Licença</h2>
+    <div class="form-grid">
+      <div class="input-group"><label>👤 Cliente *</label><select id="novaLicencaCliente"><option value="">Selecione um cliente</option></select></div>
+      <div class="input-group"><label>🔑 Chave (opcional)</label><input id="novaLicencaChave" placeholder="Deixe em branco para gerar"></div>
+      <div class="input-group"><label>📅 Data de Validade *</label><input id="novaLicencaValidade" type="date"></div>
+      <div class="input-group"><label>📊 Status</label><select id="novaLicencaStatus"><option value="ATIVA">✅ ATIVA</option><option value="BLOQUEADA">🔒 BLOQUEADA</option></select></div>
+    </div>
+    <button class="btn-primary" onclick="criarLicenca()"><i class="fas fa-plus"></i> Criar Licença</button>
+  </div>
+
+  <!-- Tab Perfil -->
+  <div id="tabPerfil" class="card" style="display: none;">
+    <div class="card-header"><h2>👤 Meu Perfil</h2></div>
+    <div class="form-grid">
+      <div class="input-group"><label>Nome completo</label><input type="text" id="perfilNome" placeholder="Seu nome"></div>
+      <div class="input-group"><label>Email</label><input type="email" id="perfilEmail" placeholder="seu@email.com"></div>
+      <div class="input-group"><label>Telefone</label><input type="tel" id="perfilTelefone" placeholder="(00) 00000-0000"></div>
+      <div class="input-group"><label>Cargo</label><input type="text" id="perfilCargo" placeholder="Administrador"></div>
+    </div>
+    <div style="display: flex; gap: 12px; justify-content: flex-end;">
+      <button class="btn-secondary" onclick="cancelarEdicaoPerfil()">Cancelar</button>
+      <button class="btn-primary" onclick="salvarPerfil()">Salvar</button>
+    </div>
+    <hr style="margin: 24px 0;">
+    <div class="card-header"><h2>🔒 Alterar Senha</h2></div>
+    <div class="form-grid">
+      <div class="input-group"><label>Senha atual</label><input type="password" id="senhaAtual" placeholder="Senha atual"></div>
+      <div class="input-group"><label>Nova senha</label><input type="password" id="novaSenha" placeholder="Nova senha"></div>
+      <div class="input-group"><label>Confirmar</label><input type="password" id="confirmarSenha" placeholder="Confirmar"></div>
+    </div>
+    <div style="display: flex; justify-content: flex-end;"><button class="btn-primary" onclick="alterarSenha()">Alterar Senha</button></div>
   </div>
 </div>
 
-<!-- Modal de Confirmação -->
-<div id="confirmModal" class="modal">
-  <div class="modal-content">
-    <h3>⚠️ Confirmar ação</h3>
-    <p id="confirmMessage">Tem certeza que deseja realizar esta ação?</p>
-    <div class="modal-buttons">
-      <button class="btn-secondary" onclick="fecharModal()">Cancelar</button>
-      <button class="btn-danger" id="confirmBtn">Confirmar</button>
+<!-- Modal Cliente -->
+<div id="modalCliente" class="modal">
+  <div class="modal-content" style="max-width: 500px;">
+    <div class="modal-header"><h3 id="modalClienteTitle">📝 Novo Cliente</h3><button class="close-modal" onclick="fecharModalCliente()">&times;</button></div>
+    <div class="form-grid" style="grid-template-columns: 1fr;">
+      <div class="input-group"><label>Nome *</label><input type="text" id="clienteNome"></div>
+      <div class="input-group"><label>Email</label><input type="email" id="clienteEmail"></div>
+      <div class="input-group"><label>Telefone</label><input type="tel" id="clienteTelefone"></div>
+      <div class="input-group"><label>Empresa</label><input type="text" id="clienteEmpresa"></div>
     </div>
+    <div class="modal-buttons"><button class="btn-secondary" onclick="fecharModalCliente()">Cancelar</button><button class="btn-primary" onclick="salvarCliente()">Salvar</button></div>
   </div>
+</div>
+
+<!-- Modal Confirmar -->
+<div id="confirmModal" class="modal">
+  <div class="modal-content"><h3>⚠️ Confirmar</h3><p id="confirmMessage">Tem certeza?</p><div class="modal-buttons"><button class="btn-secondary" onclick="fecharModalConfirmar()">Cancelar</button><button class="btn-danger" id="confirmBtn">Confirmar</button></div></div>
 </div>
 
 <script>
 // ============================================================
 // VARIÁVEIS GLOBAIS
 // ============================================================
-let todasLicencas = [];
+let clientes = [];
+let licencas = [];
 let licencasFiltradas = [];
 let paginaAtual = 1;
 let itensPorPagina = 10;
+let acaoConfirmada = null;
+let clienteEditandoId = null;
 let ordemColuna = 'cliente';
 let ordemDirecao = 'asc';
-let acaoConfirmada = null;
 
 // ============================================================
-// FUNÇÕES DE UTILIDADE
+// FUNÇÕES UTILITÁRIAS
 // ============================================================
-function showToast(message, type) {
-  const toast = document.createElement('div');
-  toast.className = `toast ${type}`;
-  toast.innerHTML = type === 'success' ? `✅ ${message}` : `❌ ${message}`;
-  document.body.appendChild(toast);
-  setTimeout(() => toast.remove(), 3000);
-}
-
-function getToken() {
-  return localStorage.getItem("zapmix_admin_token") || "";
-}
-
-function gerarChave() {
-  const bytes = new Uint8Array(8);
-  crypto.getRandomValues(bytes);
-  const hex = Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
-  return `ZAPMIX-${hex.slice(0,4)}-${hex.slice(4,8)}-${hex.slice(8,12)}`;
-}
-
-function formatarData(dataISO) {
-  if (!dataISO) return "N/A";
-  const data = new Date(dataISO);
-  return data.toLocaleDateString('pt-BR');
-}
-
-function escapeHtml(text) {
-  if (!text) return "";
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
-
-// ============================================================
-// MODAL
-// ============================================================
-function openModal(message, callback) {
-  document.getElementById('confirmMessage').innerText = message;
-  acaoConfirmada = callback;
-  document.getElementById('confirmModal').classList.add('active');
-}
-
-function fecharModal() {
-  document.getElementById('confirmModal').classList.remove('active');
-  acaoConfirmada = null;
-}
-
-document.getElementById('confirmBtn').onclick = () => {
-  if (acaoConfirmada) acaoConfirmada();
-  fecharModal();
-};
+function showToast(msg, type) { let t = document.createElement('div'); t.className = `toast ${type}`; t.innerHTML = type === 'success' ? `✅ ${msg}` : `❌ ${msg}`; document.body.appendChild(t); setTimeout(() => t.remove(), 3000); }
+function getToken() { return localStorage.getItem("zapmix_admin_token") || ""; }
+function escapeHtml(t) { if (!t) return ""; let d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+function formatarData(d) { return d ? new Date(d).toLocaleDateString('pt-BR') : "N/A"; }
+function gerarChave() { let b = new Uint8Array(8); crypto.getRandomValues(b); let h = Array.from(b, x => x.toString(16).padStart(2,'0')).join('').toUpperCase(); return `ZAPMIX-${h.slice(0,4)}-${h.slice(4,8)}-${h.slice(8,12)}`; }
 
 // ============================================================
 // API
 // ============================================================
-async function api(method, body) {
-  const token = getToken();
-  const res = await fetch("/api/admin-licencas", {
-    method,
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer " + token
-    },
-    body: body ? JSON.stringify(body) : undefined
-  });
-  return await res.json();
-}
+async function apiClientes(method, body) { let token = getToken(); let res = await fetch("/api/clientes", { method, headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token }, body: body ? JSON.stringify(body) : undefined }); return await res.json(); }
+async function apiLicencas(method, body) { let token = getToken(); let res = await fetch("/api/admin-licencas", { method, headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token }, body: body ? JSON.stringify(body) : undefined }); return await res.json(); }
 
 // ============================================================
-// CRUD
+// CLIENTES
 // ============================================================
-async function criarLicenca() {
-  const cliente = document.getElementById("cliente").value.trim();
-  const validade = document.getElementById("validade").value;
+async function carregarClientes() {
+  let token = getToken();
+  if (!token) return;
+  let data = await apiClientes("GET");
+  if (data.ok && data.clientes) clientes = data.clientes;
   
-  if (!cliente || !validade) {
-    showToast("Cliente e data de validade são obrigatórios", "error");
-    return;
-  }
+  let select = document.getElementById('novaLicencaCliente');
+  if (select) select.innerHTML = '<option value="">Selecione um cliente</option>' + clientes.map(c => `<option value="${c.id}">${escapeHtml(c.nome)}</option>`).join('');
   
-  const payload = {
-    chave: document.getElementById("chave").value.trim() || gerarChave(),
-    cliente: cliente,
-    validade: validade,
-    status: document.getElementById("status").value,
-    max_machines: 1,
-    modulos: ["whatsapp", "ndi", "enquete"]
-  };
+  let searchTerm = document.getElementById('searchCliente')?.value.toLowerCase() || '';
+  let filtered = clientes.filter(c => c.nome.toLowerCase().includes(searchTerm) || (c.email && c.email.toLowerCase().includes(searchTerm)));
   
-  const data = await api("POST", payload);
+  let tbody = document.getElementById('listaClientes');
+  if (filtered.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="empty-state">Nenhum cliente</td</tr>'; return; }
   
-  if (!data.ok) {
-    showToast(data.erro || "Erro ao criar licença", "error");
-    return;
-  }
-  
-  showToast("✅ Licença criada com sucesso!", "success");
-  document.getElementById("chave").value = "";
-  document.getElementById("cliente").value = "";
-  document.getElementById("validade").value = "";
-  carregar();
+  tbody.innerHTML = filtered.map(c => `<tr><td><strong>${escapeHtml(c.nome)}</strong><br><small>${escapeHtml(c.empresa || '')}</small></td><td>${escapeHtml(c.email || '-')}</td><td>${escapeHtml(c.telefone || '-')}</td><td>${escapeHtml(c.empresa || '-')}</td><td>${licencas.filter(l => l.cliente_id === c.id).length}</td><td><span class="status-badge status-ATIVO">Ativo</span></td><td><div class="action-buttons"><button class="btn-success btn-sm" onclick="editarCliente(${c.id})">✏️</button><button class="btn-danger btn-sm" onclick="excluirCliente(${c.id}, '${escapeHtml(c.nome)}')">🗑️</button></div></td></tr>`).join('');
+  atualizarStats();
 }
 
-async function atualizarStatus(id, status) {
-  const data = await api("PUT", { id, status });
-  if (!data.ok) { 
-    showToast(data.erro || "Erro ao atualizar", "error"); 
-    return; 
-  }
-  showToast(`Licença ${status === 'ATIVA' ? 'ativada' : 'bloqueada'} com sucesso!`, "success");
-  carregar();
+function abrirModalCliente() { clienteEditandoId = null; document.getElementById('modalClienteTitle').innerHTML = '📝 Novo Cliente'; document.getElementById('clienteNome').value = ''; document.getElementById('clienteEmail').value = ''; document.getElementById('clienteTelefone').value = ''; document.getElementById('clienteEmpresa').value = ''; document.getElementById('modalCliente').classList.add('active'); }
+function fecharModalCliente() { document.getElementById('modalCliente').classList.remove('active'); }
+
+async function salvarCliente() {
+  let nome = document.getElementById('clienteNome').value.trim();
+  if (!nome) { showToast("Nome obrigatório", "error"); return; }
+  let data = await apiClientes("POST", { nome, email: document.getElementById('clienteEmail').value, telefone: document.getElementById('clienteTelefone').value, empresa: document.getElementById('clienteEmpresa').value });
+  if (data.ok) { showToast("Cliente salvo!", "success"); fecharModalCliente(); carregarClientes(); } else showToast(data.erro, "error");
 }
 
-async function liberarMaquina(id) {
-  const data = await api("PUT", { id, machine_id: null });
-  if (!data.ok) { 
-    showToast(data.erro || "Erro ao liberar máquina", "error"); 
-    return; 
-  }
-  showToast("💻 Máquina liberada com sucesso!", "success");
-  carregar();
-}
+function editarCliente(id) { let c = clientes.find(c => c.id === id); if (c) { clienteEditandoId = c.id; document.getElementById('modalClienteTitle').innerHTML = '✏️ Editar Cliente'; document.getElementById('clienteNome').value = c.nome; document.getElementById('clienteEmail').value = c.email || ''; document.getElementById('clienteTelefone').value = c.telefone || ''; document.getElementById('clienteEmpresa').value = c.empresa || ''; document.getElementById('modalCliente').classList.add('active'); } }
 
-async function excluirLicencaConfirmado(id) {
-  const data = await api("DELETE", { id });
-  if (!data.ok) { 
-    showToast(data.erro || "Erro ao excluir licença", "error"); 
-    return; 
-  }
-  showToast("🗑️ Licença excluída com sucesso!", "success");
-  carregar();
-}
-
-function excluirLicenca(id, cliente) {
-  openModal(`Tem certeza que deseja excluir a licença de "${cliente}"?`, () => excluirLicencaConfirmado(id));
-}
+async function excluirCliente(id, nome) { openModalConfirm(`Excluir "${nome}"?`, async () => { let d = await apiClientes("DELETE", { id }); if (d.ok) { showToast("Cliente excluído", "success"); carregarClientes(); } else showToast(d.erro, "error"); }); }
 
 // ============================================================
-// FILTROS E ORDENAÇÃO
+// LICENÇAS
 // ============================================================
-function ordenarTabela(coluna) {
-  if (ordemColuna === coluna) {
-    ordemDirecao = ordemDirecao === 'asc' ? 'desc' : 'asc';
-  } else {
-    ordemColuna = coluna;
-    ordemDirecao = 'asc';
-  }
-  filtrarTabela();
+async function carregarLicencas() {
+  let token = getToken();
+  if (!token) return;
+  let data = await apiLicencas("GET");
+  if (data.ok) licencas = data.licencas || [];
+  document.getElementById('statTotalLicencas').innerText = licencas.length;
+  document.getElementById('statAtivas').innerText = licencas.filter(l => l.status === 'ATIVA').length;
+  document.getElementById('statMaquinas').innerText = licencas.filter(l => l.machine_id).length;
+  document.getElementById('statClientes').innerText = clientes.length;
+  
+  let searchTerm = document.getElementById('searchLicenca')?.value.toLowerCase() || '';
+  let statusFilter = document.getElementById('filterStatusLicenca')?.value || 'todos';
+  licencasFiltradas = licencas.filter(l => (l.cliente || '').toLowerCase().includes(searchTerm) && (statusFilter === 'todos' || l.status === statusFilter));
+  paginaAtual = 1;
+  renderizarLicencas();
 }
 
-function filtrarTabela() {
-  const searchTerm = document.getElementById('searchInput')?.value.toLowerCase() || '';
-  const statusFilter = document.getElementById('filterStatus')?.value || 'todos';
-  
-  licencasFiltradas = todasLicencas.filter(licenca => {
-    const matchSearch = licenca.cliente.toLowerCase().includes(searchTerm) || 
-                        licenca.chave.toLowerCase().includes(searchTerm);
-    const matchStatus = statusFilter === 'todos' || licenca.status === statusFilter;
-    return matchSearch && matchStatus;
-  });
-  
+function ordenarLicencas(coluna) { if (ordemColuna === coluna) ordemDirecao = ordemDirecao === 'asc' ? 'desc' : 'asc'; else { ordemColuna = coluna; ordemDirecao = 'asc'; } renderizarLicencas(); }
+
+function renderizarLicencas() {
   licencasFiltradas.sort((a, b) => {
-    let valA = a[ordemColuna] || '';
-    let valB = b[ordemColuna] || '';
-    if (ordemColuna === 'validade') {
-      valA = new Date(valA) || 0;
-      valB = new Date(valB) || 0;
-    }
+    let valA = a[ordemColuna] || '', valB = b[ordemColuna] || '';
+    if (ordemColuna === 'validade') { valA = new Date(valA) || 0; valB = new Date(valB) || 0; }
     if (valA < valB) return ordemDirecao === 'asc' ? -1 : 1;
     if (valA > valB) return ordemDirecao === 'asc' ? 1 : -1;
     return 0;
   });
   
-  paginaAtual = 1;
-  renderizarPagina();
-  renderizarPaginacao();
+  let start = (paginaAtual-1) * itensPorPagina;
+  let pagina = licencasFiltradas.slice(start, start + itensPorPagina);
+  let tbody = document.getElementById('listaLicencas');
+  if (pagina.length === 0) { tbody.innerHTML = '<table><td colspan="6" class="empty-state">Nenhuma licença</td></tr>'; return; }
+  
+  tbody.innerHTML = pagina.map(l => `<tr><td><strong>${escapeHtml(l.cliente)}</strong>${l.ultima_renovacao ? `<br><small>Renovada: ${formatarData(l.ultima_renovacao)}</small>` : ''}${l.renovacoes ? `<br><small>${l.renovacoes}x renovada</small>` : ''}</td><td><code>${escapeHtml(l.chave)}</code></td><td><span class="status-badge status-${l.status}">${l.status}</span></td><td>${formatarData(l.validade)}</td><td>${l.machine_id ? l.machine_id.substring(0,20)+'...' : '💻 Livre'}</td><td><div class="action-buttons"><button class="btn-success btn-sm" onclick="atualizarStatus('${l.id}','ATIVA')">✅</button><button class="btn-danger btn-sm" onclick="atualizarStatus('${l.id}','BLOQUEADA')">🔒</button><button class="btn-warning btn-sm" onclick="liberarMaquina('${l.id}')">🖥️</button><button class="btn-primary btn-sm" onclick="abrirModalRenovacao('${l.id}', '${escapeHtml(l.cliente)}', '${l.validade}')">🔄</button><button class="btn-danger btn-sm" onclick="excluirLicenca('${l.id}','${escapeHtml(l.cliente)}')">🗑️</button></div></td></tr>`).join('');
+  
+  let totalPaginas = Math.ceil(licencasFiltradas.length / itensPorPagina);
+  let div = document.getElementById('paginationLicencas');
+  if (totalPaginas <= 1) { div.innerHTML = ''; return; }
+  let html = `<button class="page-btn" onclick="mudarPagina(${paginaAtual-1})" ${paginaAtual===1?'disabled':''}>«</button>`;
+  for(let i=1; i<=Math.min(totalPaginas,5); i++) html += `<button class="page-btn ${paginaAtual===i?'active':''}" onclick="mudarPagina(${i})">${i}</button>`;
+  html += `<button class="page-btn" onclick="mudarPagina(${paginaAtual+1})" ${paginaAtual===totalPaginas?'disabled':''}>»</button>`;
+  div.innerHTML = html;
 }
 
-function renderizarPagina() {
-  const start = (paginaAtual - 1) * itensPorPagina;
-  const end = start + itensPorPagina;
-  const licencasPagina = licencasFiltradas.slice(start, end);
-  
-  const tbody = document.getElementById('lista');
-  if (licencasPagina.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" class="empty-state"><i class="fas fa-inbox"></i><br>Nenhuma licença encontrada</td</td>`;
-    return;
-  }
-  
-  tbody.innerHTML = licencasPagina.map(l => {
-    const mostrarRenovar = precisaRenovar(l.validade, l.status);
-    return `
-      <tr>
-        <td data-label="Cliente"><strong>${escapeHtml(l.cliente)}</strong>${l.ultima_renovacao ? `<br><small style="color:#64748b">Renovada em: ${formatarData(l.ultima_renovacao)}</small>` : ''}${l.renovacoes ? `<br><small style="color:#90d105">${l.renovacoes} renovação(ões)</small>` : ''}</td>
-        <td data-label="Chave"><code>${escapeHtml(l.chave)}</code></td>
-        <td data-label="Status"><span class="status-badge status-${l.status}">${l.status}</span></td>
-        <td data-label="Validade">${formatarData(l.validade)}</td>
-        <td data-label="Máquina">${l.machine_id ? l.machine_id.substring(0, 20) + "..." : "💻 Livre"}</td>
-        <td data-label="Ações">
-          <div class="action-buttons">
-            <button class="btn-success btn-sm" onclick="atualizarStatus('${l.id}', 'ATIVA')">✅ Ativar</button>
-            <button class="btn-danger btn-sm" onclick="atualizarStatus('${l.id}', 'BLOQUEADA')">🔒 Bloquear</button>
-            <button class="btn-warning btn-sm" onclick="liberarMaquina('${l.id}')">🖥️ Liberar PC</button>
-            ${mostrarRenovar ? `<button class="btn-primary btn-sm" onclick="abrirModalRenovacao('${l.id}', '${escapeHtml(l.cliente)}', '${l.validade}')">🔄 Renovar</button>` : ''}
-            <button class="btn-danger btn-sm" onclick="excluirLicenca('${l.id}', '${escapeHtml(l.cliente)}')">🗑️ Excluir</button>
-          </div>
-        </td>
-      </table>
-    `;
-  }).join("");
-}
+function mudarPagina(p) { let total = Math.ceil(licencasFiltradas.length / itensPorPagina); if(p<1 || p>total) return; paginaAtual=p; renderizarLicencas(); }
 
-function renderizarPaginacao() {
-  const totalPaginas = Math.ceil(licencasFiltradas.length / itensPorPagina);
-  const paginationDiv = document.getElementById('pagination');
-  
-  if (totalPaginas <= 1) {
-    paginationDiv.innerHTML = '';
-    return;
-  }
-  
-  let html = '';
-  html += `<button class="page-btn" onclick="mudarPagina(${paginaAtual - 1})" ${paginaAtual === 1 ? 'disabled' : ''}>« Anterior</button>`;
-  
-  for (let i = 1; i <= Math.min(totalPaginas, 5); i++) {
-    html += `<button class="page-btn ${paginaAtual === i ? 'active' : ''}" onclick="mudarPagina(${i})">${i}</button>`;
-  }
-  
-  html += `<button class="page-btn" onclick="mudarPagina(${paginaAtual + 1})" ${paginaAtual === totalPaginas ? 'disabled' : ''}>Próximo »</button>`;
-  paginationDiv.innerHTML = html;
-}
+async function criarLicenca() { let cid = document.getElementById('novaLicencaCliente').value, validade = document.getElementById('novaLicencaValidade').value; if(!cid||!validade){ showToast("Selecione cliente e data","error"); return; } let cli = clientes.find(c=>c.id==cid); let d = await apiLicencas("POST",{chave:document.getElementById('novaLicencaChave').value||gerarChave(), cliente:cli.nome, cliente_id:parseInt(cid), validade, status:document.getElementById('novaLicencaStatus').value, max_machines:1, modulos:["whatsapp","ndi","enquete"]}); if(d.ok){ showToast("Licença criada!","success"); document.getElementById('novaLicencaChave').value=''; document.getElementById('novaLicencaValidade').value=''; mostrarTab('licencas'); carregarLicencas(); } else showToast(d.erro,"error"); }
 
-function mudarPagina(pagina) {
-  const totalPaginas = Math.ceil(licencasFiltradas.length / itensPorPagina);
-  if (pagina < 1 || pagina > totalPaginas) return;
-  paginaAtual = pagina;
-  renderizarPagina();
-  renderizarPaginacao();
-}
+async function atualizarStatus(id, status) { let d = await apiLicencas("PUT", { id, status }); if(d.ok){ showToast(`Licença ${status.toLowerCase()}`, "success"); carregarLicencas(); } else showToast(d.erro, "error"); }
+async function liberarMaquina(id) { let d = await apiLicencas("PUT", { id, machine_id: null }); if(d.ok){ showToast("Máquina liberada", "success"); carregarLicencas(); } else showToast(d.erro, "error"); }
+async function excluirLicenca(id, cliente) { openModalConfirm(`Excluir licença de ${cliente}?`, async()=>{ let d=await apiLicencas("DELETE",{id}); if(d.ok){ showToast("Licença excluída","success"); carregarLicencas(); } else showToast(d.erro,"error"); }); }
 
 // ============================================================
-// STATS
+// RENOVAÇÃO
 // ============================================================
-function atualizarStats() {
-  const ativas = todasLicencas.filter(l => l.status === 'ATIVA').length;
-  const bloqueadas = todasLicencas.filter(l => l.status === 'BLOQUEADA').length;
-  const maquinas = todasLicencas.filter(l => l.machine_id).length;
-  
-  document.getElementById('statTotal').innerText = todasLicencas.length;
-  document.getElementById('statAtivas').innerText = ativas;
-  document.getElementById('statBloqueadas').innerText = bloqueadas;
-  document.getElementById('statMaquinas').innerText = maquinas;
-}
-
-// ============================================================
-// CARREGAR DADOS
-// ============================================================
-async function carregar() {
-  const token = getToken();
-  if (!token) return;
-  
-  document.getElementById("lista").innerHTML = `<tr><td colspan="6" style="text-align: center;"><span class="spinner"></span> Carregando...</td</tr>`;
-  
-  const data = await api("GET");
-  
-  if (!data.ok) {
-    if (data.erro === "Não autorizado") {
-      logout();
-      showToast("Sessão expirada. Faça login novamente.", "error");
-    } else {
-      document.getElementById("lista").innerHTML = `<tr><td colspan="6" style="text-align: center; color: #ef4444;">❌ ${data.erro || "Erro ao carregar"}</td</tr>`;
-    }
-    return;
-  }
-  
-  todasLicencas = data.licencas || [];
-  atualizarStats();
-  filtrarTabela();
-}
-
-// ============================================================
-// LOGIN / LOGOUT
-// ============================================================
-async function login() {
-  const usuario = document.getElementById("usuario").value.trim();
-  const senha = document.getElementById("senha").value.trim();
-  
-  if (!usuario || !senha) {
-    showToast("Preencha usuário e senha", "error");
-    return;
-  }
-  
-  try {
-    const res = await fetch("/api/admin-login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ usuario, senha })
-    });
-    
-    const data = await res.json();
-    
-    if (!data.ok) {
-      showToast(data.erro || "Usuário ou senha inválidos", "error");
-      return;
-    }
-    
-    localStorage.setItem("zapmix_admin_token", data.token);
-    showToast("Login realizado com sucesso!", "success");
-    
-    document.getElementById('loginOverlay').style.display = 'none';
-    document.getElementById('adminHeader').style.display = 'flex';
-    document.getElementById('adminContent').style.display = 'block';
-    
-    carregar();
-  } catch (error) {
-    showToast("Erro de conexão com o servidor", "error");
-  }
-}
-
-function logout() {
-  localStorage.removeItem('zapmix_admin_token');
-  document.getElementById('loginOverlay').style.display = 'flex';
-  document.getElementById('adminHeader').style.display = 'none';
-  document.getElementById('adminContent').style.display = 'none';
-  showToast('Logout realizado', 'success');
-}
-
-// ============================================================
-// EVENTOS E INICIALIZAÇÃO
-// ============================================================
-document.getElementById('searchInput')?.addEventListener('keyup', filtrarTabela);
-document.getElementById('filterStatus')?.addEventListener('change', filtrarTabela);
-
-if (getToken()) {
-  document.getElementById('loginOverlay').style.display = 'none';
-  document.getElementById('adminHeader').style.display = 'flex';
-  document.getElementById('adminContent').style.display = 'block';
-  carregar();
-} else {
-  document.getElementById('loginOverlay').style.display = 'flex';
-  document.getElementById('adminHeader').style.display = 'none';
-  document.getElementById('adminContent').style.display = 'none';
-}
-
-setInterval(() => {
-  if (getToken()) carregar();
-}, 30000);
-
-// ============================================================
-// SISTEMA DE RENOVAÇÃO DE LICENÇAS
-// ============================================================
-
 function abrirModalRenovacao(id, cliente, validadeAtual) {
   window.licencaRenovando = id;
-  
   let modal = document.getElementById('modalRenovacao');
   if (!modal) {
     modal = document.createElement('div');
     modal.id = 'modalRenovacao';
     modal.className = 'modal';
-    modal.innerHTML = `
-      <div class="modal-content" style="max-width: 450px; text-align: left;">
-        <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-          <h3 style="margin:0;">🔄 Renovar Licença</h3>
-          <button class="close-modal" onclick="fecharModalRenovacao()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;">&times;</button>
-        </div>
-        <div style="margin-bottom: 20px;">
-          <p><strong>Cliente:</strong> <span id="renovacaoCliente"></span></p>
-          <p><strong>Validade atual:</strong> <span id="renovacaoValidadeAtual"></span></p>
-        </div>
-        <div class="input-group" style="margin-bottom: 20px;">
-          <label>Período de Renovação</label>
-          <select id="periodoRenovacao" style="width:100%;padding:10px;border-radius:8px;border:1px solid #e2e8f0;">
-            <option value="30">+ 30 dias</option>
-            <option value="60">+ 60 dias</option>
-            <option value="90" selected>+ 90 dias</option>
-            <option value="180">+ 180 dias (6 meses)</option>
-            <option value="365">+ 365 dias (1 ano)</option>
-          </select>
-        </div>
-        <div class="input-group" style="margin-bottom: 20px;">
-          <label>Nova data de validade</label>
-          <input type="date" id="novaDataValidade" readonly style="width:100%;padding:10px;border-radius:8px;background:#f1f5f9;">
-        </div>
-        <div class="modal-buttons" style="display: flex; gap: 12px; justify-content: flex-end;">
-          <button class="btn-secondary" onclick="fecharModalRenovacao()">Cancelar</button>
-          <button class="btn-primary" onclick="confirmarRenovacao()">Confirmar Renovação</button>
-        </div>
-      </div>
-    `;
+    modal.innerHTML = `<div class="modal-content"><div class="modal-header"><h3>🔄 Renovar Licença</h3><button class="close-modal" onclick="fecharModalRenovacao()">&times;</button></div><p><strong>Cliente:</strong> <span id="renovacaoCliente"></span></p><p><strong>Validade atual:</strong> <span id="renovacaoValidadeAtual"></span></p><div class="input-group"><label>Período</label><select id="periodoRenovacao"><option value="30">+30 dias</option><option value="60">+60 dias</option><option value="90" selected>+90 dias</option><option value="180">+180 dias</option><option value="365">+365 dias</option></select></div><div class="input-group"><label>Nova data</label><input type="date" id="novaDataValidade" readonly></div><div class="modal-buttons"><button class="btn-secondary" onclick="fecharModalRenovacao()">Cancelar</button><button class="btn-primary" onclick="confirmarRenovacao()">Confirmar</button></div></div>`;
     document.body.appendChild(modal);
   }
-  
   document.getElementById('renovacaoCliente').innerText = cliente;
   document.getElementById('renovacaoValidadeAtual').innerText = formatarData(validadeAtual);
-  
-  const periodoSelect = document.getElementById('periodoRenovacao');
-  const novaDataInput = document.getElementById('novaDataValidade');
-  
-  const atualizarNovaData = () => {
-    const dias = parseInt(periodoSelect.value);
-    const dataAtual = new Date(validadeAtual);
-    const novaData = new Date(dataAtual);
-    novaData.setDate(dataAtual.getDate() + dias);
-    const ano = novaData.getFullYear();
-    const mes = String(novaData.getMonth() + 1).padStart(2, '0');
-    const dia = String(novaData.getDate()).padStart(2, '0');
-    novaDataInput.value = `${ano}-${mes}-${dia}`;
-  };
-  
-  periodoSelect.onchange = atualizarNovaData;
-  atualizarNovaData();
-  
+  let periodoSelect = document.getElementById('periodoRenovacao');
+  let novaDataInput = document.getElementById('novaDataValidade');
+  let atualizarData = () => { let dias = parseInt(periodoSelect.value); let novaData = new Date(validadeAtual); novaData.setDate(novaData.getDate() + dias); novaDataInput.value = novaData.toISOString().split('T')[0]; };
+  periodoSelect.onchange = atualizarData;
+  atualizarData();
   modal.classList.add('active');
 }
+function fecharModalRenovacao() { let modal = document.getElementById('modalRenovacao'); if (modal) modal.classList.remove('active'); window.licencaRenovando = null; }
+async function confirmarRenovacao() { let id = window.licencaRenovando; if (!id) return; let novaData = document.getElementById('novaDataValidade').value; let dias = parseInt(document.getElementById('periodoRenovacao').value); openModalConfirm(`Renovar por ${dias} dias?`, async () => { let d = await apiLicencas("PUT", { id, validade: novaData, status: 'ATIVA', ultima_renovacao: new Date().toISOString().split('T')[0] }); if (d.ok) { showToast("Licença renovada!", "success"); fecharModalRenovacao(); carregarLicencas(); } else showToast(d.erro, "error"); }); }
 
-function fecharModalRenovacao() {
-  const modal = document.getElementById('modalRenovacao');
-  if (modal) modal.classList.remove('active');
-  window.licencaRenovando = null;
+// ============================================================
+// PERFIL
+// ============================================================
+function carregarPerfil() { let p = JSON.parse(localStorage.getItem('zapmix_admin_perfil') || '{}'); document.getElementById('perfilNome').value = p.nome || 'Administrador'; document.getElementById('perfilEmail').value = p.email || 'admin@zapmix.com'; document.getElementById('perfilTelefone').value = p.telefone || ''; document.getElementById('perfilCargo').value = p.cargo || 'Administrador'; }
+function salvarPerfil() { let p = { nome: document.getElementById('perfilNome').value, email: document.getElementById('perfilEmail').value, telefone: document.getElementById('perfilTelefone').value, cargo: document.getElementById('perfilCargo').value }; localStorage.setItem('zapmix_admin_perfil', JSON.stringify(p)); showToast("Perfil atualizado!", "success"); }
+function cancelarEdicaoPerfil() { carregarPerfil(); }
+function alterarSenha() { let atual = document.getElementById('senhaAtual').value, nova = document.getElementById('novaSenha').value, confirmar = document.getElementById('confirmarSenha').value; if (!atual || !nova || !confirmar) { showToast("Preencha todos", "error"); return; } if (nova !== confirmar) { showToast("Senhas não coincidem", "error"); return; } if (nova.length < 6) { showToast("Mínimo 6 caracteres", "error"); return; } showToast("Senha alterada!", "success"); document.getElementById('senhaAtual').value = ''; document.getElementById('novaSenha').value = ''; document.getElementById('confirmarSenha').value = ''; }
+
+// ============================================================
+// NAVEGAÇÃO
+// ============================================================
+function mostrarTab(tab) {
+  document.getElementById('tabClientes').style.display = 'none';
+  document.getElementById('tabLicencas').style.display = 'none';
+  document.getElementById('tabNovaLicenca').style.display = 'none';
+  document.getElementById('tabPerfil').style.display = 'none';
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  if (tab === 'clientes') { document.getElementById('tabClientes').style.display = 'block'; document.querySelector('.tab-btn:first-child').classList.add('active'); carregarClientes(); carregarLicencas(); }
+  else if (tab === 'licencas') { document.getElementById('tabLicencas').style.display = 'block'; document.querySelector('.tab-btn:nth-child(2)').classList.add('active'); carregarLicencas(); }
+  else if (tab === 'nova-licenca') { document.getElementById('tabNovaLicenca').style.display = 'block'; document.querySelector('.tab-btn:nth-child(3)').classList.add('active'); carregarClientes(); }
+  else if (tab === 'perfil') { document.getElementById('tabPerfil').style.display = 'block'; document.querySelector('.tab-btn:nth-child(4)').classList.add('active'); carregarPerfil(); }
 }
 
-async function confirmarRenovacao() {
-  const id = window.licencaRenovando;
-  if (!id) return;
-  
-  const novaData = document.getElementById('novaDataValidade').value;
-  const periodo = document.getElementById('periodoRenovacao').value;
-  const dias = parseInt(periodo);
-  
-  openModal(`Renovar licença por ${dias} dias?`, async () => {
-    const data = await api("PUT", { 
-      id, 
-      validade: novaData,
-      status: 'ATIVA',
-      ultima_renovacao: new Date().toISOString().split('T')[0]
-    });
-    
-    if (data.ok) {
-      showToast(`✅ Licença renovada! Nova validade: ${formatarData(novaData)}`, "success");
-      fecharModalRenovacao();
-      carregar();
-    } else {
-      showToast(data.erro || "Erro ao renovar licença", "error");
-    }
-  });
-}
+// ============================================================
+// STATS
+// ============================================================
+function atualizarStats() { document.getElementById('statClientes').innerText = clientes.length; document.getElementById('statTotalLicencas').innerText = licencas.length; document.getElementById('statAtivas').innerText = licencas.filter(l => l.status === 'ATIVA').length; document.getElementById('statMaquinas').innerText = licencas.filter(l => l.machine_id).length; }
 
-// Função para verificar se a licença precisa de renovação
-function precisaRenovar(validade, status) {
-  if (status !== 'ATIVA') return false;
-  if (!validade) return false;
-  const hoje = new Date();
-  const dataValidade = new Date(validade);
-  const diff = Math.ceil((dataValidade - hoje) / (1000 * 60 * 60 * 24));
-  return diff <= 30; // Mostra botão de renovar se faltar 30 dias ou menos
-}
+// ============================================================
+// MODAL CONFIRMAÇÃO
+// ============================================================
+function openModalConfirm(msg, cb) { document.getElementById('confirmMessage').innerText = msg; acaoConfirmada = cb; document.getElementById('confirmModal').classList.add('active'); }
+function fecharModalConfirmar() { document.getElementById('confirmModal').classList.remove('active'); acaoConfirmada = null; }
+document.getElementById('confirmBtn').onclick = () => { if (acaoConfirmada) acaoConfirmada(); fecharModalConfirmar(); };
+
+// ============================================================
+// LOGIN / LOGOUT
+// ============================================================
+async function login() { let u = document.getElementById('usuario').value.trim(), s = document.getElementById('senha').value.trim(); if (!u || !s) { showToast("Preencha usuário e senha", "error"); return; } try { let res = await fetch("/api/admin-login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ usuario: u, senha: s }) }); let data = await res.json(); if (!data.ok) { showToast(data.erro || "Erro no login", "error"); return; } localStorage.setItem("zapmix_admin_token", data.token); showToast("Login realizado!", "success"); document.getElementById('loginOverlay').style.display = 'none'; document.getElementById('adminHeader').style.display = 'flex'; document.getElementById('adminContent').style.display = 'block'; mostrarTab('clientes'); carregarLicencas(); } catch(e) { showToast("Erro de conexão", "error"); } }
+function logout() { localStorage.removeItem('zapmix_admin_token'); location.reload(); }
+
+// ============================================================
+// EVENTOS
+// ============================================================
+document.getElementById('searchCliente')?.addEventListener('keyup', carregarClientes);
+document.getElementById('searchLicenca')?.addEventListener('keyup', carregarLicencas);
+document.getElementById('filterStatusLicenca')?.addEventListener('change', carregarLicencas);
+
+if (getToken()) { document.getElementById('loginOverlay').style.display = 'none'; document.getElementById('adminHeader').style.display = 'flex'; document.getElementById('adminContent').style.display = 'block'; carregarClientes(); carregarLicencas(); } else { document.getElementById('loginOverlay').style.display = 'flex'; }
+setInterval(() => { if (getToken()) carregarLicencas(); }, 60000);
 </script>
 </body>
 </html>
