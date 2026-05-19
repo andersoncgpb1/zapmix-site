@@ -1,49 +1,137 @@
-// api/admin-licencas.js
-const SENHA_ADMIN = process.env.ADMIN_SENHA || 'admin123';
+import crypto from "crypto";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+);
+
+function verificarToken(req) {
+  try {
+    const auth = req.headers.authorization || "";
+    const token = auth.replace("Bearer ", "");
+
+    if (!token || !token.includes(".")) return false;
+
+    const [base64, assinatura] = token.split(".");
+
+    const assinaturaCorreta = crypto
+      .createHmac("sha256", process.env.ADMIN_SECRET)
+      .update(base64)
+      .digest("base64url");
+
+    if (assinatura !== assinaturaCorreta) return false;
+
+    const payload = JSON.parse(Buffer.from(base64, "base64url").toString());
+
+    if (Date.now() > payload.exp) return false;
+
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function gerarChave() {
+  const bloco = () => crypto.randomBytes(2).toString("hex").toUpperCase();
+  return `ZAPMIX-${bloco()}-${bloco()}-${bloco()}`;
+}
 
 export default async function handler(req, res) {
-  // CORS
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  
-  if (req.method === 'OPTIONS') return res.status(200).end();
-  
-  // Verificar senha (simples, para demonstração)
-  const auth = req.headers.authorization;
-  const senha = auth ? auth.replace('Bearer ', '') : req.query.senha;
-  
-  if (senha !== SENHA_ADMIN) {
-    return res.status(401).json({ erro: 'Não autorizado' });
+  if (!verificarToken(req)) {
+    return res.status(401).json({ ok: false, erro: "Não autorizado" });
   }
-  
-  if (req.method === 'GET') {
-    // Buscar licenças do servidor remoto
-    const serverUrl = process.env.ZAPMIX_SERVER || 'http://localhost:3000';
-    
-    try {
-      const response = await fetch(`${serverUrl}/api/admin/licencas`);
-      const data = await response.json();
-      res.json(data);
-    } catch (error) {
-      res.status(500).json({ erro: 'Erro ao buscar licenças', licencas: [] });
-    }
+
+  if (req.method === "GET") {
+    const { data, error } = await supabase
+      .from("licenses")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) return res.status(500).json({ ok: false, erro: error.message });
+
+    return res.json({ ok: true, licencas: data });
   }
-  
-  if (req.method === 'POST') {
-    const { acao, chave } = req.body;
-    const serverUrl = process.env.ZAPMIX_SERVER || 'http://localhost:3000';
-    
-    try {
-      const response = await fetch(`${serverUrl}/api/admin/licencas/acao`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ acao, chave })
+
+  if (req.method === "POST") {
+    const {
+      chave,
+      cliente,
+      validade,
+      status,
+      max_machines,
+      modulos
+    } = req.body || {};
+
+    if (!cliente || !validade) {
+      return res.status(400).json({
+        ok: false,
+        erro: "Cliente e validade são obrigatórios"
       });
-      const data = await response.json();
-      res.json(data);
-    } catch (error) {
-      res.status(500).json({ erro: 'Erro ao executar ação' });
     }
+
+    const { data, error } = await supabase
+      .from("licenses")
+      .insert({
+        chave: chave || gerarChave(),
+        cliente,
+        validade,
+        status: status || "ATIVA",
+        max_machines: max_machines || 1,
+        modulos: modulos || ["whatsapp", "ndi", "enquete"]
+      })
+      .select()
+      .single();
+
+    if (error) return res.status(500).json({ ok: false, erro: error.message });
+
+    return res.json({ ok: true, licenca: data });
   }
+
+  if (req.method === "PUT") {
+    const {
+      id,
+      cliente,
+      validade,
+      status,
+      machine_id,
+      max_machines,
+      modulos
+    } = req.body || {};
+
+    const update = {};
+
+    if (cliente !== undefined) update.cliente = cliente;
+    if (validade !== undefined) update.validade = validade;
+    if (status !== undefined) update.status = status;
+    if (machine_id !== undefined) update.machine_id = machine_id;
+    if (max_machines !== undefined) update.max_machines = max_machines;
+    if (modulos !== undefined) update.modulos = modulos;
+
+    const { data, error } = await supabase
+      .from("licenses")
+      .update(update)
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (error) return res.status(500).json({ ok: false, erro: error.message });
+
+    return res.json({ ok: true, licenca: data });
+  }
+
+  if (req.method === "DELETE") {
+    const { id } = req.body || {};
+
+    const { error } = await supabase
+      .from("licenses")
+      .delete()
+      .eq("id", id);
+
+    if (error) return res.status(500).json({ ok: false, erro: error.message });
+
+    return res.json({ ok: true });
+  }
+
+  return res.status(405).json({ ok: false, erro: "Método não permitido" });
 }

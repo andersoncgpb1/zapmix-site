@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <title>ZapMix Admin | Painel de Controle</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<link rel="icon" type="image/png" href="/media/favicon.png">
-<link rel="shortcut icon" href="/media/favicon.png">
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<link rel="shortcut icon" href="/assets/favicon.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
 <style>
 * {
@@ -410,7 +410,7 @@ code {
 
 <div id="loginOverlay" class="login-overlay" style="display: none;">
   <div class="login-box">
-    <img src="/media/logotipo.png" alt="ZapMix" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'60\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%2390d105\'/%3E%3Ctext x=\'50\' y=\'67\' font-size=\'40\' text-anchor=\'middle\' fill=\'%230f172a\' font-weight=\'bold\'%3EZM%3C/text%3E%3C/svg%3E'">
+    <img src="assets/logotipo.png" alt="ZapMix" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'60\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%2390d105\'/%3E%3Ctext x=\'50\' y=\'67\' font-size=\'40\' text-anchor=\'middle\' fill=\'%230f172a\' font-weight=\'bold\'%3EZM%3C/text%3E%3C/svg%3E'">
     <h2>🔐 Acesso Administrativo</h2>
     <div class="input-group" style="margin-bottom: 20px;">
       <label>Token de Administrador</label>
@@ -504,25 +504,42 @@ function getToken() {
 }
 
 async function api(method, body) {
+  const token = localStorage.getItem("zapmix_admin_token") || "";
+
   const res = await fetch("/api/admin-licencas", {
     method,
     headers: {
       "Content-Type": "application/json",
-      "x-admin-token": getToken()
+      "Authorization": "Bearer " + token
     },
     body: body ? JSON.stringify(body) : undefined
   });
 
-  const text = await res.text();
+  return await res.json();
+}
 
-  try {
-    return JSON.parse(text);
-  } catch {
-    return {
-      ok: false,
-      error: text
-    };
+async function login() {
+  const usuario = document.getElementById("usuario").value.trim();
+  const senha = document.getElementById("senha").value.trim();
+
+  const res = await fetch("/api/admin-login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ usuario, senha })
+  });
+
+  const data = await res.json();
+
+  if (!data.ok) {
+    alert(data.erro || "Erro no login");
+    return;
   }
+
+  localStorage.setItem("zapmix_admin_token", data.token);
+  alert("Login realizado");
+  carregar();
 }
 
 async function criarLicenca() {
