@@ -1228,37 +1228,41 @@ async function excluirCliente(id, nome) {
 // LICENÇAS
 // ============================================================
 async function carregarLicencas() {
-  let token = getToken();
-  if (!token) return;
-  let data = await apiLicencas("GET");
-  if (data.ok) licencas = data.licencas || [];
-  aplicarFiltros();
+  const token = getToken();
+  console.log("Token:", token ? "Existe" : "Não existe");
+  
+  if (!token) {
+    console.log("Sem token, não carrega licenças");
+    return;
+  }
+  
+  try {
+    console.log("Buscando licenças da API...");
+    const data = await apiLicencas("GET");
+    console.log("Resposta da API:", data);
+    
+    if (data.ok && data.licencas) {
+      licencas = data.licencas;
+      console.log(`${licencas.length} licenças carregadas`);
+    } else {
+      console.log("Erro ao carregar licenças:", data.erro);
+      licencas = [];
+    }
+    
+    // Atualizar stats mesmo se não houver licenças
+    document.getElementById('statTotalLicencas').innerText = licencas.length;
+    document.getElementById('statAtivas').innerText = licencas.filter(l => l.status === 'ATIVA').length;
+    document.getElementById('statMaquinas').innerText = licencas.filter(l => l.machine_id).length;
+    
+    aplicarFiltros();
+    atualizarDashboard();
+    
+  } catch (error) {
+    console.error("Erro na requisição:", error);
+    showToast("Erro ao carregar licenças", "error");
+    document.getElementById('listaLicencas').innerHTML = '<tr><td colspan="7" class="empty-state">❌ Erro ao carregar licenças</td></tr>';
+  }
 }
-
-function aplicarFiltros() {
-  let searchTerm = document.getElementById('searchLicenca')?.value.toLowerCase() || '';
-  let statusFilter = document.getElementById('filterStatusLicenca')?.value || 'todos';
-  let dataInicio = document.getElementById('filterDataInicio')?.value;
-  let dataFim = document.getElementById('filterDataFim')?.value;
-  
-  licencasFiltradas = licencas.filter(l => {
-    const matchSearch = (l.cliente || '').toLowerCase().includes(searchTerm) || l.chave.toLowerCase().includes(searchTerm);
-    const matchStatus = statusFilter === 'todos' || l.status === statusFilter;
-    let matchData = true;
-    if (dataInicio && l.validade) matchData = matchData && new Date(l.validade) >= new Date(dataInicio);
-    if (dataFim && l.validade) matchData = matchData && new Date(l.validade) <= new Date(dataFim);
-    return matchSearch && matchStatus && matchData;
-  });
-  
-  licencasFiltradas.sort((a, b) => {
-    let valA = a[ordemColuna] || '';
-    let valB = b[ordemColuna] || '';
-    if (ordemColuna === 'validade') { valA = new Date(valA) || 0; valB = new Date(valB) || 0; }
-    if (valA < valB) return ordemDirecao === 'asc' ? -1 : 1;
-    if (valA > valB) return ordemDirecao === 'asc' ? 1 : -1;
-    return 0;
-  });
-  
   paginaAtual = 1;
   renderizarLicencas();
   atualizarDashboard();
