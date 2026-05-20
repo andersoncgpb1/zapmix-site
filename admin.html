@@ -1310,6 +1310,8 @@ function logout() {
 }
 
 // Clientes API
+// Substitua a função carregarClientes() por esta versão ordenada:
+
 async function carregarClientes() {
     const token = getToken();
     if (!token) return;
@@ -1329,7 +1331,16 @@ async function carregarClientes() {
         showToast("Erro ao carregar clientes", "error");
     }
     
-    // Atualiza o select de clientes
+    // ORDENA OS CLIENTES POR NOME (A-Z)
+    clientes.sort((a, b) => {
+        const nomeA = (a.nome || '').toLowerCase();
+        const nomeB = (b.nome || '').toLowerCase();
+        if (nomeA < nomeB) return -1;
+        if (nomeA > nomeB) return 1;
+        return 0;
+    });
+    
+    // Atualiza o select de clientes (também ordenado)
     let select = document.getElementById('novaLicencaCliente');
     if (select) {
         select.innerHTML = '<option value="">Selecione um cliente</option>' + 
@@ -1354,7 +1365,10 @@ async function carregarClientes() {
     
     tbody.innerHTML = clientesFiltrados.map(c => `
         <tr>
-            <td><strong>${escapeHtml(c.nome)}</strong><br><small style="color:#64748b;">${escapeHtml(c.empresa || '')}</small></td>
+            <td>
+                <strong>${escapeHtml(c.nome)}</strong><br>
+                <small style="color:#64748b;">${escapeHtml(c.empresa || '-')}</small>
+            </td>
             <td>${escapeHtml(c.email || '-')}</td>
             <td>${escapeHtml(c.telefone || '-')}</td>
             <td>${licencas.filter(l => l.cliente_id === c.id).length}</td>
@@ -1369,63 +1383,6 @@ async function carregarClientes() {
     `).join('');
     
     atualizarStats();
-}
-
-async function salvarCliente() {
-    let nome = document.getElementById('clienteNome').value.trim();
-    if (!nome) { 
-        showToast("Nome obrigatório", "error"); 
-        return; 
-    }
-    
-    const clienteData = { 
-        nome: nome, 
-        email: document.getElementById('clienteEmail').value, 
-        telefone: document.getElementById('clienteTelefone').value, 
-        empresa: document.getElementById('clienteEmpresa').value 
-    };
-    
-    let result;
-    if (clienteEditandoId) {
-        clienteData.id = clienteEditandoId;
-        result = await apiRequest("/api/clientes", "PUT", clienteData);
-    } else {
-        result = await apiRequest("/api/clientes", "POST", clienteData);
-    }
-    
-    if (result && result.ok) { 
-        showToast(clienteEditandoId ? "Cliente atualizado!" : "Cliente criado!", "success"); 
-        fecharModalCliente(); 
-        await carregarClientes(); 
-    } else { 
-        showToast(result?.erro || "Erro ao salvar cliente", "error"); 
-    }
-}
-
-async function excluirCliente(id, nome) { 
-    openModalConfirm(`Excluir "${nome}"? Esta ação não poderá ser desfeita.`, async () => { 
-        const result = await apiRequest("/api/clientes", "DELETE", { id: id }); 
-        if (result && result.ok) { 
-            showToast("Cliente excluído", "success"); 
-            await carregarClientes(); 
-        } else { 
-            showToast(result?.erro || "Erro ao excluir cliente", "error"); 
-        } 
-        fecharModalConfirmar();
-    }); 
-}
-
-function editarCliente(id) { 
-    let c = clientes.find(c => c.id === id); 
-    if (c) { 
-        clienteEditandoId = c.id; 
-        document.getElementById('modalClienteTitle').innerHTML = '<i class="fas fa-edit"></i> Editar Cliente'; 
-        document.getElementById('clienteNome').value = c.nome; 
-        document.getElementById('clienteEmail').value = c.email || ''; 
-        document.getElementById('clienteTelefone').value = c.telefone || ''; 
-        document.getElementById('clienteEmpresa').value = c.empresa || ''; 
-        document.getElementById('modalCliente').classList.add('active'); 
-    } 
 }
 
 // Licenças API
@@ -1604,6 +1561,68 @@ function renderizarLicencas() {
     }
     html += `<button class="page-btn" onclick="mudarPagina(${paginaAtual+1})" ${paginaAtual===totalPaginas?'disabled':''}>»</button>`;
     div.innerHTML = html;
+}
+
+// Variável para controlar a ordem dos clientes
+let ordemClientesColuna = 'nome';
+let ordemClientesDirecao = 'asc';
+
+function ordenarClientes(coluna) {
+    if (ordemClientesColuna === coluna) {
+        ordemClientesDirecao = ordemClientesDirecao === 'asc' ? 'desc' : 'asc';
+    } else {
+        ordemClientesColuna = coluna;
+        ordemClientesDirecao = 'asc';
+    }
+    
+    clientes.sort((a, b) => {
+        let valA = a[coluna] || '';
+        let valB = b[coluna] || '';
+        
+        if (typeof valA === 'string') {
+            valA = valA.toLowerCase();
+            valB = valB.toLowerCase();
+        }
+        
+        if (valA < valB) return ordemClientesDirecao === 'asc' ? -1 : 1;
+        if (valA > valB) return ordemClientesDirecao === 'asc' ? 1 : -1;
+        return 0;
+    });
+    
+    // Re-renderiza a tabela
+    const searchTerm = document.getElementById('searchCliente')?.value.toLowerCase() || '';
+    let clientesFiltrados = clientes.filter(c => 
+        (c.nome || '').toLowerCase().includes(searchTerm) || 
+        (c.email || '').toLowerCase().includes(searchTerm) ||
+        (c.empresa || '').toLowerCase().includes(searchTerm)
+    );
+    
+    let tbody = document.getElementById('listaClientes');
+    if (!tbody) return;
+    
+    if (clientesFiltrados.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="empty-state"><i class="fas fa-inbox"></i><br>Nenhum cliente encontrado</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = clientesFiltrados.map(c => `
+        <tr>
+            <td>
+                <strong>${escapeHtml(c.nome)}</strong><br>
+                <small style="color:#64748b;">${escapeHtml(c.empresa || '-')}</small>
+            </td>
+            <td>${escapeHtml(c.email || '-')}</td>
+            <td>${escapeHtml(c.telefone || '-')}</td>
+            <td>${licencas.filter(l => l.cliente_id === c.id).length}</td>
+            <td><span class="status-badge status-ATIVO"><i class="fas fa-check-circle"></i> Ativo</span></td>
+            <td>
+                <div class="action-buttons">
+                    <button class="btn-success btn-sm" onclick="editarCliente(${c.id})"><i class="fas fa-edit"></i> Editar</button>
+                    <button class="btn-danger btn-sm" onclick="excluirCliente(${c.id}, '${escapeHtml(c.nome)}')"><i class="fas fa-trash"></i> Excluir</button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
 }
 
 // ============================================================
