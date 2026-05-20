@@ -1660,6 +1660,205 @@ function fallbackCopiarChave(chave) {
 }
 
 // ============================================================
+// FUNÇÕES DE AÇÕES DAS LICENÇAS
+// ============================================================
+
+async function atualizarStatus(id, status) { 
+    try {
+        showToast("Processando...", "info");
+        
+        // Encontra a licença para ter os dados completos
+        const licenca = licencas.find(l => l.id == id);
+        if (!licenca) {
+            showToast("Licença não encontrada", "error");
+            return;
+        }
+        
+        // Prepara os dados para atualização
+        const dadosAtualizacao = {
+            id: id,
+            status: status,
+            chave: licenca.chave,
+            cliente: licenca.cliente,
+            cliente_id: licenca.cliente_id,
+            validade: licenca.validade
+        };
+        
+        const result = await apiRequest("/api/admin-licencas", "PUT", dadosAtualizacao);
+        
+        if(result && result.ok){ 
+            showToast(`Licença ${status === 'ATIVA' ? 'ativada' : 'bloqueada'} com sucesso!`, "success"); 
+            await carregarLicencas();
+        } else { 
+            showToast(result?.erro || "Erro ao atualizar status", "error"); 
+        } 
+    } catch(e) {
+        console.error("Erro em atualizarStatus:", e);
+        showToast("Erro ao atualizar status", "error");
+    }
+}
+
+async function liberarMaquina(id) { 
+    try {
+        showToast("Liberando máquina...", "info");
+        
+        // Encontra a licença para ter os dados completos
+        const licenca = licencas.find(l => l.id == id);
+        if (!licenca) {
+            showToast("Licença não encontrada", "error");
+            return;
+        }
+        
+        // Prepara os dados para atualização
+        const dadosAtualizacao = {
+            id: id,
+            machine_id: null,
+            chave: licenca.chave,
+            cliente: licenca.cliente,
+            cliente_id: licenca.cliente_id,
+            status: licenca.status,
+            validade: licenca.validade
+        };
+        
+        const result = await apiRequest("/api/admin-licencas", "PUT", dadosAtualizacao);
+        
+        if(result && result.ok){ 
+            showToast("Máquina liberada com sucesso!", "success"); 
+            await carregarLicencas();
+        } else { 
+            showToast(result?.erro || "Erro ao liberar máquina", "error"); 
+        } 
+    } catch(e) {
+        console.error("Erro em liberarMaquina:", e);
+        showToast("Erro ao liberar máquina", "error");
+    }
+}
+
+async function excluirLicenca(id, cliente) { 
+    openModalConfirm(`Excluir licença de ${cliente}? Esta ação não poderá ser desfeita.`, async () => { 
+        try {
+            showToast("Excluindo licença...", "info");
+            
+            const result = await apiRequest("/api/admin-licencas", "DELETE", { id: id }); 
+            
+            if(result && result.ok){ 
+                showToast("Licença excluída com sucesso!", "success"); 
+                await carregarLicencas();
+            } else { 
+                showToast(result?.erro || "Erro ao excluir licença", "error"); 
+            } 
+        } catch(e) {
+            console.error("Erro em excluirLicenca:", e);
+            showToast("Erro ao excluir licença", "error");
+        }
+        fecharModalConfirmar();
+    }); 
+}
+
+async function renovarLicenca(id, novaData, dias) {
+    try {
+        showToast("Renovando licença...", "info");
+        
+        // Encontra a licença para ter os dados completos
+        const licenca = licencas.find(l => l.id == id);
+        if (!licenca) {
+            showToast("Licença não encontrada", "error");
+            return;
+        }
+        
+        // Prepara os dados para atualização
+        const dadosAtualizacao = {
+            id: id,
+            validade: novaData,
+            status: 'ATIVA',
+            ultima_renovacao: new Date().toISOString().split('T')[0],
+            chave: licenca.chave,
+            cliente: licenca.cliente,
+            cliente_id: licenca.cliente_id
+        };
+        
+        // Se a licença estava expirada, adiciona contador de renovação
+        const renovacoes = (licenca.renovacoes || 0) + 1;
+        dadosAtualizacao.renovacoes = renovacoes;
+        
+        const result = await apiRequest("/api/admin-licencas", "PUT", dadosAtualizacao);
+        
+        if(result && result.ok){ 
+            showToast(`Licença renovada por ${dias} dias!`, "success"); 
+            await carregarLicencas();
+        } else { 
+            showToast(result?.erro || "Erro ao renovar licença", "error"); 
+        } 
+    } catch(e) {
+        console.error("Erro em renovarLicenca:", e);
+        showToast("Erro ao renovar licença", "error");
+    }
+}
+
+// Função para criar licença
+async function criarLicenca() { 
+    let cid = document.getElementById('novaLicencaCliente').value; 
+    let validade = document.getElementById('novaLicencaValidade').value; 
+    
+    if(!cid || !validade){ 
+        showToast("Selecione cliente e data de validade", "error"); 
+        return; 
+    } 
+    
+    let cli = clientes.find(c => c.id == cid); 
+    if(!cli){
+        showToast("Cliente não encontrado", "error");
+        return;
+    }
+    
+    const chave = document.getElementById('novaLicencaChave').value || gerarChave();
+    const status = document.getElementById('novaLicencaStatus').value;
+    
+    const licencaData = {
+        chave: chave,
+        cliente: cli.nome,
+        cliente_id: parseInt(cid),
+        validade: validade,
+        status: status,
+        max_machines: 1,
+        modulos: ["whatsapp", "ndi", "enquete"]
+    };
+    
+    showToast("Criando licença...", "info");
+    
+    const result = await apiRequest("/api/admin-licencas", "POST", licencaData);
+    
+    if(result && result.ok){ 
+        showToast("Licença criada com sucesso!", "success"); 
+        document.getElementById('novaLicencaChave').value = ''; 
+        document.getElementById('novaLicencaValidade').value = ''; 
+        await carregarLicencas(); 
+        mostrarTab('licencas');
+    } else { 
+        showToast(result?.erro || "Erro ao criar licença", "error"); 
+    } 
+}
+
+// Função para ordenar licenças
+function ordenarLicencas(coluna) { 
+    if (ordemColuna === coluna) {
+        ordemDirecao = ordemDirecao === 'asc' ? 'desc' : 'asc';
+    } else { 
+        ordemColuna = coluna; 
+        ordemDirecao = 'asc'; 
+    }
+    renderizarLicencas(); 
+}
+
+function mudarPagina(p) { 
+    let total = Math.ceil(licencasFiltradas.length / itensPorPagina); 
+    if(p<1 || p>total) return; 
+    paginaAtual = p; 
+    renderizarLicencas(); 
+}
+
+
+// ============================================================
 // FUNÇÕES DE RENOVAÇÃO
 // ============================================================
 function abrirModalRenovacao(id, cliente, validadeAtual) {
@@ -1923,6 +2122,22 @@ function fecharModalConfirmar() {
 document.getElementById('confirmBtn').onclick = () => { 
     if (acaoConfirmada) acaoConfirmada(); 
 };
+
+
+// Adicione isso no final do script, antes das funções de evento
+
+// Garante que o modal de confirmação funcione corretamente
+document.addEventListener('DOMContentLoaded', function() {
+    const confirmBtn = document.getElementById('confirmBtn');
+    if (confirmBtn) {
+        confirmBtn.onclick = () => { 
+            if (acaoConfirmada) {
+                acaoConfirmada();
+                fecharModalConfirmar();
+            }
+        };
+    }
+});
 
 // ============================================================
 // EVENTOS E INICIALIZAÇÃO
