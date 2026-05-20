@@ -4,12 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#90d105">
-<title>ZapMix Admin | Painel de Controle</title>
+<title>ZapMix | Painel de Controle</title>
 <link rel="icon" type="image/png" href="/assets/favicon.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <style>
 * {
   margin: 0;
@@ -921,11 +920,11 @@ body.dark-theme .modal-header h3 {
     <h2><i class="fas fa-shield-alt" style="color:#90d105;"></i> Acesso Administrativo</h2>
     <div class="input-group">
       <label><i class="fas fa-user"></i> Usuário</label>
-      <input type="text" id="usuario" placeholder="admin" autocomplete="off">
+      <input type="text" id="usuario" placeholder="Digite seu usuário" autocomplete="off">
     </div>
     <div class="input-group">
       <label><i class="fas fa-lock"></i> Senha</label>
-      <input type="password" id="senha" placeholder="••••••">
+      <input type="password" id="senha" placeholder="Digite sua senha">
     </div>
     <button class="btn-primary" onclick="login()"><i class="fas fa-sign-in-alt"></i> Entrar no Painel</button>
   </div>
@@ -1132,23 +1131,9 @@ body.dark-theme .modal-header h3 {
 
 <script>
 // ============================================================
-// DADOS FIXOS
+// CONFIGURAÇÃO DA API
 // ============================================================
-const DADOS_FIXOS = {
-    clientes: [
-        { id: 1, nome: "Anderson Souza", email: "anderson@email.com", telefone: "(83) 98628-0769", empresa: "ZapMix" },
-        { id: 2, nome: "Silas Laurentino", email: "silas@email.com", telefone: "(83) 98888-8888", empresa: "Comunicação" },
-        { id: 3, nome: "Ricardo Maia", email: "ricardo@email.com", telefone: "(83) 99999-9999", empresa: "TV Produções" },
-        { id: 7, nome: "Victor Araújo", email: "victor@email.com", telefone: "(83) 97777-7777", empresa: "Araújo Produções" }
-    ],
-    licencas: [
-        { id: 1, chave: "ZAPMIX-1B95-688C-C1AC", cliente: "Anderson Souza", cliente_id: 1, validade: "2027-05-18", status: "ATIVA", machine_id: "7727d36eb058862c1d9ed0717b215b86a7d39f58af42bc853c52b409420e" },
-        { id: 2, chave: "ZAPMIX-62A0-A318-9E44", cliente: "Silas Laurentino", cliente_id: 2, validade: "2026-07-17", status: "ATIVA", machine_id: null },
-        { id: 3, chave: "ZAPMIX-47B6-66DC-4A21", cliente: "Ricardo Maia", cliente_id: 3, validade: "2026-07-17", status: "ATIVA", machine_id: null },
-        { id: 4, chave: "ZAPMIX-D93F-4196-9289", cliente: "Victor Araújo", cliente_id: 7, validade: "2026-07-19", status: "ATIVA", machine_id: "bbfa133fc3fb91da0a8ab5a814b4512ea58b31379ddddb93db0eebd8c64171" },
-        { id: 5, chave: "ZAPMIX-1C35-C8A3-7E7B", cliente: "Anderson Souza", cliente_id: 1, validade: "2026-06-02", status: "ATIVA", machine_id: null }
-    ]
-};
+const API_BASE_URL = window.location.origin; // Usa a mesma origem do site
 
 // ============================================================
 // VARIÁVEIS GLOBAIS
@@ -1187,7 +1172,12 @@ function escapeHtml(t) {
 }
 
 function formatarData(d) { 
-    return d ? new Date(d).toLocaleDateString('pt-BR') : "N/A"; 
+    if (!d) return "N/A";
+    try {
+        return new Date(d).toLocaleDateString('pt-BR');
+    } catch(e) {
+        return d;
+    }
 }
 
 function gerarChave() { 
@@ -1212,122 +1202,126 @@ function toggleTheme() {
 }
 
 // ============================================================
-// GRÁFICOS
+// FUNÇÕES DE API - CONEXÃO REAL COM O BACKEND
 // ============================================================
-function atualizarGraficos() {
-    const ativas = licencas.filter(l => l.status === 'ATIVA').length;
-    const bloqueadas = licencas.filter(l => l.status === 'BLOQUEADA').length;
-    const expiradas = licencas.filter(l => l.status === 'EXPIRADA').length;
-    
-    if (statusChart) statusChart.destroy();
-    const ctx = document.getElementById('statusChart').getContext('2d');
-    statusChart = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Ativas', 'Bloqueadas', 'Expiradas'],
-            datasets: [{
-                data: [ativas, bloqueadas, expiradas],
-                backgroundColor: ['#10b981', '#ef4444', '#f59e0b'],
-                borderWidth: 0
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            plugins: {
-                legend: { position: 'bottom' }
-            }
-        }
-    });
-    
-    if (activityChart) activityChart.destroy();
-    const ctx2 = document.getElementById('activityChart').getContext('2d');
-    activityChart = new Chart(ctx2, {
-        type: 'line',
-        data: {
-            labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
-            datasets: [{
-                label: 'Licenças Ativas',
-                data: [45, 52, 58, 65, 72, ativas],
-                borderColor: '#90d105',
-                backgroundColor: 'rgba(144, 209, 5, 0.1)',
-                tension: 0.4,
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            plugins: {
-                legend: { position: 'bottom' }
-            }
-        }
-    });
-}
 
-// ============================================================
-// API (MOCK)
-// ============================================================
-async function apiClientes(method, body) { 
-    let token = getToken(); 
-    if (!token) return { ok: false, clientes: [] };
+// Função genérica para requisições à API
+async function apiRequest(endpoint, method, body = null) {
+    const token = getToken();
+    const headers = {
+        "Content-Type": "application/json"
+    };
+    
+    if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+    }
+    
+    const options = {
+        method: method,
+        headers: headers
+    };
+    
+    if (body) {
+        options.body = JSON.stringify(body);
+    }
     
     try {
-        // Mock API - substituir pela real
-        return { ok: true, clientes: DADOS_FIXOS.clientes };
-    } catch(e) {
-        return { ok: true, clientes: DADOS_FIXOS.clientes };
+        const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error(`Erro na API ${endpoint}:`, error);
+        return { ok: false, erro: error.message };
     }
 }
 
-async function apiLicencas(method, body) { 
-    let token = getToken(); 
-    if (!token) return { ok: false };
+// Login
+async function login() { 
+    let usuario = document.getElementById('usuario').value.trim(); 
+    let senha = document.getElementById('senha').value; 
     
-    try {
-        // Mock API - substituir pela real
-        if (method === "GET") {
-            return { ok: true, licencas: DADOS_FIXOS.licencas };
-        }
-        return { ok: true };
-    } catch(e) {
-        return { ok: false, erro: e.message };
+    if (!usuario || !senha) { 
+        showToast("Preencha usuário e senha", "error"); 
+        return; 
     }
+    
+    try { 
+        const response = await fetch(`${API_BASE_URL}/api/admin-login`, { 
+            method: "POST", 
+            headers: { "Content-Type": "application/json" }, 
+            body: JSON.stringify({ usuario: usuario, senha: senha }) 
+        }); 
+        
+        const data = await response.json(); 
+        
+        if (!data.ok) { 
+            showToast(data.erro || "Usuário ou senha inválidos", "error"); 
+            return; 
+        } 
+        
+        localStorage.setItem("zapmix_admin_token", data.token); 
+        localStorage.setItem("zapmix_admin_usuario", usuario);
+        
+        showToast("Login realizado com sucesso!", "success"); 
+        
+        document.getElementById('loginOverlay').style.display = 'none'; 
+        document.getElementById('adminHeader').style.display = 'flex'; 
+        document.getElementById('adminContent').style.display = 'block'; 
+        
+        // Carrega os dados iniciais
+        await carregarClientes(); 
+        await carregarLicencas(); 
+        mostrarTab('clientes'); 
+        
+    } catch(e) { 
+        console.error("Erro no login:", e);
+        showToast("Erro de conexão com o servidor", "error"); 
+    } 
 }
 
-// ============================================================
-// CLIENTES
-// ============================================================
+function logout() { 
+    localStorage.removeItem('zapmix_admin_token'); 
+    localStorage.removeItem('zapmix_admin_usuario');
+    location.reload(); 
+}
+
+// Clientes API
 async function carregarClientes() {
-    let token = getToken();
+    const token = getToken();
     if (!token) return;
     
     try {
-        let data = await apiClientes("GET");
-        if (data.ok && data.clientes && data.clientes.length > 0) {
+        const data = await apiRequest("/api/clientes", "GET");
+        
+        if (data.ok && data.clientes) {
             clientes = data.clientes;
         } else {
-            clientes = DADOS_FIXOS.clientes;
+            clientes = [];
+            if (data.erro) showToast(data.erro, "error");
         }
     } catch(e) {
-        clientes = DADOS_FIXOS.clientes;
+        console.error("Erro ao carregar clientes:", e);
+        clientes = [];
+        showToast("Erro ao carregar clientes", "error");
     }
     
+    // Atualiza o select de clientes
     let select = document.getElementById('novaLicencaCliente');
     if (select) {
         select.innerHTML = '<option value="">Selecione um cliente</option>' + 
             clientes.map(c => `<option value="${c.id}">${escapeHtml(c.nome)}</option>`).join('');
     }
     
-    let tbody = document.getElementById('listaClientes');
-    if (!tbody) return;
-    
+    // Filtra e exibe na tabela
     let searchTerm = document.getElementById('searchCliente')?.value.toLowerCase() || '';
     let clientesFiltrados = clientes.filter(c => 
         (c.nome || '').toLowerCase().includes(searchTerm) || 
         (c.email || '').toLowerCase().includes(searchTerm) ||
         (c.empresa || '').toLowerCase().includes(searchTerm)
     );
+    
+    let tbody = document.getElementById('listaClientes');
+    if (!tbody) return;
     
     if (clientesFiltrados.length === 0) {
         tbody.innerHTML = '<tr><td colspan="6" class="empty-state"><i class="fas fa-inbox"></i><br>Nenhum cliente encontrado</td></tr>';
@@ -1353,53 +1347,48 @@ async function carregarClientes() {
     atualizarStats();
 }
 
-function abrirModalCliente() { 
-    clienteEditandoId = null; 
-    document.getElementById('modalClienteTitle').innerHTML = '<i class="fas fa-user-plus"></i> Novo Cliente'; 
-    document.getElementById('clienteNome').value = ''; 
-    document.getElementById('clienteEmail').value = ''; 
-    document.getElementById('clienteTelefone').value = ''; 
-    document.getElementById('clienteEmpresa').value = ''; 
-    document.getElementById('modalCliente').classList.add('active'); 
-}
-
-function fecharModalCliente() { 
-    document.getElementById('modalCliente').classList.remove('active'); 
-}
-
-function salvarCliente() {
+async function salvarCliente() {
     let nome = document.getElementById('clienteNome').value.trim();
     if (!nome) { 
         showToast("Nome obrigatório", "error"); 
         return; 
     }
     
+    const clienteData = { 
+        nome: nome, 
+        email: document.getElementById('clienteEmail').value, 
+        telefone: document.getElementById('clienteTelefone').value, 
+        empresa: document.getElementById('clienteEmpresa').value 
+    };
+    
+    let result;
     if (clienteEditandoId) {
-        let index = clientes.findIndex(c => c.id === clienteEditandoId);
-        if (index !== -1) {
-            clientes[index] = {
-                ...clientes[index],
-                nome: nome,
-                email: document.getElementById('clienteEmail').value,
-                telefone: document.getElementById('clienteTelefone').value,
-                empresa: document.getElementById('clienteEmpresa').value
-            };
-        }
-        showToast("Cliente atualizado!", "success");
+        clienteData.id = clienteEditandoId;
+        result = await apiRequest("/api/clientes", "PUT", clienteData);
     } else {
-        const novoId = Math.max(...clientes.map(c => c.id), 0) + 1;
-        clientes.push({
-            id: novoId,
-            nome: nome,
-            email: document.getElementById('clienteEmail').value,
-            telefone: document.getElementById('clienteTelefone').value,
-            empresa: document.getElementById('clienteEmpresa').value
-        });
-        showToast("Cliente criado!", "success");
+        result = await apiRequest("/api/clientes", "POST", clienteData);
     }
     
-    fecharModalCliente();
-    carregarClientes();
+    if (result && result.ok) { 
+        showToast(clienteEditandoId ? "Cliente atualizado!" : "Cliente criado!", "success"); 
+        fecharModalCliente(); 
+        await carregarClientes(); 
+    } else { 
+        showToast(result?.erro || "Erro ao salvar cliente", "error"); 
+    }
+}
+
+async function excluirCliente(id, nome) { 
+    openModalConfirm(`Excluir "${nome}"? Esta ação não poderá ser desfeita.`, async () => { 
+        const result = await apiRequest("/api/clientes", "DELETE", { id: id }); 
+        if (result && result.ok) { 
+            showToast("Cliente excluído", "success"); 
+            await carregarClientes(); 
+        } else { 
+            showToast(result?.erro || "Erro ao excluir cliente", "error"); 
+        } 
+        fecharModalConfirmar();
+    }); 
 }
 
 function editarCliente(id) { 
@@ -1415,36 +1404,24 @@ function editarCliente(id) {
     } 
 }
 
-function excluirCliente(id, nome) { 
-    openModalConfirm(`Excluir "${nome}"?`, () => { 
-        const temLicenca = licencas.some(l => l.cliente_id === id);
-        if (temLicenca) {
-            showToast("Cliente possui licenças ativas", "error");
-            return;
-        }
-        clientes = clientes.filter(c => c.id !== id);
-        showToast("Cliente excluído", "success");
-        carregarClientes();
-        fecharModalConfirmar();
-    }); 
-}
-
-// ============================================================
-// LICENÇAS
-// ============================================================
+// Licenças API
 async function carregarLicencas() {
-    let token = getToken();
+    const token = getToken();
     if (!token) return;
     
     try {
-        let data = await apiLicencas("GET");
-        if (data.ok && data.licencas && data.licencas.length > 0) {
+        const data = await apiRequest("/api/admin-licencas", "GET");
+        
+        if (data.ok && data.licencas) {
             licencas = data.licencas;
         } else {
-            licencas = DADOS_FIXOS.licencas;
+            licencas = [];
+            if (data.erro) showToast(data.erro, "error");
         }
     } catch(e) {
-        licencas = DADOS_FIXOS.licencas;
+        console.error("Erro ao carregar licenças:", e);
+        licencas = [];
+        showToast("Erro ao carregar licenças", "error");
     }
     
     atualizarStats();
@@ -1464,6 +1441,113 @@ async function carregarLicencas() {
     renderizarLicencas();
 }
 
+async function criarLicenca() { 
+    let cid = document.getElementById('novaLicencaCliente').value; 
+    let validade = document.getElementById('novaLicencaValidade').value; 
+    
+    if(!cid || !validade){ 
+        showToast("Selecione cliente e data de validade", "error"); 
+        return; 
+    } 
+    
+    let cli = clientes.find(c => c.id == cid); 
+    if(!cli){
+        showToast("Cliente não encontrado", "error");
+        return;
+    }
+    
+    const licencaData = {
+        chave: document.getElementById('novaLicencaChave').value || gerarChave(), 
+        cliente: cli.nome, 
+        cliente_id: parseInt(cid), 
+        validade: validade, 
+        status: document.getElementById('novaLicencaStatus').value
+    };
+    
+    const result = await apiRequest("/api/admin-licencas", "POST", licencaData);
+    
+    if(result && result.ok){ 
+        showToast("Licença criada com sucesso!", "success"); 
+        document.getElementById('novaLicencaChave').value = ''; 
+        document.getElementById('novaLicencaValidade').value = ''; 
+        await carregarLicencas(); 
+        mostrarTab('licencas');
+    } else { 
+        showToast(result?.erro || "Erro ao criar licença", "error"); 
+    } 
+}
+
+async function atualizarStatus(id, status) { 
+    try {
+        const result = await apiRequest("/api/admin-licencas", "PUT", { id: id, status: status }); 
+        if(result && result.ok){ 
+            showToast(`Licença ${status === 'ATIVA' ? 'ativada' : 'bloqueada'}!`, "success"); 
+            await carregarLicencas();
+        } else { 
+            showToast(result?.erro || "Erro ao atualizar status", "error"); 
+        } 
+    } catch(e) {
+        console.error("Erro em atualizarStatus:", e);
+        showToast("Erro ao atualizar status", "error");
+    }
+}
+
+async function liberarMaquina(id) { 
+    try {
+        const result = await apiRequest("/api/admin-licencas", "PUT", { id: id, machine_id: null }); 
+        if(result && result.ok){ 
+            showToast("Máquina liberada com sucesso!", "success"); 
+            await carregarLicencas();
+        } else { 
+            showToast(result?.erro || "Erro ao liberar máquina", "error"); 
+        } 
+    } catch(e) {
+        console.error("Erro em liberarMaquina:", e);
+        showToast("Erro ao liberar máquina", "error");
+    }
+}
+
+async function excluirLicenca(id, cliente) { 
+    openModalConfirm(`Excluir licença de ${cliente}? Esta ação não poderá ser desfeita.`, async () => { 
+        try {
+            const result = await apiRequest("/api/admin-licencas", "DELETE", { id: id }); 
+            if(result && result.ok){ 
+                showToast("Licença excluída com sucesso!", "success"); 
+                await carregarLicencas();
+            } else { 
+                showToast(result?.erro || "Erro ao excluir licença", "error"); 
+            } 
+        } catch(e) {
+            console.error("Erro em excluirLicenca:", e);
+            showToast("Erro ao excluir licença", "error");
+        }
+        fecharModalConfirmar();
+    }); 
+}
+
+async function renovarLicenca(id, novaData, dias) {
+    try {
+        const result = await apiRequest("/api/admin-licencas", "PUT", { 
+            id: id, 
+            validade: novaData, 
+            status: 'ATIVA',
+            ultima_renovacao: new Date().toISOString().split('T')[0]
+        }); 
+        if(result && result.ok){ 
+            showToast(`Licença renovada por ${dias} dias!`, "success"); 
+            await carregarLicencas();
+        } else { 
+            showToast(result?.erro || "Erro ao renovar licença", "error"); 
+        } 
+    } catch(e) {
+        console.error("Erro em renovarLicenca:", e);
+        showToast("Erro ao renovar licença", "error");
+    }
+}
+
+// ============================================================
+// FUNÇÕES DE ORDENAÇÃO E PAGINAÇÃO
+// ============================================================
 function ordenarLicencas(coluna) { 
     if (ordemColuna === coluna) {
         ordemDirecao = ordemDirecao === 'asc' ? 'desc' : 'asc';
@@ -1481,6 +1565,10 @@ function renderizarLicencas() {
         if (ordemColuna === 'validade') { 
             valA = new Date(valA) || 0; 
             valB = new Date(valB) || 0; 
+        }
+        if (typeof valA === 'string') {
+            valA = valA.toLowerCase();
+            valB = valB.toLowerCase();
         }
         if (valA < valB) return ordemDirecao === 'asc' ? -1 : 1;
         if (valA > valB) return ordemDirecao === 'asc' ? 1 : -1;
@@ -1504,7 +1592,7 @@ function renderizarLicencas() {
         
         return `
         <tr>
-            <td><strong>${escapeHtml(l.cliente)}</strong></td>
+            <td><strong>${escapeHtml(l.cliente)}</strong>${l.ultima_renovacao ? `<br><small style="color:#64748b;">🔄 Última: ${formatarData(l.ultima_renovacao)}</small>` : ''}${l.renovacoes ? `<br><small style="color:#64748b;">📊 ${l.renovacoes}x</small>` : ''}</td>
             <td><code>${escapeHtml(l.chave)}</code></td>
             <td><span class="status-badge status-${l.status}">${l.status === 'ATIVA' ? '✅' : l.status === 'BLOQUEADA' ? '🔒' : '⏰'} ${l.status}</span></td>
             <td>${formatarData(l.validade)}</td>
@@ -1541,42 +1629,15 @@ function renderizarLicencas() {
 function mudarPagina(p) { 
     let total = Math.ceil(licencasFiltradas.length / itensPorPagina); 
     if(p<1 || p>total) return; 
-    paginaAtual=p; 
+    paginaAtual = p; 
     renderizarLicencas(); 
 }
 
-function atualizarStatus(id, status) { 
-    let licenca = licencas.find(l => l.id == id);
-    if (licenca) {
-        licenca.status = status;
-        showToast(`Licença ${status === 'ATIVA' ? 'ativada' : 'bloqueada'}!`, "success");
-        carregarLicencas();
-    }
-}
-
-function liberarMaquina(id) { 
-    let licenca = licencas.find(l => l.id == id);
-    if (licenca) {
-        licenca.machine_id = null;
-        showToast("Máquina liberada!", "success");
-        carregarLicencas();
-    }
-}
-
-function excluirLicenca(id, cliente) { 
-    openModalConfirm(`Excluir licença de ${cliente}?`, () => { 
-        licencas = licencas.filter(l => l.id != id);
-        showToast("Licença excluída!", "success");
-        carregarLicencas();
-        fecharModalConfirmar();
-    }); 
-}
-
 // ============================================================
-// RENOVAÇÃO
+// FUNÇÕES DE RENOVAÇÃO
 // ============================================================
 function abrirModalRenovacao(id, cliente, validadeAtual) {
-    window.licencaRenovando = id;
+    window.licencaRenovando = { id, cliente, validadeAtual };
     
     let modal = document.getElementById('modalRenovacao');
     modal.className = 'modal';
@@ -1588,9 +1649,24 @@ function abrirModalRenovacao(id, cliente, validadeAtual) {
             </div>
             <p><strong>Cliente:</strong> ${escapeHtml(cliente)}</p>
             <p><strong>Validade atual:</strong> ${formatarData(validadeAtual)}</p>
-            <div class="input-group"><label><i class="fas fa-calendar"></i> Período</label><select id="periodoRenovacao"><option value="30">+30 dias</option><option value="60">+60 dias</option><option value="90" selected>+90 dias</option><option value="180">+180 dias</option><option value="365">+365 dias</option></select></div>
-            <div class="input-group"><label><i class="fas fa-calendar-check"></i> Nova data</label><input type="date" id="novaDataValidade" readonly style="background:#f1f5f9;"></div>
-            <div class="modal-buttons"><button class="btn-secondary" onclick="fecharModalRenovacao()"><i class="fas fa-times"></i> Cancelar</button><button class="btn-primary" onclick="confirmarRenovacao()"><i class="fas fa-check"></i> Confirmar</button></div>
+            <div class="input-group">
+                <label><i class="fas fa-calendar"></i> Período</label>
+                <select id="periodoRenovacao">
+                    <option value="30">+30 dias</option>
+                    <option value="60">+60 dias</option>
+                    <option value="90" selected>+90 dias</option>
+                    <option value="180">+180 dias</option>
+                    <option value="365">+365 dias</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label><i class="fas fa-calendar-check"></i> Nova data</label>
+                <input type="date" id="novaDataValidade" readonly style="background:#f1f5f9;">
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-secondary" onclick="fecharModalRenovacao()"><i class="fas fa-times"></i> Cancelar</button>
+                <button class="btn-primary" onclick="confirmarRenovacao()"><i class="fas fa-check"></i> Confirmar</button>
+            </div>
         </div>
     `;
     
@@ -1614,21 +1690,20 @@ function fecharModalRenovacao() {
 }
 
 function confirmarRenovacao() { 
-    let id = window.licencaRenovando; 
-    if (!id) return; 
+    let licenca = window.licencaRenovando; 
+    if (!licenca) return; 
     let novaData = document.getElementById('novaDataValidade').value; 
-    let licenca = licencas.find(l => l.id == id);
-    if (licenca) {
-        licenca.validade = novaData;
-        licenca.status = 'ATIVA';
-        showToast("Licença renovada!", "success");
+    let dias = parseInt(document.getElementById('periodoRenovacao').value);
+    
+    openModalConfirm(`Renovar licença por ${dias} dias?`, async () => { 
+        await renovarLicenca(licenca.id, novaData, dias);
         fecharModalRenovacao();
-        carregarLicencas();
-    }
+        fecharModalConfirmar();
+    }); 
 }
 
 // ============================================================
-// PERFIL
+// PERFIL DO ADMIN
 // ============================================================
 function carregarPerfil() { 
     let p = JSON.parse(localStorage.getItem('zapmix_admin_perfil') || '{}'); 
@@ -1646,7 +1721,7 @@ function salvarPerfil() {
         cargo: document.getElementById('perfilCargo').value 
     }; 
     localStorage.setItem('zapmix_admin_perfil', JSON.stringify(p)); 
-    showToast("Perfil atualizado!", "success"); 
+    showToast("Perfil atualizado com sucesso!", "success"); 
 }
 
 function cancelarEdicaoPerfil() { 
@@ -1657,6 +1732,7 @@ function alterarSenha() {
     let atual = document.getElementById('senhaAtual').value; 
     let nova = document.getElementById('novaSenha').value; 
     let confirmar = document.getElementById('confirmarSenha').value; 
+    
     if (!atual || !nova || !confirmar) { 
         showToast("Preencha todos os campos", "error"); 
         return; 
@@ -1666,17 +1742,19 @@ function alterarSenha() {
         return; 
     } 
     if (nova.length < 6) { 
-        showToast("Mínimo 6 caracteres", "error"); 
+        showToast("A nova senha deve ter no mínimo 6 caracteres", "error"); 
         return; 
     } 
-    showToast("Senha alterada!", "success"); 
+    
+    // Aqui você pode implementar a chamada à API para alterar a senha
+    showToast("Senha alterada com sucesso!", "success"); 
     document.getElementById('senhaAtual').value = ''; 
     document.getElementById('novaSenha').value = ''; 
     document.getElementById('confirmarSenha').value = ''; 
 }
 
 // ============================================================
-// STATS
+// STATS E GRÁFICOS
 // ============================================================
 function atualizarStats() { 
     document.getElementById('statClientes').innerText = clientes.length; 
@@ -1685,8 +1763,63 @@ function atualizarStats() {
     document.getElementById('statMaquinas').innerText = licencas.filter(l => l.machine_id).length; 
 }
 
+function atualizarGraficos() {
+    const ativas = licencas.filter(l => l.status === 'ATIVA').length;
+    const bloqueadas = licencas.filter(l => l.status === 'BLOQUEADA').length;
+    const expiradas = licencas.filter(l => l.status === 'EXPIRADA').length;
+    
+    if (statusChart) statusChart.destroy();
+    const ctx = document.getElementById('statusChart').getContext('2d');
+    statusChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Ativas', 'Bloqueadas', 'Expiradas'],
+            datasets: [{
+                data: [ativas, bloqueadas, expiradas],
+                backgroundColor: ['#10b981', '#ef4444', '#f59e0b'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+    
+    // Dados mensais (mock - substituir por dados reais da API se disponível)
+    const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'];
+    const dadosMensais = [45, 52, 58, 65, 72, ativas];
+    
+    if (activityChart) activityChart.destroy();
+    const ctx2 = document.getElementById('activityChart').getContext('2d');
+    activityChart = new Chart(ctx2, {
+        type: 'line',
+        data: {
+            labels: meses,
+            datasets: [{
+                label: 'Licenças Ativas',
+                data: dadosMensais,
+                borderColor: '#90d105',
+                backgroundColor: 'rgba(144, 209, 5, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+}
+
 // ============================================================
-// NAVEGAÇÃO
+// NAVEGAÇÃO ENTRE TABS
 // ============================================================
 function mostrarTab(tab) {
     document.getElementById('tabClientes').style.display = 'none';
@@ -1699,7 +1832,6 @@ function mostrarTab(tab) {
         document.getElementById('tabClientes').style.display = 'block'; 
         document.querySelector('.tab-btn:first-child').classList.add('active'); 
         carregarClientes(); 
-        carregarLicencas(); 
     } else if (tab === 'licencas') { 
         document.getElementById('tabLicencas').style.display = 'block'; 
         document.querySelector('.tab-btn:nth-child(2)').classList.add('active'); 
@@ -1715,8 +1847,22 @@ function mostrarTab(tab) {
     }
 }
 
+function abrirModalCliente() { 
+    clienteEditandoId = null; 
+    document.getElementById('modalClienteTitle').innerHTML = '<i class="fas fa-user-plus"></i> Novo Cliente'; 
+    document.getElementById('clienteNome').value = ''; 
+    document.getElementById('clienteEmail').value = ''; 
+    document.getElementById('clienteTelefone').value = ''; 
+    document.getElementById('clienteEmpresa').value = ''; 
+    document.getElementById('modalCliente').classList.add('active'); 
+}
+
+function fecharModalCliente() { 
+    document.getElementById('modalCliente').classList.remove('active'); 
+}
+
 // ============================================================
-// MODAL CONFIRMAÇÃO
+// MODAL DE CONFIRMAÇÃO
 // ============================================================
 function openModalConfirm(msg, cb) { 
     document.getElementById('confirmMessage').innerHTML = `<i class="fas fa-question-circle" style="color:#f59e0b;"></i> ${msg}`; 
@@ -1731,38 +1877,7 @@ function fecharModalConfirmar() {
 
 document.getElementById('confirmBtn').onclick = () => { 
     if (acaoConfirmada) acaoConfirmada(); 
-    fecharModalConfirmar(); 
 };
-
-// ============================================================
-// LOGIN / LOGOUT
-// ============================================================
-function login() { 
-    let u = document.getElementById('usuario').value.trim(); 
-    let s = document.getElementById('senha').value.trim(); 
-    if (!u || !s) { 
-        showToast("Preencha usuário e senha", "error"); 
-        return; 
-    } 
-    
-    // Mock login
-    if (u === 'admin' && s === 'admin') {
-        localStorage.setItem("zapmix_admin_token", "mock_token");
-        showToast("Login realizado!", "success"); 
-        document.getElementById('loginOverlay').style.display = 'none'; 
-        document.getElementById('adminHeader').style.display = 'flex'; 
-        document.getElementById('adminContent').style.display = 'block'; 
-        mostrarTab('clientes'); 
-        carregarLicencas(); 
-    } else {
-        showToast("Usuário ou senha inválidos", "error");
-    }
-}
-
-function logout() { 
-    localStorage.removeItem('zapmix_admin_token'); 
-    location.reload(); 
-}
 
 // ============================================================
 // EVENTOS E INICIALIZAÇÃO
@@ -1771,23 +1886,27 @@ document.getElementById('searchCliente')?.addEventListener('keyup', () => carreg
 document.getElementById('searchLicenca')?.addEventListener('keyup', () => carregarLicencas());
 document.getElementById('filterStatusLicenca')?.addEventListener('change', () => carregarLicencas());
 
-// Theme
+// Carrega o tema salvo
 const savedTheme = localStorage.getItem('theme');
 if (savedTheme === 'dark') {
     document.body.classList.add('dark-theme');
-    document.querySelector('.theme-toggle i')?.classList.replace('fa-moon', 'fa-sun');
+    const themeIcon = document.querySelector('.theme-toggle i');
+    if (themeIcon) themeIcon.classList.replace('fa-moon', 'fa-sun');
 }
 
+// Verifica se o usuário já está logado
 if (getToken()) { 
     document.getElementById('loginOverlay').style.display = 'none'; 
     document.getElementById('adminHeader').style.display = 'flex'; 
     document.getElementById('adminContent').style.display = 'block'; 
     carregarClientes(); 
     carregarLicencas(); 
+    mostrarTab('clientes');
 } else { 
     document.getElementById('loginOverlay').style.display = 'flex'; 
 }
 
+// Atualiza licenças a cada 60 segundos
 setInterval(() => { 
     if (getToken()) carregarLicencas(); 
 }, 60000);
