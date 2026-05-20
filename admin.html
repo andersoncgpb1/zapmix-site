@@ -909,6 +909,30 @@ body.dark-theme .modal-header h3 {
     font-size: 1.2rem;
   }
 }
+
+/* Estilo para o código clicável */
+code {
+  background: rgba(144, 209, 5, 0.1);
+  padding: 4px 10px;
+  border-radius: 10px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--primary);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-block;
+}
+
+code:hover {
+  background: rgba(144, 209, 5, 0.2);
+  transform: scale(1.02);
+}
+
+.btn-sm i {
+  pointer-events: none;
+}
+
 </style>
 </head>
 <body>
