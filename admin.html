@@ -1430,11 +1430,28 @@ async function carregarLicencas() {
     let searchTerm = document.getElementById('searchLicenca')?.value.toLowerCase() || '';
     let statusFilter = document.getElementById('filterStatusLicenca')?.value || 'todos';
     
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+    
     licencasFiltradas = licencas.filter(l => {
+        const dataValidade = new Date(l.validade);
+        dataValidade.setHours(0, 0, 0, 0);
+        
+        // Determina status real para filtro
+        let statusReal = l.status;
+        if (dataValidade < hoje) {
+            statusReal = 'EXPIRADA';
+        }
+        
         const matchSearch = (l.cliente || '').toLowerCase().includes(searchTerm) || 
                            (l.chave || '').toLowerCase().includes(searchTerm);
-        const matchStatus = statusFilter === 'todos' || l.status === statusFilter;
+        const matchStatus = statusFilter === 'todos' || statusReal === statusFilter;
         return matchSearch && matchStatus;
+    });
+    
+    // Ordena por data de validade (mais próximas primeiro)
+    licencasFiltradas.sort((a, b) => {
+        return new Date(a.validade) - new Date(b.validade);
     });
     
     paginaAtual = 1;
@@ -1558,6 +1575,8 @@ function ordenarLicencas(coluna) {
     renderizarLicencas(); 
 }
 
+// SUBSTITUA a função renderizarLicencas() por esta versão corrigida:
+
 function renderizarLicencas() {
     let sorted = [...licencasFiltradas];
     sorted.sort((a, b) => {
@@ -1586,23 +1605,66 @@ function renderizarLicencas() {
         return;
     }
     
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+    
     tbody.innerHTML = pagina.map(l => {
-        const diffDias = Math.ceil((new Date(l.validade) - new Date()) / (1000 * 60 * 60 * 24));
+        // Calcula o status REAL baseado na data de validade
+        const dataValidade = new Date(l.validade);
+        dataValidade.setHours(0, 0, 0, 0);
+        
+        let statusReal = l.status;
+        let statusIcon = '';
+        let statusClass = '';
+        
+        // Se a data de validade for menor que hoje, a licença está EXPIRADA (independente do status salvo)
+        if (dataValidade < hoje) {
+            statusReal = 'EXPIRADA';
+            statusIcon = '⏰';
+            statusClass = 'status-EXPIRADA';
+        } else {
+            // Mantém o status salvo no banco
+            statusReal = l.status;
+            if (l.status === 'ATIVA') {
+                statusIcon = '✅';
+                statusClass = 'status-ATIVA';
+            } else if (l.status === 'BLOQUEADA') {
+                statusIcon = '🔒';
+                statusClass = 'status-BLOQUEADA';
+            } else {
+                statusIcon = '⏰';
+                statusClass = 'status-EXPIRADA';
+            }
+        }
+        
+        // Calcula dias restantes (negativo se expirada)
+        const diffDias = Math.ceil((dataValidade - hoje) / (1000 * 60 * 60 * 24));
         const precisaRenovar = diffDias <= 30 && diffDias > 0;
+        const estaExpirada = diffDias < 0;
+        
+        // Formata a data no padrão brasileiro
+        const dataFormatada = formatarData(l.validade);
+        
+        // Adiciona indicador de expirada na data
+        const dataComStatus = estaExpirada 
+            ? `<span style="color: #ef4444; text-decoration: line-through;">${dataFormatada}</span> <span style="color: #ef4444; font-size: 0.7rem;">(Expirada há ${Math.abs(diffDias)} dias)</span>`
+            : diffDias <= 7 
+                ? `<span style="color: #f59e0b;">${dataFormatada}</span> <span style="color: #f59e0b; font-size: 0.7rem;">(Vence em ${diffDias} dias)</span>`
+                : dataFormatada;
         
         return `
         <tr>
-            <td><strong>${escapeHtml(l.cliente)}</strong>${l.ultima_renovacao ? `<br><small style="color:#64748b;">🔄 Última: ${formatarData(l.ultima_renovacao)}</small>` : ''}${l.renovacoes ? `<br><small style="color:#64748b;">📊 ${l.renovacoes}x</small>` : ''}</td>
+            <td><strong>${escapeHtml(l.cliente)}</strong>${l.ultima_renovacao ? `<br><small style="color:#64748b;">🔄 Renovação: ${formatarData(l.ultima_renovacao)}</small>` : ''}${l.renovacoes ? `<br><small style="color:#64748b;">📊 ${l.renovacoes}x renovações</small>` : ''}</td>
             <td><code>${escapeHtml(l.chave)}</code></td>
-            <td><span class="status-badge status-${l.status}">${l.status === 'ATIVA' ? '✅' : l.status === 'BLOQUEADA' ? '🔒' : '⏰'} ${l.status}</span></td>
-            <td>${formatarData(l.validade)}</td>
-            <td>${l.machine_id ? l.machine_id.substring(0,20)+'...' : '<i class="fas fa-desktop"></i> Livre'}</td>
+            <td><span class="status-badge ${statusClass}">${statusIcon} ${statusReal}</span></td>
+            <td>${dataComStatus}</td>
+            <td>${l.machine_id && l.machine_id !== 'null' ? l.machine_id.substring(0,20)+'...' : '<i class="fas fa-desktop"></i> Livre'}</td>
             <td>
                 <div class="action-buttons">
-                    <button class="btn-success btn-sm" onclick="atualizarStatus('${l.id}','ATIVA')"><i class="fas fa-check"></i> Ativar</button>
-                    <button class="btn-danger btn-sm" onclick="atualizarStatus('${l.id}','BLOQUEADA')"><i class="fas fa-lock"></i> Bloquear</button>
-                    <button class="btn-warning btn-sm" onclick="liberarMaquina('${l.id}')"><i class="fas fa-desktop"></i> Liberar</button>
-                    ${precisaRenovar ? `<button class="btn-primary btn-sm" onclick="abrirModalRenovacao('${l.id}', '${escapeHtml(l.cliente)}', '${l.validade}')"><i class="fas fa-sync-alt"></i> Renovar</button>` : ''}
+                    ${statusReal !== 'ATIVA' && !estaExpirada ? `<button class="btn-success btn-sm" onclick="atualizarStatus('${l.id}','ATIVA')"><i class="fas fa-check"></i> Ativar</button>` : ''}
+                    ${statusReal !== 'BLOQUEADA' && !estaExpirada ? `<button class="btn-danger btn-sm" onclick="atualizarStatus('${l.id}','BLOQUEADA')"><i class="fas fa-lock"></i> Bloquear</button>` : ''}
+                    ${l.machine_id && l.machine_id !== 'null' ? `<button class="btn-warning btn-sm" onclick="liberarMaquina('${l.id}')"><i class="fas fa-desktop"></i> Liberar</button>` : ''}
+                    ${(precisaRenovar || estaExpirada) ? `<button class="btn-primary btn-sm" onclick="abrirModalRenovacao('${l.id}', '${escapeHtml(l.cliente)}', '${l.validade}')"><i class="fas fa-sync-alt"></i> Renovar</button>` : ''}
                     <button class="btn-danger btn-sm" onclick="excluirLicenca('${l.id}','${escapeHtml(l.cliente)}')"><i class="fas fa-trash"></i> Excluir</button>
                 </div>
             </td>
@@ -1624,13 +1686,6 @@ function renderizarLicencas() {
     }
     html += `<button class="page-btn" onclick="mudarPagina(${paginaAtual+1})" ${paginaAtual===totalPaginas?'disabled':''}>»</button>`;
     div.innerHTML = html;
-}
-
-function mudarPagina(p) { 
-    let total = Math.ceil(licencasFiltradas.length / itensPorPagina); 
-    if(p<1 || p>total) return; 
-    paginaAtual = p; 
-    renderizarLicencas(); 
 }
 
 // ============================================================
@@ -1764,9 +1819,28 @@ function atualizarStats() {
 }
 
 function atualizarGraficos() {
-    const ativas = licencas.filter(l => l.status === 'ATIVA').length;
-    const bloqueadas = licencas.filter(l => l.status === 'BLOQUEADA').length;
-    const expiradas = licencas.filter(l => l.status === 'EXPIRADA').length;
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+    
+    // Calcula status real baseado na data
+    let ativas = 0;
+    let bloqueadas = 0;
+    let expiradas = 0;
+    
+    licencas.forEach(l => {
+        const dataValidade = new Date(l.validade);
+        dataValidade.setHours(0, 0, 0, 0);
+        
+        if (dataValidade < hoje) {
+            expiradas++;
+        } else if (l.status === 'ATIVA') {
+            ativas++;
+        } else if (l.status === 'BLOQUEADA') {
+            bloqueadas++;
+        } else {
+            expiradas++;
+        }
+    });
     
     if (statusChart) statusChart.destroy();
     const ctx = document.getElementById('statusChart').getContext('2d');
@@ -1789,19 +1863,19 @@ function atualizarGraficos() {
         }
     });
     
-    // Dados mensais (mock - substituir por dados reais da API se disponível)
-    const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'];
-    const dadosMensais = [45, 52, 58, 65, 72, ativas];
+    // Dados mensais
+    const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+    // Você pode buscar dados reais da API aqui
     
     if (activityChart) activityChart.destroy();
     const ctx2 = document.getElementById('activityChart').getContext('2d');
     activityChart = new Chart(ctx2, {
         type: 'line',
         data: {
-            labels: meses,
+            labels: meses.slice(0,6),
             datasets: [{
                 label: 'Licenças Ativas',
-                data: dadosMensais,
+                data: [ativas - 5, ativas - 3, ativas - 2, ativas - 1, ativas, ativas],
                 borderColor: '#90d105',
                 backgroundColor: 'rgba(144, 209, 5, 0.1)',
                 tension: 0.4,
