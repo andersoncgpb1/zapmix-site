@@ -1458,125 +1458,6 @@ async function carregarLicencas() {
     renderizarLicencas();
 }
 
-async function criarLicenca() { 
-    let cid = document.getElementById('novaLicencaCliente').value; 
-    let validade = document.getElementById('novaLicencaValidade').value; 
-    
-    if(!cid || !validade){ 
-        showToast("Selecione cliente e data de validade", "error"); 
-        return; 
-    } 
-    
-    let cli = clientes.find(c => c.id == cid); 
-    if(!cli){
-        showToast("Cliente não encontrado", "error");
-        return;
-    }
-    
-    const licencaData = {
-        chave: document.getElementById('novaLicencaChave').value || gerarChave(), 
-        cliente: cli.nome, 
-        cliente_id: parseInt(cid), 
-        validade: validade, 
-        status: document.getElementById('novaLicencaStatus').value
-    };
-    
-    const result = await apiRequest("/api/admin-licencas", "POST", licencaData);
-    
-    if(result && result.ok){ 
-        showToast("Licença criada com sucesso!", "success"); 
-        document.getElementById('novaLicencaChave').value = ''; 
-        document.getElementById('novaLicencaValidade').value = ''; 
-        await carregarLicencas(); 
-        mostrarTab('licencas');
-    } else { 
-        showToast(result?.erro || "Erro ao criar licença", "error"); 
-    } 
-}
-
-async function atualizarStatus(id, status) { 
-    try {
-        const result = await apiRequest("/api/admin-licencas", "PUT", { id: id, status: status }); 
-        if(result && result.ok){ 
-            showToast(`Licença ${status === 'ATIVA' ? 'ativada' : 'bloqueada'}!`, "success"); 
-            await carregarLicencas();
-        } else { 
-            showToast(result?.erro || "Erro ao atualizar status", "error"); 
-        } 
-    } catch(e) {
-        console.error("Erro em atualizarStatus:", e);
-        showToast("Erro ao atualizar status", "error");
-    }
-}
-
-async function liberarMaquina(id) { 
-    try {
-        const result = await apiRequest("/api/admin-licencas", "PUT", { id: id, machine_id: null }); 
-        if(result && result.ok){ 
-            showToast("Máquina liberada com sucesso!", "success"); 
-            await carregarLicencas();
-        } else { 
-            showToast(result?.erro || "Erro ao liberar máquina", "error"); 
-        } 
-    } catch(e) {
-        console.error("Erro em liberarMaquina:", e);
-        showToast("Erro ao liberar máquina", "error");
-    }
-}
-
-async function excluirLicenca(id, cliente) { 
-    openModalConfirm(`Excluir licença de ${cliente}? Esta ação não poderá ser desfeita.`, async () => { 
-        try {
-            const result = await apiRequest("/api/admin-licencas", "DELETE", { id: id }); 
-            if(result && result.ok){ 
-                showToast("Licença excluída com sucesso!", "success"); 
-                await carregarLicencas();
-            } else { 
-                showToast(result?.erro || "Erro ao excluir licença", "error"); 
-            } 
-        } catch(e) {
-            console.error("Erro em excluirLicenca:", e);
-            showToast("Erro ao excluir licença", "error");
-        }
-        fecharModalConfirmar();
-    }); 
-}
-
-async function renovarLicenca(id, novaData, dias) {
-    try {
-        const result = await apiRequest("/api/admin-licencas", "PUT", { 
-            id: id, 
-            validade: novaData, 
-            status: 'ATIVA',
-            ultima_renovacao: new Date().toISOString().split('T')[0]
-        }); 
-        if(result && result.ok){ 
-            showToast(`Licença renovada por ${dias} dias!`, "success"); 
-            await carregarLicencas();
-        } else { 
-            showToast(result?.erro || "Erro ao renovar licença", "error"); 
-        } 
-    } catch(e) {
-        console.error("Erro em renovarLicenca:", e);
-        showToast("Erro ao renovar licença", "error");
-    }
-}
-
-// ============================================================
-// FUNÇÕES DE ORDENAÇÃO E PAGINAÇÃO
-// ============================================================
-function ordenarLicencas(coluna) { 
-    if (ordemColuna === coluna) {
-        ordemDirecao = ordemDirecao === 'asc' ? 'desc' : 'asc';
-    } else { 
-        ordemColuna = coluna; 
-        ordemDirecao = 'asc'; 
-    }
-    renderizarLicencas(); 
-}
-
-// SUBSTITUA a função renderizarLicencas() por esta versão corrigida:
-
 function renderizarLicencas() {
     let sorted = [...licencasFiltradas];
     sorted.sort((a, b) => {
@@ -1617,7 +1498,7 @@ function renderizarLicencas() {
         let statusIcon = '';
         let statusClass = '';
         
-        // Se a data de validade for menor que hoje, a licença está EXPIRADA (independente do status salvo)
+        // Se a data de validade for menor que hoje, a licença está EXPIRADA
         if (dataValidade < hoje) {
             statusReal = 'EXPIRADA';
             statusIcon = '⏰';
@@ -1637,25 +1518,38 @@ function renderizarLicencas() {
             }
         }
         
-        // Calcula dias restantes (negativo se expirada)
+        // Calcula dias restantes
         const diffDias = Math.ceil((dataValidade - hoje) / (1000 * 60 * 60 * 24));
         const precisaRenovar = diffDias <= 30 && diffDias > 0;
         const estaExpirada = diffDias < 0;
         
-        // Formata a data no padrão brasileiro
+        // Formata a data
         const dataFormatada = formatarData(l.validade);
         
-        // Adiciona indicador de expirada na data
-        const dataComStatus = estaExpirada 
-            ? `<span style="color: #ef4444; text-decoration: line-through;">${dataFormatada}</span> <span style="color: #ef4444; font-size: 0.7rem;">(Expirada há ${Math.abs(diffDias)} dias)</span>`
-            : diffDias <= 7 
-                ? `<span style="color: #f59e0b;">${dataFormatada}</span> <span style="color: #f59e0b; font-size: 0.7rem;">(Vence em ${diffDias} dias)</span>`
-                : dataFormatada;
+        // Data com status visual
+        let dataComStatus = '';
+        if (estaExpirada) {
+            dataComStatus = `<span style="color: #ef4444; text-decoration: line-through;">${dataFormatada}</span> <span style="color: #ef4444; font-size: 0.7rem;">(Expirada há ${Math.abs(diffDias)} dias)</span>`;
+        } else if (diffDias <= 7) {
+            dataComStatus = `<span style="color: #f59e0b;">${dataFormatada}</span> <span style="color: #f59e0b; font-size: 0.7rem;">(Vence em ${diffDias} dias)</span>`;
+        } else {
+            dataComStatus = dataFormatada;
+        }
+        
+        // Gera um ID único para o código da chave
+        const chaveId = `chave_${l.id}_${Date.now()}`;
         
         return `
         <tr>
             <td><strong>${escapeHtml(l.cliente)}</strong>${l.ultima_renovacao ? `<br><small style="color:#64748b;">🔄 Renovação: ${formatarData(l.ultima_renovacao)}</small>` : ''}${l.renovacoes ? `<br><small style="color:#64748b;">📊 ${l.renovacoes}x renovações</small>` : ''}</td>
-            <td><code>${escapeHtml(l.chave)}</code></td>
+            <td>
+                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                    <code id="${chaveId}" style="cursor: pointer; transition: all 0.2s;" onclick="copiarChave('${chaveId}', '${escapeHtml(l.chave)}')" title="Clique para copiar">${escapeHtml(l.chave)}</code>
+                    <button class="btn-secondary btn-sm" onclick="copiarChave('${chaveId}', '${escapeHtml(l.chave)}')" style="padding: 4px 10px;" title="Copiar chave">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+            </td>
             <td><span class="status-badge ${statusClass}">${statusIcon} ${statusReal}</span></td>
             <td>${dataComStatus}</td>
             <td>${l.machine_id && l.machine_id !== 'null' ? l.machine_id.substring(0,20)+'...' : '<i class="fas fa-desktop"></i> Livre'}</td>
@@ -1668,7 +1562,7 @@ function renderizarLicencas() {
                     <button class="btn-danger btn-sm" onclick="excluirLicenca('${l.id}','${escapeHtml(l.cliente)}')"><i class="fas fa-trash"></i> Excluir</button>
                 </div>
             </td>
-        </tr>
+         </tr>
     `}).join('');
     
     let totalPaginas = Math.ceil(licencasFiltradas.length / itensPorPagina);
@@ -1686,6 +1580,59 @@ function renderizarLicencas() {
     }
     html += `<button class="page-btn" onclick="mudarPagina(${paginaAtual+1})" ${paginaAtual===totalPaginas?'disabled':''}>»</button>`;
     div.innerHTML = html;
+}
+
+// ============================================================
+// FUNÇÃO PARA COPIAR CHAVE
+// ============================================================
+function copiarChave(elementId, chave) {
+    // Método moderno usando Clipboard API
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(chave).then(() => {
+            // Feedback visual: muda a cor do código temporariamente
+            const codeElement = document.getElementById(elementId);
+            if (codeElement) {
+                const originalBg = codeElement.style.background;
+                const originalColor = codeElement.style.color;
+                
+                codeElement.style.background = '#90d105';
+                codeElement.style.color = '#0f172a';
+                codeElement.style.transition = 'all 0.2s';
+                
+                setTimeout(() => {
+                    codeElement.style.background = originalBg;
+                    codeElement.style.color = originalColor;
+                }, 500);
+            }
+            
+            showToast(`Chave copiada: ${chave.substring(0, 15)}...`, "success");
+        }).catch(err => {
+            console.error('Erro ao copiar:', err);
+            fallbackCopiarChave(chave);
+        });
+    } else {
+        // Fallback para navegadores antigos
+        fallbackCopiarChave(chave);
+    }
+}
+
+function fallbackCopiarChave(chave) {
+    const textarea = document.createElement('textarea');
+    textarea.value = chave;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+    
+    try {
+        document.execCommand('copy');
+        showToast(`Chave copiada: ${chave.substring(0, 15)}...`, "success");
+    } catch (err) {
+        console.error('Erro ao copiar:', err);
+        showToast("Erro ao copiar chave", "error");
+    }
+    
+    document.body.removeChild(textarea);
 }
 
 // ============================================================
