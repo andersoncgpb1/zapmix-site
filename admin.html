@@ -478,35 +478,90 @@ body.dark-theme .modal-content { background: #111827; border-color: #334155; }
 .login-box .input-group { margin-bottom: 18px; text-align: left; }
 .login-box button { width: 100%; justify-content: center; padding: 14px; font-size: 1rem; }
 hr { opacity: .8; }
+
+.mobile-menu-btn {
+  display: none;
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  z-index: 260;
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #0b1220;
+  box-shadow: 0 14px 28px rgba(15, 23, 42, .22);
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.sidebar-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 210;
+  background: rgba(2, 6, 23, .62);
+  backdrop-filter: blur(4px);
+}
+.sidebar-backdrop.active { display: block; }
+.dashboard-panel { display: block; }
+.workflow-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin: 0 0 24px;
+}
+.workflow-step {
+  background: rgba(255,255,255,.74);
+  border: 1px solid rgba(226,232,240,.9);
+  border-radius: 22px;
+  padding: 18px;
+  box-shadow: var(--shadow-soft);
+}
+body.dark-theme .workflow-step { background: rgba(17,24,39,.86); border-color: rgba(51,65,85,.9); }
+.workflow-step strong { display:block; font-size:.88rem; margin-bottom:4px; }
+.workflow-step span { color: var(--gray); font-size:.78rem; }
+body.dark-theme .workflow-step span { color:#94a3b8; }
+
 @media (max-width: 1180px) {
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
   .charts-row { grid-template-columns: 1fr; }
 }
 @media (max-width: 860px) {
-  :root { --sidebar-width: 100%; }
+  :root { --sidebar-width: 286px; }
+  .mobile-menu-btn { display: inline-flex; }
   .admin-header {
-    position: relative;
-    width: 100%;
-    min-height: auto;
-    bottom: auto;
-    padding: 18px;
+    width: var(--sidebar-width);
+    transform: translateX(-108%);
+    transition: transform .24s ease;
+    z-index: 240;
+    padding: 22px 18px;
+    box-shadow: 24px 0 60px rgba(2,6,23,.34);
   }
-  .admin-header > div:last-child { grid-template-columns: repeat(2, 1fr); }
+  .admin-header.mobile-open { transform: translateX(0); }
+  .admin-header > div:last-child { grid-template-columns: 1fr; }
   .tabs {
-    position: sticky;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 90;
-    flex-direction: row;
-    overflow-x: auto;
-    padding: 12px 18px;
-    background: rgba(11,18,32,.96);
-    border-bottom: 1px solid rgba(255,255,255,.08);
+    position: fixed;
+    left: 18px;
+    top: 124px;
+    width: calc(var(--sidebar-width) - 36px);
+    z-index: 250;
+    flex-direction: column;
+    overflow: visible;
+    padding: 0;
+    background: transparent;
+    border: 0;
   }
-  .tab-btn { width: auto; min-width: max-content; }
-  .admin-container { margin-left: 0; padding: 22px 18px 34px; }
-  #avisoVencimento { left: 18px; right: 18px; top: 12px; }
+  .admin-header:not(.mobile-open) ~ .admin-container .tabs,
+  .admin-header:not(.mobile-open) + #avisoVencimento + .admin-container .tabs { pointer-events: none; }
+  .tab-btn { width: 100%; min-width: 0; }
+  .admin-container { margin-left: 0; padding: 82px 16px 34px; }
+  .admin-container::before { padding-left: 58px; font-size: 1.45rem; }
+  .admin-container::after { padding-left: 58px; font-size: .82rem; }
+  #avisoVencimento { left: 76px; right: 14px; top: 14px; border-radius: 16px; }
+  .workflow-strip { grid-template-columns: 1fr; }
+  .search-bar { flex-direction: column; }
+  .search-input { width: 100%; }
 }
 @media (max-width: 620px) {
   .stats-grid { grid-template-columns: 1fr; }
@@ -536,6 +591,9 @@ hr { opacity: .8; }
   </div>
 </div>
 
+<button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileMenu()" style="display:none;"><i class="fas fa-bars"></i></button>
+<div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeMobileMenu()"></div>
+
 <div class="admin-header" id="adminHeader" style="display:none;">
   <div class="logo-area">
     <img src="/assets/logo.png" alt="ZapMix" class="logo-img" onerror="this.style.display='none'">
@@ -559,6 +617,12 @@ hr { opacity: .8; }
 <div id="avisoVencimento"></div>
 
 <div class="admin-container" id="adminContent" style="display:none;">
+  <div id="tabDashboard" class="dashboard-panel">
+    <div class="workflow-strip">
+      <div class="workflow-step"><strong>1. Cadastre o cliente</strong><span>Comece pela guia Clientes para criar o cadastro.</span></div>
+      <div class="workflow-step"><strong>2. Gere a licença</strong><span>Após salvar, o painel abre a geração de licença.</span></div>
+      <div class="workflow-step"><strong>3. Acompanhe no painel</strong><span>Veja status, validade e máquina vinculada.</span></div>
+    </div>
   <div class="stats-grid">
     <div class="stat-card" onclick="mostrarTab('clientes')">
       <div class="stat-info"><h3><i class="fas fa-users"></i> Total de Clientes</h3><div class="stat-number" id="statClientes">0</div></div>
@@ -597,12 +661,14 @@ hr { opacity: .8; }
       <canvas id="activityChart"></canvas>
     </div>
   </div>
+  </div>
 
   <div class="tabs">
-    <button class="tab-btn active" onclick="mostrarTab('clientes')"><i class="fas fa-users"></i> Clientes</button>
-    <button class="tab-btn" onclick="mostrarTab('licencas')"><i class="fas fa-key"></i> Licenças</button>
-    <button class="tab-btn" onclick="mostrarTab('nova-licenca')"><i class="fas fa-plus-circle"></i> Nova Licença</button>
-    <button class="tab-btn" onclick="mostrarTab('perfil')"><i class="fas fa-user-cog"></i> Perfil</button>
+    <button class="tab-btn active" data-tab="dashboard" onclick="mostrarTab('dashboard')"><i class="fas fa-chart-pie"></i> Dashboard</button>
+    <button class="tab-btn" data-tab="clientes" onclick="mostrarTab('clientes')"><i class="fas fa-users"></i> Clientes</button>
+    <button class="tab-btn" data-tab="licencas" onclick="mostrarTab('licencas')"><i class="fas fa-key"></i> Licenças</button>
+    <button class="tab-btn" data-tab="nova-licenca" onclick="mostrarTab('nova-licenca')"><i class="fas fa-plus-circle"></i> Nova Licença</button>
+    <button class="tab-btn" data-tab="perfil" onclick="mostrarTab('perfil')"><i class="fas fa-user-cog"></i> Perfil</button>
   </div>
 
   <div id="tabClientes" class="card">
@@ -896,11 +962,13 @@ async function login() {
         
         document.getElementById('loginOverlay').style.display = 'none'; 
         document.getElementById('adminHeader').style.display = 'flex'; 
-        document.getElementById('adminContent').style.display = 'block'; 
+        document.getElementById('adminContent').style.display = 'block';
+        const mobileBtn = document.getElementById('mobileMenuBtn');
+        if (mobileBtn) mobileBtn.style.display = 'inline-flex'; 
         
         await carregarClientes(); 
         await carregarLicencas(); 
-        mostrarTab('clientes'); 
+        mostrarTab('dashboard'); 
         
     } catch(e) { 
         console.error("Erro no login:", e);
@@ -1648,28 +1716,66 @@ function atualizarGraficos() {
 // NAVEGAÇÃO
 // ============================================================
 function mostrarTab(tab) {
-    document.getElementById('tabClientes').style.display = 'none';
-    document.getElementById('tabLicencas').style.display = 'none';
-    document.getElementById('tabNovaLicenca').style.display = 'none';
-    document.getElementById('tabPerfil').style.display = 'none';
+    const tabs = {
+        'dashboard': 'tabDashboard',
+        'clientes': 'tabClientes',
+        'licencas': 'tabLicencas',
+        'nova-licenca': 'tabNovaLicenca',
+        'perfil': 'tabPerfil'
+    };
+
+    Object.values(tabs).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+    });
+
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    
-    if (tab === 'clientes') { 
-        document.getElementById('tabClientes').style.display = 'block'; 
-        document.querySelector('.tab-btn:first-child').classList.add('active'); 
-        carregarClientes(); 
-    } else if (tab === 'licencas') { 
-        document.getElementById('tabLicencas').style.display = 'block'; 
-        document.querySelector('.tab-btn:nth-child(2)').classList.add('active'); 
-        carregarLicencas(); 
-    } else if (tab === 'nova-licenca') { 
-        document.getElementById('tabNovaLicenca').style.display = 'block'; 
-        document.querySelector('.tab-btn:nth-child(3)').classList.add('active'); 
-        carregarClientes(); 
-    } else if (tab === 'perfil') { 
-        document.getElementById('tabPerfil').style.display = 'block'; 
-        document.querySelector('.tab-btn:nth-child(4)').classList.add('active'); 
-        carregarPerfil(); 
+
+    const target = document.getElementById(tabs[tab] || 'tabDashboard');
+    if (target) target.style.display = 'block';
+
+    const activeBtn = document.querySelector(`.tab-btn[data-tab="${tab}"]`);
+    if (activeBtn) activeBtn.classList.add('active');
+
+    if (tab === 'dashboard') {
+        atualizarStats();
+        atualizarGraficos();
+    } else if (tab === 'clientes') {
+        carregarClientes();
+    } else if (tab === 'licencas') {
+        carregarLicencas();
+    } else if (tab === 'nova-licenca') {
+        carregarClientes();
+    } else if (tab === 'perfil') {
+        carregarPerfil();
+    }
+
+    closeMobileMenu();
+}
+
+function toggleMobileMenu() {
+    const header = document.getElementById('adminHeader');
+    const backdrop = document.getElementById('sidebarBackdrop');
+    const icon = document.querySelector('#mobileMenuBtn i');
+    if (!header) return;
+    header.classList.toggle('mobile-open');
+    const aberto = header.classList.contains('mobile-open');
+    if (backdrop) backdrop.classList.toggle('active', aberto);
+    if (icon) {
+        icon.classList.toggle('fa-bars', !aberto);
+        icon.classList.toggle('fa-times', aberto);
+    }
+}
+
+function closeMobileMenu() {
+    const header = document.getElementById('adminHeader');
+    const backdrop = document.getElementById('sidebarBackdrop');
+    const icon = document.querySelector('#mobileMenuBtn i');
+    if (header) header.classList.remove('mobile-open');
+    if (backdrop) backdrop.classList.remove('active');
+    if (icon) {
+        icon.classList.add('fa-bars');
+        icon.classList.remove('fa-times');
     }
 }
 
@@ -1717,7 +1823,7 @@ if (getToken()) {
     document.getElementById('adminContent').style.display = 'block'; 
     carregarClientes(); 
     carregarLicencas(); 
-    mostrarTab('clientes');
+    mostrarTab('dashboard');
 } else { 
     document.getElementById('loginOverlay').style.display = 'flex'; 
 }
