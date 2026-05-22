@@ -530,16 +530,19 @@ body.dark-theme .workflow-step span { color:#94a3b8; }
 @media (max-width: 860px) {
   :root { --sidebar-width: 286px; }
   .mobile-menu-btn { display: inline-flex; }
+  body.mobile-menu-active { overflow: hidden; }
   .admin-header {
     width: var(--sidebar-width);
-    transform: translateX(-108%);
+    transform: translateX(-110%);
     transition: transform .24s ease;
     z-index: 240;
     padding: 22px 18px;
     box-shadow: 24px 0 60px rgba(2,6,23,.34);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
   .admin-header.mobile-open { transform: translateX(0); }
-  .admin-header > div:last-child { grid-template-columns: 1fr; }
+  .admin-header > div:last-child { grid-template-columns: 1fr; margin-bottom: 10px; }
   .tabs {
     position: fixed;
     left: 18px;
@@ -551,9 +554,16 @@ body.dark-theme .workflow-step span { color:#94a3b8; }
     padding: 0;
     background: transparent;
     border: 0;
+    transform: translateX(-120%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform .24s ease, opacity .18s ease;
   }
-  .admin-header:not(.mobile-open) ~ .admin-container .tabs,
-  .admin-header:not(.mobile-open) + #avisoVencimento + .admin-container .tabs { pointer-events: none; }
+  body.mobile-menu-active .tabs {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
   .tab-btn { width: 100%; min-width: 0; }
   .admin-container { margin-left: 0; padding: 82px 16px 34px; }
   .admin-container::before { padding-left: 58px; font-size: 1.45rem; }
@@ -1761,6 +1771,7 @@ function toggleMobileMenu() {
     header.classList.toggle('mobile-open');
     const aberto = header.classList.contains('mobile-open');
     if (backdrop) backdrop.classList.toggle('active', aberto);
+    document.body.classList.toggle('mobile-menu-active', aberto);
     if (icon) {
         icon.classList.toggle('fa-bars', !aberto);
         icon.classList.toggle('fa-times', aberto);
@@ -1773,11 +1784,21 @@ function closeMobileMenu() {
     const icon = document.querySelector('#mobileMenuBtn i');
     if (header) header.classList.remove('mobile-open');
     if (backdrop) backdrop.classList.remove('active');
+    document.body.classList.remove('mobile-menu-active');
     if (icon) {
         icon.classList.add('fa-bars');
         icon.classList.remove('fa-times');
     }
 }
+
+
+window.addEventListener('resize', () => {
+    if (window.innerWidth > 860) closeMobileMenu();
+});
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeMobileMenu();
+});
 
 // ============================================================
 // MODAL DE CONFIRMAÇÃO
