@@ -10,12 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
+* { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
   --primary: #90d105;
   --primary-dark: #6a9e00;
@@ -28,10 +23,8 @@
   --danger: #ef4444;
   --warning: #f59e0b;
   --success: #10b981;
-  --info: #3b82f6;
   --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
 body {
   background: linear-gradient(135deg, #f0f4f8 0%, #e8edf3 100%);
   font-family: 'Inter', sans-serif;
@@ -39,12 +32,10 @@ body {
   line-height: 1.5;
   min-height: 100vh;
 }
-
 body.dark-theme {
   background: linear-gradient(135deg, #0a0a0f 0%, #0f0f15 100%);
   color: #e2e8f0;
 }
-
 .admin-header {
   background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(20px);
@@ -60,23 +51,12 @@ body.dark-theme {
   gap: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
-
 body.dark-theme .admin-header {
   background: rgba(15, 23, 42, 0.95);
   border-bottom: 1px solid rgba(144, 209, 5, 0.3);
 }
-
-.logo-area {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.logo-img {
-  height: 45px;
-  width: auto;
-}
-
+.logo-area { display: flex; align-items: center; gap: 14px; }
+.logo-img { height: 45px; width: auto; }
 .logo-text h1 {
   font-size: 1.5rem;
   font-weight: 800;
@@ -85,7 +65,6 @@ body.dark-theme .admin-header {
   -webkit-background-clip: text;
   color: transparent;
 }
-
 .admin-badge {
   background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   padding: 4px 14px;
@@ -94,7 +73,6 @@ body.dark-theme .admin-header {
   font-weight: 700;
   color: var(--dark);
 }
-
 #avisoVencimento {
   background: linear-gradient(135deg, #f59e0b, #ea580c);
   color: white;
@@ -104,8 +82,8 @@ body.dark-theme .admin-header {
   position: sticky;
   top: 77px;
   z-index: 99;
+  display: none;
 }
-
 .theme-toggle {
   width: 44px;
   height: 44px;
@@ -118,20 +96,13 @@ body.dark-theme .admin-header {
   justify-content: center;
   transition: var(--transition);
 }
-
-.admin-container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 32px;
-}
-
+.admin-container { max-width: 1400px; margin: 0 auto; padding: 32px; }
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 24px;
   margin-bottom: 32px;
 }
-
 .stat-card {
   background: var(--white);
   border-radius: 28px;
@@ -143,17 +114,8 @@ body.dark-theme .admin-header {
   justify-content: space-between;
   cursor: pointer;
 }
-
-body.dark-theme .stat-card {
-  background: var(--dark-2);
-  border-color: #334155;
-}
-
-.stat-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.15);
-}
-
+body.dark-theme .stat-card { background: var(--dark-2); border-color: #334155; }
+.stat-card:hover { transform: translateY(-6px); box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.15); }
 .stat-info h3 {
   font-size: 0.7rem;
   font-weight: 700;
@@ -162,13 +124,7 @@ body.dark-theme .stat-card {
   color: var(--gray);
   margin-bottom: 8px;
 }
-
-.stat-number {
-  font-size: 2rem;
-  font-weight: 800;
-  color: var(--dark);
-}
-
+.stat-number { font-size: 2rem; font-weight: 800; color: var(--dark); }
 .stat-icon {
   width: 52px;
   height: 52px;
@@ -178,31 +134,20 @@ body.dark-theme .stat-card {
   align-items: center;
   justify-content: center;
 }
-
-.stat-icon i {
-  font-size: 1.5rem;
-  color: var(--primary);
-}
-
+.stat-icon i { font-size: 1.5rem; color: var(--primary); }
 .charts-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 24px;
   margin-bottom: 32px;
 }
-
 .chart-card {
   background: var(--white);
   border-radius: 28px;
   padding: 24px;
   border: 1px solid #e9eef3;
 }
-
-body.dark-theme .chart-card {
-  background: var(--dark-2);
-  border-color: #334155;
-}
-
+body.dark-theme .chart-card { background: var(--dark-2); border-color: #334155; }
 .chart-card h3 {
   font-size: 1rem;
   font-weight: 700;
@@ -211,7 +156,6 @@ body.dark-theme .chart-card {
   align-items: center;
   gap: 10px;
 }
-
 .filter-period {
   display: flex;
   gap: 12px;
@@ -219,14 +163,12 @@ body.dark-theme .chart-card {
   align-items: center;
   justify-content: flex-end;
 }
-
 .tabs {
   display: flex;
   gap: 8px;
   margin-bottom: 28px;
   flex-wrap: wrap;
 }
-
 .tab-btn {
   padding: 12px 28px;
   border-radius: 40px;
@@ -241,17 +183,11 @@ body.dark-theme .chart-card {
   align-items: center;
   gap: 10px;
 }
-
-.tab-btn:hover {
-  color: var(--primary);
-  background: rgba(144, 209, 5, 0.1);
-}
-
+.tab-btn:hover { color: var(--primary); background: rgba(144, 209, 5, 0.1); }
 .tab-btn.active {
   color: var(--primary);
   background: linear-gradient(135deg, rgba(144,209,5,0.15), rgba(144,209,5,0.05));
 }
-
 .card {
   background: var(--white);
   border-radius: 28px;
@@ -259,12 +195,7 @@ body.dark-theme .chart-card {
   margin-bottom: 28px;
   border: 1px solid #e9eef3;
 }
-
-body.dark-theme .card {
-  background: var(--dark-2);
-  border-color: #334155;
-}
-
+body.dark-theme .card { background: var(--dark-2); border-color: #334155; }
 .card-header {
   display: flex;
   justify-content: space-between;
@@ -273,26 +204,19 @@ body.dark-theme .card {
   flex-wrap: wrap;
   gap: 16px;
 }
-
 .card-header h2 {
   font-size: 1.25rem;
   font-weight: 700;
   border-left: 4px solid var(--primary);
   padding-left: 16px;
 }
-
 .form-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 20px;
   margin-bottom: 24px;
 }
-
-.input-group {
-  display: flex;
-  flex-direction: column;
-}
-
+.input-group { display: flex; flex-direction: column; }
 .input-group label {
   font-size: 0.7rem;
   font-weight: 700;
@@ -301,7 +225,6 @@ body.dark-theme .card {
   color: var(--gray);
   margin-bottom: 8px;
 }
-
 input, select, textarea {
   padding: 12px 16px;
   border-radius: 16px;
@@ -311,21 +234,16 @@ input, select, textarea {
   transition: var(--transition);
   font-family: 'Inter', sans-serif;
 }
-
-body.dark-theme input,
-body.dark-theme select,
-body.dark-theme textarea {
+body.dark-theme input, body.dark-theme select, body.dark-theme textarea {
   background: var(--dark);
   border-color: #334155;
   color: var(--white);
 }
-
 input:focus, select:focus, textarea:focus {
   outline: none;
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(144, 209, 5, 0.1);
 }
-
 button {
   padding: 10px 22px;
   border-radius: 40px;
@@ -339,61 +257,20 @@ button {
   align-items: center;
   gap: 8px;
 }
-
 .btn-primary {
   background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   color: var(--dark);
   font-weight: 700;
 }
-
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(144, 209, 5, 0.4);
-}
-
-.btn-secondary {
-  background: var(--light);
-  border: 1px solid #e2e8f0;
-  color: var(--dark);
-}
-
-.btn-danger {
-  background: rgba(239, 68, 68, 0.1);
-  color: var(--danger);
-  border: 1px solid rgba(239, 68, 68, 0.2);
-}
-
-.btn-danger:hover {
-  background: var(--danger);
-  color: white;
-}
-
-.btn-success {
-  background: rgba(16, 185, 129, 0.1);
-  color: var(--success);
-  border: 1px solid rgba(16, 185, 129, 0.2);
-}
-
-.btn-success:hover {
-  background: var(--success);
-  color: white;
-}
-
-.btn-sm {
-  padding: 6px 14px;
-  font-size: 0.7rem;
-}
-
-.table-wrapper {
-  overflow-x: auto;
-  border-radius: 20px;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(144, 209, 5, 0.4); }
+.btn-secondary { background: var(--light); border: 1px solid #e2e8f0; color: var(--dark); }
+.btn-danger { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); }
+.btn-danger:hover { background: var(--danger); color: white; }
+.btn-success { background: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.2); }
+.btn-success:hover { background: var(--success); color: white; }
+.btn-sm { padding: 6px 14px; font-size: 0.7rem; }
+.table-wrapper { overflow-x: auto; border-radius: 20px; }
+table { width: 100%; border-collapse: collapse; }
 th {
   text-align: left;
   padding: 16px;
@@ -405,17 +282,8 @@ th {
   border-bottom: 2px solid #e2e8f0;
   cursor: pointer;
 }
-
-td {
-  padding: 16px;
-  border-bottom: 1px solid #f1f5f9;
-  font-size: 0.85rem;
-}
-
-tr:hover {
-  background: rgba(144, 209, 5, 0.03);
-}
-
+td { padding: 16px; border-bottom: 1px solid #f1f5f9; font-size: 0.85rem; }
+tr:hover { background: rgba(144, 209, 5, 0.03); }
 .status-badge {
   display: inline-block;
   padding: 4px 14px;
@@ -424,25 +292,9 @@ tr:hover {
   font-weight: 700;
   text-transform: uppercase;
 }
-
-.status-ATIVA, .status-ATIVO {
-  background: #dcfce7;
-  color: #15803d;
-  border: 1px solid #bbf7d0;
-}
-
-.status-BLOQUEADA {
-  background: #fee2e2;
-  color: #991b1b;
-  border: 1px solid #fecaca;
-}
-
-.status-EXPIRADA {
-  background: #fef3c7;
-  color: #92400e;
-  border: 1px solid #fde68a;
-}
-
+.status-ATIVA, .status-ATIVO { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+.status-BLOQUEADA { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+.status-EXPIRADA { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
 code {
   background: rgba(144, 209, 5, 0.1);
   padding: 4px 10px;
@@ -453,20 +305,8 @@ code {
   color: var(--primary);
   cursor: pointer;
 }
-
-.action-buttons {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.pagination {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 28px;
-}
-
+.action-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+.pagination { display: flex; justify-content: center; gap: 10px; margin-top: 28px; }
 .page-btn {
   padding: 8px 16px;
   background: var(--light);
@@ -475,26 +315,9 @@ code {
   cursor: pointer;
   font-size: 0.8rem;
 }
-
-.page-btn:hover,
-.page-btn.active {
-  background: var(--primary);
-  border-color: var(--primary);
-  color: var(--dark);
-}
-
-.search-bar {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
-}
-
-.search-input {
-  flex: 1;
-  position: relative;
-}
-
+.page-btn:hover, .page-btn.active { background: var(--primary); border-color: var(--primary); color: var(--dark); }
+.search-bar { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+.search-input { flex: 1; position: relative; }
 .search-input i {
   position: absolute;
   left: 14px;
@@ -502,13 +325,7 @@ code {
   transform: translateY(-50%);
   color: var(--gray);
 }
-
-.search-input input {
-  width: 100%;
-  padding: 12px 16px 12px 42px;
-  border-radius: 40px;
-}
-
+.search-input input { width: 100%; padding: 12px 16px 12px 42px; border-radius: 40px; }
 .modal {
   display: none;
   position: fixed;
@@ -522,11 +339,7 @@ code {
   align-items: center;
   justify-content: center;
 }
-
-.modal.active {
-  display: flex;
-}
-
+.modal.active { display: flex; }
 .modal-content {
   background: var(--white);
   border-radius: 32px;
@@ -534,18 +347,13 @@ code {
   max-width: 550px;
   width: 90%;
 }
-
-body.dark-theme .modal-content {
-  background: var(--dark-2);
-}
-
+body.dark-theme .modal-content { background: var(--dark-2); }
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
 }
-
 .close-modal {
   background: none;
   border: none;
@@ -553,14 +361,7 @@ body.dark-theme .modal-content {
   cursor: pointer;
   color: var(--gray);
 }
-
-.modal-buttons {
-  display: flex;
-  gap: 12px;
-  justify-content: flex-end;
-  margin-top: 28px;
-}
-
+.modal-buttons { display: flex; gap: 12px; justify-content: flex-end; margin-top: 28px; }
 .toast {
   position: fixed;
   bottom: 30px;
@@ -576,28 +377,13 @@ body.dark-theme .modal-content {
   gap: 10px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 }
-
 @keyframes slideInRight {
   from { transform: translateX(100%); opacity: 0; }
   to { transform: translateX(0); opacity: 1; }
 }
-
-.toast.success {
-  background: linear-gradient(135deg, #10b981, #059669);
-  color: white;
-}
-
-.toast.error {
-  background: linear-gradient(135deg, #ef4444, #dc2626);
-  color: white;
-}
-
-.empty-state {
-  text-align: center;
-  padding: 60px 20px;
-  color: var(--gray);
-}
-
+.toast.success { background: linear-gradient(135deg, #10b981, #059669); color: white; }
+.toast.error { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; }
+.empty-state { text-align: center; padding: 60px 20px; color: var(--gray); }
 .login-overlay {
   position: fixed;
   top: 0;
@@ -610,7 +396,6 @@ body.dark-theme .modal-content {
   justify-content: center;
   z-index: 1000;
 }
-
 .login-box {
   background: var(--white);
   border-radius: 48px;
@@ -620,46 +405,17 @@ body.dark-theme .modal-content {
   text-align: center;
   box-shadow: 0 30px 50px -20px rgba(0, 0, 0, 0.3);
 }
-
-.login-box img {
-  height: 70px;
-  margin-bottom: 24px;
-}
-
-.login-box h2 {
-  margin-bottom: 28px;
-  color: var(--dark);
-  font-weight: 700;
-}
-
-.login-box .input-group {
-  margin-bottom: 20px;
-  text-align: left;
-}
-
-.login-box button {
-  width: 100%;
-  justify-content: center;
-  padding: 14px;
-  font-size: 1rem;
-}
-
+.login-box img { height: 70px; margin-bottom: 24px; }
+.login-box h2 { margin-bottom: 28px; color: var(--dark); font-weight: 700; }
+.login-box .input-group { margin-bottom: 20px; text-align: left; }
+.login-box button { width: 100%; justify-content: center; padding: 14px; font-size: 1rem; }
 @media (max-width: 1024px) {
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .charts-row {
-    grid-template-columns: 1fr;
-  }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .charts-row { grid-template-columns: 1fr; }
 }
-
 @media (max-width: 768px) {
-  .admin-container {
-    padding: 20px;
-  }
-  .stats-grid {
-    grid-template-columns: 1fr;
-  }
+  .admin-container { padding: 20px; }
+  .stats-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -677,7 +433,7 @@ body.dark-theme .modal-content {
       <label><i class="fas fa-lock"></i> Senha</label>
       <input type="password" id="senha" placeholder="Digite sua senha">
     </div>
-    <button class="btn-primary" id="btnLogin"><i class="fas fa-sign-in-alt"></i> Entrar no Painel</button>
+    <button class="btn-primary" onclick="login()"><i class="fas fa-sign-in-alt"></i> Entrar no Painel</button>
   </div>
 </div>
 
@@ -691,46 +447,34 @@ body.dark-theme .modal-content {
     <span class="admin-badge"><i class="fas fa-crown"></i> Painel de Controle</span>
   </div>
   <div style="display: flex; gap: 12px; align-items: center;">
-    <button class="btn-secondary btn-sm" id="btnExportClientes"><i class="fas fa-download"></i> CSV</button>
-    <button class="btn-secondary btn-sm" id="btnExportLicencas"><i class="fas fa-file-csv"></i> Licenças</button>
-    <button class="theme-toggle" id="btnThemeToggle">
+    <button class="btn-secondary btn-sm" onclick="exportarDados('clientes')"><i class="fas fa-download"></i> CSV</button>
+    <button class="btn-secondary btn-sm" onclick="exportarDados('licencas')"><i class="fas fa-file-csv"></i> Licenças</button>
+    <button class="theme-toggle" onclick="toggleTheme()">
       <i class="fas fa-moon"></i>
     </button>
     <span id="adminStatus" class="status-badge status-ATIVA"><i class="fas fa-check-circle"></i> Logado</span>
-    <button class="btn-secondary btn-sm" id="btnLogout"><i class="fas fa-sign-out-alt"></i> Sair</button>
+    <button class="btn-secondary btn-sm" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</button>
   </div>
 </div>
 
-<div id="avisoVencimento" style="display:none;"></div>
+<div id="avisoVencimento"></div>
 
 <div class="admin-container" id="adminContent" style="display:none;">
   <div class="stats-grid">
-    <div class="stat-card" id="statCardClientes">
-      <div class="stat-info">
-        <h3><i class="fas fa-users"></i> Total de Clientes</h3>
-        <div class="stat-number" id="statClientes">0</div>
-      </div>
+    <div class="stat-card" onclick="mostrarTab('clientes')">
+      <div class="stat-info"><h3><i class="fas fa-users"></i> Total de Clientes</h3><div class="stat-number" id="statClientes">0</div></div>
       <div class="stat-icon"><i class="fas fa-users"></i></div>
     </div>
-    <div class="stat-card" id="statCardLicencas">
-      <div class="stat-info">
-        <h3><i class="fas fa-key"></i> Total de Licenças</h3>
-        <div class="stat-number" id="statTotalLicencas">0</div>
-      </div>
+    <div class="stat-card" onclick="mostrarTab('licencas')">
+      <div class="stat-info"><h3><i class="fas fa-key"></i> Total de Licenças</h3><div class="stat-number" id="statTotalLicencas">0</div></div>
       <div class="stat-icon"><i class="fas fa-key"></i></div>
     </div>
-    <div class="stat-card" id="statCardAtivas">
-      <div class="stat-info">
-        <h3><i class="fas fa-check-circle"></i> Licenças Ativas</h3>
-        <div class="stat-number" id="statAtivas">0</div>
-      </div>
+    <div class="stat-card" onclick="mostrarTab('licencas')">
+      <div class="stat-info"><h3><i class="fas fa-check-circle"></i> Licenças Ativas</h3><div class="stat-number" id="statAtivas">0</div></div>
       <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
     </div>
     <div class="stat-card">
-      <div class="stat-info">
-        <h3><i class="fas fa-desktop"></i> Máquinas Ativas</h3>
-        <div class="stat-number" id="statMaquinas">0</div>
-      </div>
+      <div class="stat-info"><h3><i class="fas fa-desktop"></i> Máquinas Ativas</h3><div class="stat-number" id="statMaquinas">0</div></div>
       <div class="stat-icon"><i class="fas fa-desktop"></i></div>
     </div>
   </div>
@@ -743,7 +487,7 @@ body.dark-theme .modal-content {
     <div class="chart-card">
       <div class="filter-period">
         <span><i class="fas fa-calendar-alt"></i> Período:</span>
-        <select id="filtroPeriodo">
+        <select id="filtroPeriodo" onchange="atualizarGraficos()">
           <option value="30">Últimos 30 dias</option>
           <option value="90" selected>Últimos 90 dias</option>
           <option value="180">Últimos 180 dias</option>
@@ -756,27 +500,24 @@ body.dark-theme .modal-content {
   </div>
 
   <div class="tabs">
-    <button class="tab-btn active" data-tab="clientes"><i class="fas fa-users"></i> Clientes</button>
-    <button class="tab-btn" data-tab="licencas"><i class="fas fa-key"></i> Licenças</button>
-    <button class="tab-btn" data-tab="nova-licenca"><i class="fas fa-plus-circle"></i> Nova Licença</button>
-    <button class="tab-btn" data-tab="perfil"><i class="fas fa-user-cog"></i> Perfil</button>
+    <button class="tab-btn active" onclick="mostrarTab('clientes')"><i class="fas fa-users"></i> Clientes</button>
+    <button class="tab-btn" onclick="mostrarTab('licencas')"><i class="fas fa-key"></i> Licenças</button>
+    <button class="tab-btn" onclick="mostrarTab('nova-licenca')"><i class="fas fa-plus-circle"></i> Nova Licença</button>
+    <button class="tab-btn" onclick="mostrarTab('perfil')"><i class="fas fa-user-cog"></i> Perfil</button>
   </div>
 
   <div id="tabClientes" class="card">
     <div class="card-header">
       <h2><i class="fas fa-users"></i> Gerenciar Clientes</h2>
-      <button class="btn-primary" id="btnNovoCliente"><i class="fas fa-plus"></i> Novo Cliente</button>
+      <button class="btn-primary" onclick="abrirModalCliente()"><i class="fas fa-plus"></i> Novo Cliente</button>
     </div>
     <div class="search-bar">
-      <div class="search-input">
-        <i class="fas fa-search"></i>
-        <input type="text" id="searchCliente" placeholder="Buscar cliente... (Ctrl+K)">
-      </div>
+      <div class="search-input"><i class="fas fa-search"></i><input type="text" id="searchCliente" placeholder="Buscar cliente... (Ctrl+K)"></div>
     </div>
     <div class="table-wrapper">
       <table>
         <thead>
-          <tr><th id="sortNome">Nome / Empresa <i class="fas fa-sort"></i></th><th id="sortEmail">Email <i class="fas fa-sort"></i></th><th>Telefone</th><th>Licenças</th><th>Status</th><th>Ações</th></tr>
+          <tr><th onclick="ordenarClientes('nome')">Nome / Empresa <i class="fas fa-sort"></i></th><th onclick="ordenarClientes('email')">Email <i class="fas fa-sort"></i></th><th>Telefone</th><th>Licenças</th><th>Status</th><th>Ações</th></tr>
         </thead>
         <tbody id="listaClientes"><tr><td colspan="6" class="empty-state"><i class="fas fa-spinner fa-spin"></i> Carregando...</td></tr></tbody>
       </table>
@@ -786,14 +527,11 @@ body.dark-theme .modal-content {
   <div id="tabLicencas" class="card" style="display:none;">
     <div class="card-header">
       <h2><i class="fas fa-key"></i> Gerenciar Licenças</h2>
-      <button class="btn-secondary" id="btnAtualizarLicencas"><i class="fas fa-sync-alt"></i> Atualizar</button>
+      <button class="btn-secondary" onclick="carregarLicencas()"><i class="fas fa-sync-alt"></i> Atualizar</button>
     </div>
     <div class="search-bar">
-      <div class="search-input">
-        <i class="fas fa-search"></i>
-        <input type="text" id="searchLicenca" placeholder="Buscar por cliente ou chave...">
-      </div>
-      <select id="filterStatusLicenca">
+      <div class="search-input"><i class="fas fa-search"></i><input type="text" id="searchLicenca" placeholder="Buscar por cliente ou chave..."></div>
+      <select id="filterStatusLicenca" onchange="carregarLicencas()">
         <option value="todos">Todos os status</option>
         <option value="ATIVA">✅ Ativas</option>
         <option value="BLOQUEADA">🔒 Bloqueadas</option>
@@ -803,7 +541,7 @@ body.dark-theme .modal-content {
     <div class="table-wrapper">
       <table>
         <thead>
-          <tr><th id="sortCliente">Cliente <i class="fas fa-sort"></i></th><th>Chave</th><th id="sortStatus">Status <i class="fas fa-sort"></i></th><th id="sortValidade">Validade <i class="fas fa-sort"></i></th><th>Máquina</th><th>Ações</th></tr>
+          <tr><th onclick="ordenarLicencas('cliente')">Cliente <i class="fas fa-sort"></i></th><th>Chave</th><th onclick="ordenarLicencas('status')">Status <i class="fas fa-sort"></i></th><th onclick="ordenarLicencas('validade')">Validade <i class="fas fa-sort"></i></th><th>Máquina</th><th>Ações</th></tr>
         </thead>
         <tbody id="listaLicencas"><tr><td colspan="6" class="empty-state"><i class="fas fa-spinner fa-spin"></i> Carregando...</td></tr></tbody>
       </table>
@@ -819,7 +557,7 @@ body.dark-theme .modal-content {
       <div class="input-group"><label><i class="fas fa-calendar"></i> Data de Validade *</label><input id="novaLicencaValidade" type="date"></div>
       <div class="input-group"><label><i class="fas fa-toggle-on"></i> Status</label><select id="novaLicencaStatus"><option value="ATIVA">✅ ATIVA</option><option value="BLOQUEADA">🔒 BLOQUEADA</option></select></div>
     </div>
-    <button class="btn-primary" id="btnCriarLicenca"><i class="fas fa-plus"></i> Criar Licença</button>
+    <button class="btn-primary" onclick="criarLicenca()"><i class="fas fa-plus"></i> Criar Licença</button>
   </div>
 
   <div id="tabPerfil" class="card" style="display:none;">
@@ -830,241 +568,339 @@ body.dark-theme .modal-content {
       <div class="input-group"><label><i class="fas fa-phone"></i> Telefone</label><input type="tel" id="perfilTelefone" placeholder="(00) 00000-0000"></div>
       <div class="input-group"><label><i class="fas fa-briefcase"></i> Cargo</label><input type="text" id="perfilCargo" placeholder="Administrador"></div>
     </div>
-    <div style="display:flex;gap:12px;justify-content:flex-end;"><button class="btn-secondary" id="btnCancelarPerfil"><i class="fas fa-times"></i> Cancelar</button><button class="btn-primary" id="btnSalvarPerfil"><i class="fas fa-save"></i> Salvar</button></div>
-    <hr style="margin: 28px 0;">
+    <div style="display:flex;gap:12px;justify-content:flex-end;"><button class="btn-secondary" onclick="cancelarEdicaoPerfil()"><i class="fas fa-times"></i> Cancelar</button><button class="btn-primary" onclick="salvarPerfil()"><i class="fas fa-save"></i> Salvar</button></div>
+    <hr style="margin: 28px 0; border: none; height: 1px; background: linear-gradient(90deg, transparent, #e2e8f0, transparent);">
     <div class="card-header"><h2><i class="fas fa-lock"></i> Alterar Senha</h2></div>
     <div class="form-grid">
       <div class="input-group"><label><i class="fas fa-key"></i> Senha atual</label><input type="password" id="senhaAtual" placeholder="Senha atual"></div>
       <div class="input-group"><label><i class="fas fa-plus-circle"></i> Nova senha</label><input type="password" id="novaSenha" placeholder="Nova senha (mínimo 6 caracteres)"></div>
       <div class="input-group"><label><i class="fas fa-check-circle"></i> Confirmar</label><input type="password" id="confirmarSenha" placeholder="Confirmar nova senha"></div>
     </div>
-    <div style="display:flex;justify-content:flex-end;"><button class="btn-primary" id="btnAlterarSenha"><i class="fas fa-save"></i> Alterar Senha</button></div>
+    <div style="display:flex;justify-content:flex-end;"><button class="btn-primary" onclick="alterarSenha()"><i class="fas fa-save"></i> Alterar Senha</button></div>
   </div>
 </div>
 
 <div id="modalCliente" class="modal">
   <div class="modal-content">
-    <div class="modal-header">
-      <h3 id="modalClienteTitle"><i class="fas fa-user-plus"></i> Novo Cliente</h3>
-      <button class="close-modal" id="closeModalCliente">&times;</button>
-    </div>
+    <div class="modal-header"><h3 id="modalClienteTitle"><i class="fas fa-user-plus"></i> Novo Cliente</h3><button class="close-modal" onclick="fecharModalCliente()">&times;</button></div>
     <div class="form-grid" style="grid-template-columns:1fr;">
       <div class="input-group"><label><i class="fas fa-user"></i> Nome *</label><input type="text" id="clienteNome" placeholder="Nome completo"></div>
       <div class="input-group"><label><i class="fas fa-envelope"></i> Email</label><input type="email" id="clienteEmail" placeholder="email@exemplo.com"></div>
       <div class="input-group"><label><i class="fas fa-phone"></i> Telefone</label><input type="tel" id="clienteTelefone" placeholder="(00) 00000-0000"></div>
       <div class="input-group"><label><i class="fas fa-building"></i> Empresa</label><input type="text" id="clienteEmpresa" placeholder="Nome da empresa"></div>
     </div>
-    <div class="modal-buttons">
-      <button class="btn-secondary" id="cancelarModalCliente"><i class="fas fa-times"></i> Cancelar</button>
-      <button class="btn-primary" id="salvarModalCliente"><i class="fas fa-save"></i> Salvar</button>
-    </div>
+    <div class="modal-buttons"><button class="btn-secondary" onclick="fecharModalCliente()"><i class="fas fa-times"></i> Cancelar</button><button class="btn-primary" onclick="salvarCliente()"><i class="fas fa-save"></i> Salvar</button></div>
   </div>
 </div>
 
 <div id="confirmModal" class="modal">
   <div class="modal-content">
-    <div class="modal-header">
-      <h3><i class="fas fa-exclamation-triangle" style="color:#f59e0b;"></i> Confirmar Ação</h3>
-      <button class="close-modal" id="closeConfirmModal">&times;</button>
-    </div>
+    <div class="modal-header"><h3><i class="fas fa-exclamation-triangle" style="color:#f59e0b;"></i> Confirmar Ação</h3><button class="close-modal" onclick="fecharModalConfirmar()">&times;</button></div>
     <p id="confirmMessage" style="font-size:1rem; margin:20px 0;">Tem certeza?</p>
-    <div class="modal-buttons">
-      <button class="btn-secondary" id="cancelConfirmModal"><i class="fas fa-times"></i> Cancelar</button>
-      <button class="btn-danger" id="confirmBtn"><i class="fas fa-check"></i> Confirmar</button>
-    </div>
+    <div class="modal-buttons"><button class="btn-secondary" onclick="fecharModalConfirmar()"><i class="fas fa-times"></i> Cancelar</button><button class="btn-danger" id="confirmBtn"><i class="fas fa-check"></i> Confirmar</button></div>
   </div>
 </div>
 
 <div id="modalRenovacao" class="modal"></div>
 
 <script>
-(function() {
-  // ============================================================
-  // CONFIGURAÇÃO
-  // ============================================================
-  const API_BASE_URL = window.location.origin;
-  
-  // Dados mockados para teste (já que as APIs podem não existir)
-  let clientes = [
-    { id: 1, nome: 'Anderson Silva', email: 'anderson@email.com', telefone: '(11) 99999-9999', empresa: 'ZapMix Solutions' },
-    { id: 2, nome: 'Maria Santos', email: 'maria@email.com', telefone: '(11) 88888-8888', empresa: 'Tech Ltda' }
-  ];
-  
-  let licencas = [
-    { id: 1, cliente_id: 1, cliente: 'Anderson Silva', chave: 'ZAPMIX-AAAA-BBBB-CCCC', status: 'ATIVA', validade: '2026-12-31', machine_id: null, ultima_renovacao: null, renovacoes: 0 },
-    { id: 2, cliente_id: 1, cliente: 'Anderson Silva', chave: 'ZAPMIX-DDDD-EEEE-FFFF', status: 'ATIVA', validade: '2026-06-15', machine_id: 'PC-JOAO-123', ultima_renovacao: null, renovacoes: 0 },
-    { id: 3, cliente_id: 2, cliente: 'Maria Santos', chave: 'ZAPMIX-GGGG-HHHH-IIII', status: 'BLOQUEADA', validade: '2025-12-01', machine_id: null, ultima_renovacao: null, renovacoes: 0 }
-  ];
-  
-  let licencasFiltradas = [];
-  let paginaAtual = 1;
-  let itensPorPagina = 10;
-  let acaoConfirmada = null;
-  let clienteEditandoId = null;
-  let ordemColuna = 'cliente';
-  let ordemDirecao = 'asc';
-  let statusChart, activityChart;
-  let ordemClientesColuna = 'nome';
-  let ordemClientesDirecao = 'asc';
-  
-  // ============================================================
-  // FUNÇÕES UTILITÁRIAS
-  // ============================================================
-  function showToast(msg, type) { 
+// ============================================================
+// CONFIGURAÇÃO DA API
+// ============================================================
+const API_BASE_URL = window.location.origin;
+
+// ============================================================
+// VARIÁVEIS GLOBAIS
+// ============================================================
+let clientes = [];
+let licencas = [];
+let licencasFiltradas = [];
+let paginaAtual = 1;
+let itensPorPagina = 10;
+let acaoConfirmada = null;
+let clienteEditandoId = null;
+let ordemColuna = 'cliente';
+let ordemDirecao = 'asc';
+let statusChart, activityChart;
+let ordemClientesColuna = 'nome';
+let ordemClientesDirecao = 'asc';
+
+// ============================================================
+// FUNÇÕES UTILITÁRIAS
+// ============================================================
+function showToast(msg, type) { 
     let t = document.createElement('div'); 
     t.className = `toast ${type}`; 
     t.innerHTML = type === 'success' ? `<i class="fas fa-check-circle"></i> ${msg}` : type === 'error' ? `<i class="fas fa-exclamation-triangle"></i> ${msg}` : `<i class="fas fa-info-circle"></i> ${msg}`; 
     document.body.appendChild(t); 
     setTimeout(() => t.remove(), 3000); 
-  }
-  
-  function getToken() { 
+}
+
+function getToken() { 
     return localStorage.getItem("zapmix_admin_token") || ""; 
-  }
-  
-  function escapeHtml(t) { 
+}
+
+function escapeHtml(t) { 
     if (!t) return ""; 
     let d = document.createElement('div'); 
     d.textContent = t; 
     return d.innerHTML; 
-  }
-  
-  function formatarData(d) { 
+}
+
+function formatarData(d) { 
     if (!d) return "N/A";
     try {
-      return new Date(d).toLocaleDateString('pt-BR');
+        return new Date(d).toLocaleDateString('pt-BR');
     } catch(e) {
-      return d;
+        return d;
     }
-  }
-  
-  function gerarChave() { 
+}
+
+function gerarChave() { 
     let b = new Uint8Array(8); 
     crypto.getRandomValues(b); 
     let h = Array.from(b, x => x.toString(16).padStart(2,'0')).join('').toUpperCase(); 
     return `ZAPMIX-${h.slice(0,4)}-${h.slice(4,8)}-${h.slice(8,12)}`; 
-  }
-  
-  function toggleTheme() {
+}
+
+function toggleTheme() {
     document.body.classList.toggle('dark-theme');
-    const icon = document.querySelector('#btnThemeToggle i');
+    const icon = document.querySelector('.theme-toggle i');
     if (document.body.classList.contains('dark-theme')) {
-      icon.classList.remove('fa-moon');
-      icon.classList.add('fa-sun');
-      localStorage.setItem('theme', 'dark');
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+        localStorage.setItem('theme', 'dark');
     } else {
-      icon.classList.remove('fa-sun');
-      icon.classList.add('fa-moon');
-      localStorage.setItem('theme', 'light');
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+        localStorage.setItem('theme', 'light');
     }
-  }
-  
-  // ============================================================
-  // LOGIN
-  // ============================================================
-  function fazerLogin() { 
+}
+
+// ============================================================
+// EXPORTAÇÃO DE DADOS
+// ============================================================
+function exportarDados(tipo) {
+    let dados = [];
+    let cabecalhos = [];
+    
+    if (tipo === 'clientes') {
+        cabecalhos = ['ID', 'Nome', 'Email', 'Telefone', 'Empresa', 'Total Licenças'];
+        dados = clientes.map(c => [c.id, c.nome, c.email, c.telefone, c.empresa, licencas.filter(l => l.cliente_id === c.id).length]);
+        showToast(`Exportando ${clientes.length} clientes...`, "info");
+    } else if (tipo === 'licencas') {
+        cabecalhos = ['ID', 'Cliente', 'Chave', 'Status', 'Validade', 'Máquina', 'Última Renovação', 'Renovações'];
+        dados = licencas.map(l => [l.id, l.cliente, l.chave, l.status, l.validade, l.machine_id || 'Livre', l.ultima_renovacao || '', l.renovacoes || 0]);
+        showToast(`Exportando ${licencas.length} licenças...`, "info");
+    }
+    
+    const csv = [cabecalhos.join(','), ...dados.map(row => row.map(cell => `"${cell}"`).join(','))].join('\n');
+    const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `${tipo}_${new Date().toISOString().slice(0,19)}.csv`;
+    link.click();
+    setTimeout(() => showToast(`Exportação concluída!`, "success"), 500);
+}
+
+// ============================================================
+// BACKUP AUTOMÁTICO
+// ============================================================
+function backupAutomatico() {
+    if (!getToken()) return;
+    const backup = {
+        data: new Date().toISOString(),
+        clientes: clientes,
+        licencas: licencas,
+        stats: {
+            totalClientes: clientes.length,
+            totalLicencas: licencas.length,
+            ativas: licencas.filter(l => l.status === 'ATIVA').length
+        }
+    };
+    localStorage.setItem('zapmix_backup', JSON.stringify(backup));
+}
+
+// ============================================================
+// VERIFICAR LICENÇAS PRESTES A VENCER
+// ============================================================
+function verificarLicencasPrestesVencer() {
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+    const emBreve = licencas.filter(l => {
+        const validade = new Date(l.validade);
+        validade.setHours(0, 0, 0, 0);
+        const diffDias = Math.ceil((validade - hoje) / (1000 * 60 * 60 * 24));
+        return diffDias <= 7 && diffDias > 0 && l.status === 'ATIVA';
+    });
+    
+    const banner = document.getElementById('avisoVencimento');
+    if (emBreve.length > 0) {
+        banner.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ⚠️ ${emBreve.length} licença(s) vence(m) nos próximos 7 dias! <button onclick="mostrarTab('licencas')" style="background: white; color: #ea580c; margin-left: 10px; border: none; padding: 4px 12px; border-radius: 20px; cursor: pointer; font-weight: bold;">Ver agora →</button>`;
+        banner.style.display = 'block';
+    } else {
+        banner.style.display = 'none';
+    }
+}
+
+// ============================================================
+// FUNÇÕES DE API
+// ============================================================
+async function apiRequest(endpoint, method, body = null) {
+    const token = getToken();
+    const headers = { "Content-Type": "application/json" };
+    if (token) headers["Authorization"] = `Bearer ${token}`;
+    
+    const options = { method: method, headers: headers };
+    if (body) options.body = JSON.stringify(body);
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error(`Erro na API ${endpoint}:`, error);
+        return { ok: false, erro: error.message };
+    }
+}
+
+// ============================================================
+// LOGIN
+// ============================================================
+async function login() { 
     let usuario = document.getElementById('usuario').value.trim(); 
     let senha = document.getElementById('senha').value; 
     
     if (!usuario || !senha) { 
-      showToast("Preencha usuário e senha", "error"); 
-      return; 
+        showToast("Preencha usuário e senha", "error"); 
+        return; 
     }
     
-    // Credenciais de acesso
-    if (usuario === 'admin' && senha === 'zapmix2024') {
-      const token = btoa(`${usuario}:${Date.now()}`);
-      localStorage.setItem("zapmix_admin_token", token); 
-      localStorage.setItem("zapmix_admin_usuario", usuario);
-      
-      showToast("Login realizado com sucesso!", "success"); 
-      
-      document.getElementById('loginOverlay').style.display = 'none'; 
-      document.getElementById('adminHeader').style.display = 'flex'; 
-      document.getElementById('adminContent').style.display = 'block'; 
-      
-      carregarClientes(); 
-      carregarLicencas(); 
-      mostrarTab('clientes'); 
-    } else {
-      showToast("Usuário ou senha inválidos", "error");
-    }
-  }
-  
-  function logout() { 
+    try { 
+        const response = await fetch(`${API_BASE_URL}/api/admin-login`, { 
+            method: "POST", 
+            headers: { "Content-Type": "application/json" }, 
+            body: JSON.stringify({ usuario: usuario, senha: senha }) 
+        }); 
+        
+        const data = await response.json(); 
+        
+        if (!data.ok) { 
+            showToast(data.erro || "Usuário ou senha inválidos", "error"); 
+            return; 
+        } 
+        
+        localStorage.setItem("zapmix_admin_token", data.token); 
+        localStorage.setItem("zapmix_admin_usuario", usuario);
+        
+        showToast("Login realizado com sucesso!", "success"); 
+        
+        document.getElementById('loginOverlay').style.display = 'none'; 
+        document.getElementById('adminHeader').style.display = 'flex'; 
+        document.getElementById('adminContent').style.display = 'block'; 
+        
+        await carregarClientes(); 
+        await carregarLicencas(); 
+        mostrarTab('clientes'); 
+        
+    } catch(e) { 
+        console.error("Erro no login:", e);
+        showToast("Erro de conexão com o servidor", "error"); 
+    } 
+}
+
+function logout() { 
     localStorage.removeItem('zapmix_admin_token'); 
     localStorage.removeItem('zapmix_admin_usuario');
     location.reload(); 
-  }
-  
-  // ============================================================
-  // CLIENTES
-  // ============================================================
-  function carregarClientes() {
+}
+
+// ============================================================
+// CLIENTES API
+// ============================================================
+async function carregarClientes() {
+    const token = getToken();
+    if (!token) return;
+    
+    try {
+        const data = await apiRequest("/api/clientes", "GET");
+        
+        if (data.ok && data.clientes) {
+            clientes = data.clientes;
+        } else {
+            clientes = [];
+            if (data.erro) showToast(data.erro, "error");
+        }
+    } catch(e) {
+        console.error("Erro ao carregar clientes:", e);
+        clientes = [];
+        showToast("Erro ao carregar clientes", "error");
+    }
+    
     // Ordena os clientes
     clientes.sort((a, b) => {
-      let valA = a[ordemClientesColuna] || '';
-      let valB = b[ordemClientesColuna] || '';
-      if (typeof valA === 'string') {
-        valA = valA.toLowerCase();
-        valB = valB.toLowerCase();
-      }
-      if (valA < valB) return ordemClientesDirecao === 'asc' ? -1 : 1;
-      if (valA > valB) return ordemClientesDirecao === 'asc' ? 1 : -1;
-      return 0;
+        let valA = a[ordemClientesColuna] || '';
+        let valB = b[ordemClientesColuna] || '';
+        if (typeof valA === 'string') {
+            valA = valA.toLowerCase();
+            valB = valB.toLowerCase();
+        }
+        if (valA < valB) return ordemClientesDirecao === 'asc' ? -1 : 1;
+        if (valA > valB) return ordemClientesDirecao === 'asc' ? 1 : -1;
+        return 0;
     });
     
     // Atualiza o select de clientes
     let select = document.getElementById('novaLicencaCliente');
     if (select) {
-      select.innerHTML = '<option value="">Selecione um cliente</option>' + 
-        clientes.map(c => `<option value="${c.id}">${escapeHtml(c.nome)}</option>`).join('');
+        select.innerHTML = '<option value="">Selecione um cliente</option>' + 
+            clientes.map(c => `<option value="${c.id}">${escapeHtml(c.nome)}</option>`).join('');
     }
     
     // Filtra e exibe na tabela
     let searchTerm = document.getElementById('searchCliente')?.value.toLowerCase() || '';
     let clientesFiltrados = clientes.filter(c => 
-      (c.nome || '').toLowerCase().includes(searchTerm) || 
-      (c.email || '').toLowerCase().includes(searchTerm) ||
-      (c.empresa || '').toLowerCase().includes(searchTerm)
+        (c.nome || '').toLowerCase().includes(searchTerm) || 
+        (c.email || '').toLowerCase().includes(searchTerm) ||
+        (c.empresa || '').toLowerCase().includes(searchTerm)
     );
     
     let tbody = document.getElementById('listaClientes');
     if (!tbody) return;
     
     if (clientesFiltrados.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="6" class="empty-state"><i class="fas fa-inbox"></i><br>Nenhum cliente encontrado</td></tr>';
-      return;
+        tbody.innerHTML = '<tr><td colspan="6" class="empty-state"><i class="fas fa-inbox"></i><br>Nenhum cliente encontrado</td><tr>';
+        return;
     }
     
     tbody.innerHTML = clientesFiltrados.map(c => `
-      <tr>
-        <td><strong>${escapeHtml(c.nome)}</strong><br><small style="color:#64748b;">${escapeHtml(c.empresa || '-')}</small></td>
-        <td>${escapeHtml(c.email || '-')}</td>
-        <td>${escapeHtml(c.telefone || '-')}</td>
-        <td>${licencas.filter(l => l.cliente_id === c.id).length}</td>
-        <td><span class="status-badge status-ATIVO"><i class="fas fa-check-circle"></i> Ativo</span></td>
-        <td><div class="action-buttons">
-          <button class="btn-success btn-sm" onclick="window.editarCliente(${c.id})"><i class="fas fa-edit"></i> Editar</button>
-          <button class="btn-danger btn-sm" onclick="window.excluirCliente(${c.id}, '${escapeHtml(c.nome)}')"><i class="fas fa-trash"></i> Excluir</button>
-        </div></td>
-      </tr>
+        <tr>
+            <td><strong>${escapeHtml(c.nome)}</strong><br><small style="color:#64748b;">${escapeHtml(c.empresa || '-')}</small></td>
+            <td>${escapeHtml(c.email || '-')}</td>
+            <td>${escapeHtml(c.telefone || '-')}</td>
+            <td>${licencas.filter(l => l.cliente_id === c.id).length}</td>
+            <td><span class="status-badge status-ATIVO"><i class="fas fa-check-circle"></i> Ativo</span></td>
+            <td><div class="action-buttons">
+                <button class="btn-success btn-sm" onclick="editarCliente(${c.id})"><i class="fas fa-edit"></i> Editar</button>
+                <button class="btn-danger btn-sm" onclick="excluirCliente(${c.id}, '${escapeHtml(c.nome)}')"><i class="fas fa-trash"></i> Excluir</button>
+            </div></td>
+        </tr>
     `).join('');
     
     atualizarStats();
-  }
-  
-  function ordenarClientes(coluna) {
+}
+
+function ordenarClientes(coluna) {
     if (ordemClientesColuna === coluna) {
-      ordemClientesDirecao = ordemClientesDirecao === 'asc' ? 'desc' : 'asc';
+        ordemClientesDirecao = ordemClientesDirecao === 'asc' ? 'desc' : 'asc';
     } else {
-      ordemClientesColuna = coluna;
-      ordemClientesDirecao = 'asc';
+        ordemClientesColuna = coluna;
+        ordemClientesDirecao = 'asc';
     }
     carregarClientes();
-  }
-  
-  function abrirModalCliente() { 
+}
+
+function abrirModalCliente() { 
     clienteEditandoId = null; 
     document.getElementById('modalClienteTitle').innerHTML = '<i class="fas fa-user-plus"></i> Novo Cliente'; 
     document.getElementById('clienteNome').value = ''; 
@@ -1072,13 +908,13 @@ body.dark-theme .modal-content {
     document.getElementById('clienteTelefone').value = ''; 
     document.getElementById('clienteEmpresa').value = ''; 
     document.getElementById('modalCliente').classList.add('active'); 
-  }
-  
-  function fecharModalCliente() { 
+}
+
+function fecharModalCliente() { 
     document.getElementById('modalCliente').classList.remove('active'); 
-  }
-  
-  function editarCliente(id) {
+}
+
+function editarCliente(id) {
     const cliente = clientes.find(c => c.id == id);
     if (!cliente) return;
     
@@ -1089,67 +925,90 @@ body.dark-theme .modal-content {
     document.getElementById('clienteTelefone').value = cliente.telefone || '';
     document.getElementById('clienteEmpresa').value = cliente.empresa || '';
     document.getElementById('modalCliente').classList.add('active');
-  }
-  
-  function salvarCliente() {
+}
+
+async function salvarCliente() {
     const nome = document.getElementById('clienteNome').value.trim();
     if (!nome) {
-      showToast("Nome é obrigatório", "error");
-      return;
+        showToast("Nome é obrigatório", "error");
+        return;
     }
     
-    if (clienteEditandoId) {
-      const index = clientes.findIndex(c => c.id == clienteEditandoId);
-      if (index !== -1) {
-        clientes[index] = {
-          ...clientes[index],
-          nome: nome,
-          email: document.getElementById('clienteEmail').value,
-          telefone: document.getElementById('clienteTelefone').value,
-          empresa: document.getElementById('clienteEmpresa').value
-        };
-        showToast("Cliente atualizado com sucesso!", "success");
-      }
-    } else {
-      const novoId = Math.max(...clientes.map(c => c.id), 0) + 1;
-      clientes.push({
-        id: novoId,
+    const dados = {
         nome: nome,
         email: document.getElementById('clienteEmail').value,
         telefone: document.getElementById('clienteTelefone').value,
         empresa: document.getElementById('clienteEmpresa').value
-      });
-      showToast("Cliente criado com sucesso!", "success");
-    }
+    };
     
-    fecharModalCliente();
-    carregarClientes();
-  }
-  
-  function excluirCliente(id, nome) {
+    if (clienteEditandoId) {
+        dados.id = clienteEditandoId;
+        const result = await apiRequest("/api/clientes", "PUT", dados);
+        if (result && result.ok) {
+            showToast("Cliente atualizado com sucesso!", "success");
+            fecharModalCliente();
+            await carregarClientes();
+        } else {
+            showToast(result?.erro || "Erro ao atualizar cliente", "error");
+        }
+    } else {
+        const result = await apiRequest("/api/clientes", "POST", dados);
+        if (result && result.ok) {
+            showToast("Cliente criado com sucesso!", "success");
+            fecharModalCliente();
+            await carregarClientes();
+        } else {
+            showToast(result?.erro || "Erro ao criar cliente", "error");
+        }
+    }
+}
+
+function excluirCliente(id, nome) {
     const temLicencas = licencas.some(l => l.cliente_id == id);
     let mensagem = `Excluir cliente ${nome}?`;
     if (temLicencas) {
-      mensagem += `\n\n⚠️ ATENÇÃO: Este cliente possui licenças associadas! Ao excluí-lo, as licenças também serão removidas.`;
+        mensagem += `\n\n⚠️ ATENÇÃO: Este cliente possui licenças associadas! Ao excluí-lo, as licenças também serão removidas.`;
     }
     
-    openModalConfirm(mensagem, () => {
-      clientes = clientes.filter(c => c.id != id);
-      licencas = licencas.filter(l => l.cliente_id != id);
-      showToast("Cliente excluído com sucesso!", "success");
-      carregarClientes();
-      carregarLicencas();
-      fecharModalConfirmar();
+    openModalConfirm(mensagem, async () => {
+        const result = await apiRequest("/api/clientes", "DELETE", { id: id });
+        if (result && result.ok) {
+            showToast("Cliente excluído com sucesso!", "success");
+            await carregarClientes();
+            await carregarLicencas();
+        } else {
+            showToast(result?.erro || "Erro ao excluir cliente", "error");
+        }
+        fecharModalConfirmar();
     });
-  }
-  
-  // ============================================================
-  // LICENÇAS
-  // ============================================================
-  function carregarLicencas() {
+}
+
+// ============================================================
+// LICENÇAS API
+// ============================================================
+async function carregarLicencas() {
+    const token = getToken();
+    if (!token) return;
+    
+    try {
+        const data = await apiRequest("/api/admin-licencas", "GET");
+        
+        if (data.ok && data.licencas) {
+            licencas = data.licencas;
+        } else {
+            licencas = [];
+            if (data.erro) showToast(data.erro, "error");
+        }
+    } catch(e) {
+        console.error("Erro ao carregar licenças:", e);
+        licencas = [];
+        showToast("Erro ao carregar licenças", "error");
+    }
+    
     atualizarStats();
     atualizarGraficos();
     verificarLicencasPrestesVencer();
+    backupAutomatico();
     
     let searchTerm = document.getElementById('searchLicenca')?.value.toLowerCase() || '';
     let statusFilter = document.getElementById('filterStatusLicenca')?.value || 'todos';
@@ -1158,43 +1017,43 @@ body.dark-theme .modal-content {
     hoje.setHours(0, 0, 0, 0);
     
     licencasFiltradas = licencas.filter(l => {
-      const dataValidade = new Date(l.validade);
-      dataValidade.setHours(0, 0, 0, 0);
-      
-      let statusReal = l.status;
-      if (dataValidade < hoje) {
-        statusReal = 'EXPIRADA';
-      }
-      
-      const matchSearch = (l.cliente || '').toLowerCase().includes(searchTerm) || 
-                         (l.chave || '').toLowerCase().includes(searchTerm);
-      const matchStatus = statusFilter === 'todos' || statusReal === statusFilter;
-      return matchSearch && matchStatus;
+        const dataValidade = new Date(l.validade);
+        dataValidade.setHours(0, 0, 0, 0);
+        
+        let statusReal = l.status;
+        if (dataValidade < hoje) {
+            statusReal = 'EXPIRADA';
+        }
+        
+        const matchSearch = (l.cliente || '').toLowerCase().includes(searchTerm) || 
+                           (l.chave || '').toLowerCase().includes(searchTerm);
+        const matchStatus = statusFilter === 'todos' || statusReal === statusFilter;
+        return matchSearch && matchStatus;
     });
     
     licencasFiltradas.sort((a, b) => {
-      return new Date(a.validade) - new Date(b.validade);
+        return new Date(a.validade) - new Date(b.validade);
     });
     
     paginaAtual = 1;
     renderizarLicencas();
-  }
-  
-  function renderizarLicencas() {
+}
+
+function renderizarLicencas() {
     let sorted = [...licencasFiltradas];
     sorted.sort((a, b) => {
-      let valA = a[ordemColuna] || '', valB = b[ordemColuna] || '';
-      if (ordemColuna === 'validade') { 
-        valA = new Date(valA) || 0; 
-        valB = new Date(valB) || 0; 
-      }
-      if (typeof valA === 'string') {
-        valA = valA.toLowerCase();
-        valB = valB.toLowerCase();
-      }
-      if (valA < valB) return ordemDirecao === 'asc' ? -1 : 1;
-      if (valA > valB) return ordemDirecao === 'asc' ? 1 : -1;
-      return 0;
+        let valA = a[ordemColuna] || '', valB = b[ordemColuna] || '';
+        if (ordemColuna === 'validade') { 
+            valA = new Date(valA) || 0; 
+            valB = new Date(valB) || 0; 
+        }
+        if (typeof valA === 'string') {
+            valA = valA.toLowerCase();
+            valB = valB.toLowerCase();
+        }
+        if (valA < valB) return ordemDirecao === 'asc' ? -1 : 1;
+        if (valA > valB) return ordemDirecao === 'asc' ? 1 : -1;
+        return 0;
     });
     
     let start = (paginaAtual-1) * itensPorPagina;
@@ -1204,65 +1063,72 @@ body.dark-theme .modal-content {
     if (!tbody) return;
     
     if (pagina.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="6" class="empty-state"><i class="fas fa-inbox"></i><br>Nenhuma licença encontrada</td></tr>';
-      return;
+        tbody.innerHTML = '<tr><td colspan="6" class="empty-state"><i class="fas fa-inbox"></i><br>Nenhuma licença encontrada</td></tr>';
+        return;
     }
     
     const hoje = new Date();
     hoje.setHours(0, 0, 0, 0);
     
     tbody.innerHTML = pagina.map(l => {
-      const dataValidade = new Date(l.validade);
-      dataValidade.setHours(0, 0, 0, 0);
-      
-      let statusReal = l.status;
-      let statusIcon = '';
-      let statusClass = '';
-      
-      if (dataValidade < hoje) {
-        statusReal = 'EXPIRADA';
-        statusIcon = '⏰';
-        statusClass = 'status-EXPIRADA';
-      } else {
-        if (l.status === 'ATIVA') {
-          statusIcon = '✅';
-          statusClass = 'status-ATIVA';
-        } else if (l.status === 'BLOQUEADA') {
-          statusIcon = '🔒';
-          statusClass = 'status-BLOQUEADA';
+        const dataValidade = new Date(l.validade);
+        dataValidade.setHours(0, 0, 0, 0);
+        
+        let statusReal = l.status;
+        let statusIcon = '';
+        let statusClass = '';
+        
+        if (dataValidade < hoje) {
+            statusReal = 'EXPIRADA';
+            statusIcon = '⏰';
+            statusClass = 'status-EXPIRADA';
         } else {
-          statusIcon = '⏰';
-          statusClass = 'status-EXPIRADA';
+            if (l.status === 'ATIVA') {
+                statusIcon = '✅';
+                statusClass = 'status-ATIVA';
+            } else if (l.status === 'BLOQUEADA') {
+                statusIcon = '🔒';
+                statusClass = 'status-BLOQUEADA';
+            } else {
+                statusIcon = '⏰';
+                statusClass = 'status-EXPIRADA';
+            }
         }
-      }
-      
-      const diffDias = Math.ceil((dataValidade - hoje) / (1000 * 60 * 60 * 24));
-      const precisaRenovar = diffDias <= 30 && diffDias > 0;
-      const estaExpirada = diffDias < 0;
-      
-      let dataComStatus = formatarData(l.validade);
-      if (estaExpirada) {
-        dataComStatus = `<span style="color: #ef4444;">${dataComStatus}</span> <span style="color: #ef4444; font-size: 0.7rem;">(Expirada)</span>`;
-      } else if (diffDias <= 7) {
-        dataComStatus = `<span style="color: #f59e0b;">${dataComStatus}</span> <span style="color: #f59e0b; font-size: 0.7rem;">⚠️ Vence em ${diffDias} dias</span>`;
-      }
-      
-      return `
+        
+        const diffDias = Math.ceil((dataValidade - hoje) / (1000 * 60 * 60 * 24));
+        const precisaRenovar = diffDias <= 30 && diffDias > 0;
+        const estaExpirada = diffDias < 0;
+        
+        let dataComStatus = formatarData(l.validade);
+        if (estaExpirada) {
+            dataComStatus = `<span style="color: #ef4444;">${dataComStatus}</span> <span style="color: #ef4444; font-size: 0.7rem;">(Expirada)</span>`;
+        } else if (diffDias <= 7) {
+            dataComStatus = `<span style="color: #f59e0b;">${dataComStatus}</span> <span style="color: #f59e0b; font-size: 0.7rem;">⚠️ Vence em ${diffDias} dias</span>`;
+        }
+        
+        const chaveId = `chave_${l.id}_${Date.now()}`;
+        
+        return `
         <tr>
-          <td><strong>${escapeHtml(l.cliente)}</strong>${l.ultima_renovacao ? `<br><small>🔄 Renovação: ${formatarData(l.ultima_renovacao)}</small>` : ''}</td>
-          <td><code onclick="window.copiarChave('${escapeHtml(l.chave)}')" style="cursor:pointer;">${escapeHtml(l.chave)}</code></td>
-          <td><span class="status-badge ${statusClass}">${statusIcon} ${statusReal}</span></td>
-          <td>${dataComStatus}</td>
-          <td>${l.machine_id && l.machine_id !== 'null' ? l.machine_id.substring(0,20)+'...' : '<i class="fas fa-desktop"></i> Livre'}</td>
-          <td><div class="action-buttons">
-            ${statusReal !== 'ATIVA' && !estaExpirada ? `<button class="btn-success btn-sm" onclick="window.atualizarStatus('${l.id}','ATIVA')"><i class="fas fa-check"></i> Ativar</button>` : ''}
-            ${statusReal !== 'BLOQUEADA' && !estaExpirada ? `<button class="btn-danger btn-sm" onclick="window.atualizarStatus('${l.id}','BLOQUEADA')"><i class="fas fa-lock"></i> Bloquear</button>` : ''}
-            ${l.machine_id && l.machine_id !== 'null' ? `<button class="btn-warning btn-sm" onclick="window.liberarMaquina('${l.id}')"><i class="fas fa-desktop"></i> Liberar</button>` : ''}
-            ${(precisaRenovar || estaExpirada) ? `<button class="btn-primary btn-sm" onclick="window.abrirModalRenovacao('${l.id}', '${escapeHtml(l.cliente)}', '${l.validade}')"><i class="fas fa-sync-alt"></i> Renovar</button>` : ''}
-            <button class="btn-danger btn-sm" onclick="window.excluirLicenca('${l.id}','${escapeHtml(l.cliente)}')"><i class="fas fa-trash"></i> Excluir</button>
-          </div></td>
+            <td><strong>${escapeHtml(l.cliente)}</strong>${l.ultima_renovacao ? `<br><small>🔄 Renovação: ${formatarData(l.ultima_renovacao)}</small>` : ''}${l.renovacoes ? `<br><small>📊 ${l.renovacoes}x renovações</small>` : ''}</td>
+            <td>
+                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                    <code id="${chaveId}" style="cursor: pointer;" onclick="copiarChave('${chaveId}', '${escapeHtml(l.chave)}')" title="Clique para copiar">${escapeHtml(l.chave)}</code>
+                    <button class="btn-secondary btn-sm" onclick="copiarChave('${chaveId}', '${escapeHtml(l.chave)}')" style="padding: 4px 10px;"><i class="fas fa-copy"></i></button>
+                </div>
+            </td>
+            <td><span class="status-badge ${statusClass}">${statusIcon} ${statusReal}</span></td>
+            <td>${dataComStatus}</td>
+            <td>${l.machine_id && l.machine_id !== 'null' ? l.machine_id.substring(0,20)+'...' : '<i class="fas fa-desktop"></i> Livre'}</td>
+            <td><div class="action-buttons">
+                ${statusReal !== 'ATIVA' && !estaExpirada ? `<button class="btn-success btn-sm" onclick="atualizarStatus('${l.id}','ATIVA')"><i class="fas fa-check"></i> Ativar</button>` : ''}
+                ${statusReal !== 'BLOQUEADA' && !estaExpirada ? `<button class="btn-danger btn-sm" onclick="atualizarStatus('${l.id}','BLOQUEADA')"><i class="fas fa-lock"></i> Bloquear</button>` : ''}
+                ${l.machine_id && l.machine_id !== 'null' ? `<button class="btn-warning btn-sm" onclick="liberarMaquina('${l.id}')"><i class="fas fa-desktop"></i> Liberar</button>` : ''}
+                ${(precisaRenovar || estaExpirada) ? `<button class="btn-primary btn-sm" onclick="abrirModalRenovacao('${l.id}', '${escapeHtml(l.cliente)}', '${l.validade}')"><i class="fas fa-sync-alt"></i> Renovar</button>` : ''}
+                <button class="btn-danger btn-sm" onclick="excluirLicenca('${l.id}','${escapeHtml(l.cliente)}')"><i class="fas fa-trash"></i> Excluir</button>
+            </div></td>
         </tr>
-      `;
+        `;
     }).join('');
     
     let totalPaginas = Math.ceil(licencasFiltradas.length / itensPorPagina);
@@ -1270,250 +1136,347 @@ body.dark-theme .modal-content {
     if (!div) return;
     
     if (totalPaginas <= 1) { 
-      div.innerHTML = ''; 
-      return; 
+        div.innerHTML = ''; 
+        return; 
     }
     
-    let html = `<button class="page-btn" onclick="window.mudarPagina(${paginaAtual-1})" ${paginaAtual===1?'disabled':''}>«</button>`;
+    let html = `<button class="page-btn" onclick="mudarPagina(${paginaAtual-1})" ${paginaAtual===1?'disabled':''}>«</button>`;
     for(let i=1; i<=Math.min(totalPaginas,5); i++) {
-      html += `<button class="page-btn ${paginaAtual===i?'active':''}" onclick="window.mudarPagina(${i})">${i}</button>`;
+        html += `<button class="page-btn ${paginaAtual===i?'active':''}" onclick="mudarPagina(${i})">${i}</button>`;
     }
-    html += `<button class="page-btn" onclick="window.mudarPagina(${paginaAtual+1})" ${paginaAtual===totalPaginas?'disabled':''}>»</button>`;
+    html += `<button class="page-btn" onclick="mudarPagina(${paginaAtual+1})" ${paginaAtual===totalPaginas?'disabled':''}>»</button>`;
     div.innerHTML = html;
-  }
-  
-  function copiarChave(chave) {
+}
+
+function copiarChave(elementId, chave) {
     navigator.clipboard.writeText(chave).then(() => {
-      showToast(`Chave copiada: ${chave.substring(0, 15)}...`, "success");
+        const element = document.getElementById(elementId);
+        if (element) {
+            const originalBg = element.style.background;
+            element.style.background = '#90d105';
+            element.style.color = '#0f172a';
+            setTimeout(() => {
+                element.style.background = originalBg;
+                element.style.color = '';
+            }, 300);
+        }
+        showToast(`Chave copiada: ${chave.substring(0, 15)}...`, "success");
     }).catch(() => {
-      showToast("Erro ao copiar chave", "error");
+        showToast("Erro ao copiar chave", "error");
     });
-  }
-  
-  function atualizarStatus(id, status) {
-    const index = licencas.findIndex(l => l.id == id);
-    if (index !== -1) {
-      licencas[index].status = status;
-      showToast(`Licença ${status === 'ATIVA' ? 'ativada' : 'bloqueada'}!`, "success");
-      carregarLicencas();
+}
+
+async function atualizarStatus(id, status) { 
+    try {
+        showToast("Processando...", "info");
+        
+        const licenca = licencas.find(l => l.id == id);
+        if (!licenca) {
+            showToast("Licença não encontrada", "error");
+            return;
+        }
+        
+        const dadosAtualizacao = {
+            id: id,
+            status: status,
+            chave: licenca.chave,
+            cliente: licenca.cliente,
+            cliente_id: licenca.cliente_id,
+            validade: licenca.validade
+        };
+        
+        const result = await apiRequest("/api/admin-licencas", "PUT", dadosAtualizacao);
+        
+        if(result && result.ok){ 
+            showToast(`Licença ${status === 'ATIVA' ? 'ativada' : 'bloqueada'} com sucesso!`, "success"); 
+            await carregarLicencas();
+        } else { 
+            showToast(result?.erro || "Erro ao atualizar status", "error"); 
+        } 
+    } catch(e) {
+        console.error("Erro em atualizarStatus:", e);
+        showToast("Erro ao atualizar status", "error");
     }
-  }
-  
-  function liberarMaquina(id) {
-    const index = licencas.findIndex(l => l.id == id);
-    if (index !== -1) {
-      licencas[index].machine_id = null;
-      showToast("Máquina liberada com sucesso!", "success");
-      carregarLicencas();
+}
+
+async function liberarMaquina(id) { 
+    try {
+        showToast("Liberando máquina...", "info");
+        
+        const licenca = licencas.find(l => l.id == id);
+        if (!licenca) {
+            showToast("Licença não encontrada", "error");
+            return;
+        }
+        
+        const dadosAtualizacao = {
+            id: id,
+            machine_id: null,
+            chave: licenca.chave,
+            cliente: licenca.cliente,
+            cliente_id: licenca.cliente_id,
+            status: licenca.status,
+            validade: licenca.validade
+        };
+        
+        const result = await apiRequest("/api/admin-licencas", "PUT", dadosAtualizacao);
+        
+        if(result && result.ok){ 
+            showToast("Máquina liberada com sucesso!", "success"); 
+            await carregarLicencas();
+        } else { 
+            showToast(result?.erro || "Erro ao liberar máquina", "error"); 
+        } 
+    } catch(e) {
+        console.error("Erro em liberarMaquina:", e);
+        showToast("Erro ao liberar máquina", "error");
     }
-  }
-  
-  function excluirLicenca(id, cliente) {
-    openModalConfirm(`Excluir licença de ${cliente}?`, () => {
-      licencas = licencas.filter(l => l.id != id);
-      showToast("Licença excluída!", "success");
-      carregarLicencas();
-      fecharModalConfirmar();
-    });
-  }
-  
-  function renovarLicenca(id, novaData, dias) {
-    const index = licencas.findIndex(l => l.id == id);
-    if (index !== -1) {
-      licencas[index].validade = novaData;
-      licencas[index].status = 'ATIVA';
-      licencas[index].ultima_renovacao = new Date().toISOString().split('T')[0];
-      licencas[index].renovacoes = (licencas[index].renovacoes || 0) + 1;
-      showToast(`Licença renovada por ${dias} dias!`, "success");
-      carregarLicencas();
+}
+
+async function excluirLicenca(id, cliente) { 
+    openModalConfirm(`Excluir licença de ${cliente}? Esta ação não poderá ser desfeita.`, async () => { 
+        try {
+            showToast("Excluindo licença...", "info");
+            const result = await apiRequest("/api/admin-licencas", "DELETE", { id: id }); 
+            if(result && result.ok){ 
+                showToast("Licença excluída com sucesso!", "success"); 
+                await carregarLicencas();
+            } else { 
+                showToast(result?.erro || "Erro ao excluir licença", "error"); 
+            } 
+        } catch(e) {
+            console.error("Erro em excluirLicenca:", e);
+            showToast("Erro ao excluir licença", "error");
+        }
+        fecharModalConfirmar();
+    }); 
+}
+
+async function renovarLicenca(id, novaData, dias) {
+    try {
+        showToast("Renovando licença...", "info");
+        
+        const licenca = licencas.find(l => l.id == id);
+        if (!licenca) {
+            showToast("Licença não encontrada", "error");
+            return;
+        }
+        
+        const dadosAtualizacao = {
+            id: id,
+            validade: novaData,
+            status: 'ATIVA',
+            ultima_renovacao: new Date().toISOString().split('T')[0],
+            chave: licenca.chave,
+            cliente: licenca.cliente,
+            cliente_id: licenca.cliente_id,
+            renovacoes: (licenca.renovacoes || 0) + 1
+        };
+        
+        const result = await apiRequest("/api/admin-licencas", "PUT", dadosAtualizacao);
+        
+        if(result && result.ok){ 
+            showToast(`Licença renovada por ${dias} dias!`, "success"); 
+            await carregarLicencas();
+        } else { 
+            showToast(result?.erro || "Erro ao renovar licença", "error"); 
+        } 
+    } catch(e) {
+        console.error("Erro em renovarLicenca:", e);
+        showToast("Erro ao renovar licença", "error");
     }
-  }
-  
-  function criarLicenca() {
+}
+
+async function criarLicenca() { 
     let cid = document.getElementById('novaLicencaCliente').value; 
     let validade = document.getElementById('novaLicencaValidade').value; 
     
     if(!cid || !validade){ 
-      showToast("Selecione cliente e data de validade", "error"); 
-      return; 
+        showToast("Selecione cliente e data de validade", "error"); 
+        return; 
     } 
     
     let cli = clientes.find(c => c.id == cid); 
     if(!cli){
-      showToast("Cliente não encontrado", "error");
-      return;
+        showToast("Cliente não encontrado", "error");
+        return;
     }
     
     const chave = document.getElementById('novaLicencaChave').value || gerarChave();
     const status = document.getElementById('novaLicencaStatus').value;
-    const novoId = Math.max(...licencas.map(l => l.id), 0) + 1;
     
-    licencas.push({
-      id: novoId,
-      cliente_id: parseInt(cid),
-      cliente: cli.nome,
-      chave: chave,
-      status: status,
-      validade: validade,
-      machine_id: null,
-      ultima_renovacao: null,
-      renovacoes: 0
-    });
+    const licencaData = {
+        chave: chave,
+        cliente: cli.nome,
+        cliente_id: parseInt(cid),
+        validade: validade,
+        status: status,
+        max_machines: 1,
+        modulos: ["whatsapp", "ndi", "enquete"]
+    };
     
-    showToast("Licença criada com sucesso!", "success");
-    document.getElementById('novaLicencaChave').value = '';
-    document.getElementById('novaLicencaValidade').value = '';
-    carregarLicencas();
-    mostrarTab('licencas');
-  }
-  
-  function ordenarLicencas(coluna) {
+    showToast("Criando licença...", "info");
+    
+    const result = await apiRequest("/api/admin-licencas", "POST", licencaData);
+    
+    if(result && result.ok){ 
+        showToast("Licença criada com sucesso!", "success"); 
+        document.getElementById('novaLicencaChave').value = ''; 
+        document.getElementById('novaLicencaValidade').value = ''; 
+        await carregarLicencas(); 
+        mostrarTab('licencas');
+    } else { 
+        showToast(result?.erro || "Erro ao criar licença", "error"); 
+    } 
+}
+
+function ordenarLicencas(coluna) { 
     if (ordemColuna === coluna) {
-      ordemDirecao = ordemDirecao === 'asc' ? 'desc' : 'asc';
-    } else {
-      ordemColuna = coluna;
-      ordemDirecao = 'asc';
+        ordemDirecao = ordemDirecao === 'asc' ? 'desc' : 'asc';
+    } else { 
+        ordemColuna = coluna; 
+        ordemDirecao = 'asc'; 
     }
-    renderizarLicencas();
-  }
-  
-  function mudarPagina(p) {
-    let total = Math.ceil(licencasFiltradas.length / itensPorPagina);
-    if(p<1 || p>total) return;
-    paginaAtual = p;
-    renderizarLicencas();
-  }
-  
-  // ============================================================
-  // RENOVAÇÃO
-  // ============================================================
-  function abrirModalRenovacao(id, cliente, validadeAtual) {
+    renderizarLicencas(); 
+}
+
+function mudarPagina(p) { 
+    let total = Math.ceil(licencasFiltradas.length / itensPorPagina); 
+    if(p<1 || p>total) return; 
+    paginaAtual = p; 
+    renderizarLicencas(); 
+}
+
+// ============================================================
+// RENOVAÇÃO
+// ============================================================
+function abrirModalRenovacao(id, cliente, validadeAtual) {
     window.licencaRenovando = { id, cliente, validadeAtual };
     
     let modal = document.getElementById('modalRenovacao');
     modal.className = 'modal';
     modal.innerHTML = `
-      <div class="modal-content" style="max-width:450px;">
-        <div class="modal-header">
-          <h3><i class="fas fa-sync-alt"></i> Renovar Licença</h3>
-          <button class="close-modal" onclick="window.fecharModalRenovacao()">&times;</button>
+        <div class="modal-content" style="max-width:450px;">
+            <div class="modal-header">
+                <h3><i class="fas fa-sync-alt"></i> Renovar Licença</h3>
+                <button class="close-modal" onclick="fecharModalRenovacao()">&times;</button>
+            </div>
+            <p><strong>Cliente:</strong> ${escapeHtml(cliente)}</p>
+            <p><strong>Validade atual:</strong> ${formatarData(validadeAtual)}</p>
+            <div class="input-group">
+                <label><i class="fas fa-calendar"></i> Período</label>
+                <select id="periodoRenovacao">
+                    <option value="30">+30 dias</option>
+                    <option value="60">+60 dias</option>
+                    <option value="90" selected>+90 dias</option>
+                    <option value="180">+180 dias</option>
+                    <option value="365">+365 dias</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label><i class="fas fa-calendar-check"></i> Nova data</label>
+                <input type="date" id="novaDataValidade" readonly style="background:#f1f5f9;">
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-secondary" onclick="fecharModalRenovacao()"><i class="fas fa-times"></i> Cancelar</button>
+                <button class="btn-primary" onclick="confirmarRenovacao()"><i class="fas fa-check"></i> Confirmar</button>
+            </div>
         </div>
-        <p><strong>Cliente:</strong> ${escapeHtml(cliente)}</p>
-        <p><strong>Validade atual:</strong> ${formatarData(validadeAtual)}</p>
-        <div class="input-group">
-          <label><i class="fas fa-calendar"></i> Período</label>
-          <select id="periodoRenovacao">
-            <option value="30">+30 dias</option>
-            <option value="60">+60 dias</option>
-            <option value="90" selected>+90 dias</option>
-            <option value="180">+180 dias</option>
-            <option value="365">+365 dias</option>
-          </select>
-        </div>
-        <div class="input-group">
-          <label><i class="fas fa-calendar-check"></i> Nova data</label>
-          <input type="date" id="novaDataValidade" readonly style="background:#f1f5f9;">
-        </div>
-        <div class="modal-buttons">
-          <button class="btn-secondary" onclick="window.fecharModalRenovacao()"><i class="fas fa-times"></i> Cancelar</button>
-          <button class="btn-primary" onclick="window.confirmarRenovacao()"><i class="fas fa-check"></i> Confirmar</button>
-        </div>
-      </div>
     `;
     
     let periodoSelect = document.getElementById('periodoRenovacao');
     let novaDataInput = document.getElementById('novaDataValidade');
-    let atualizarData = () => {
-      let dias = parseInt(periodoSelect.value);
-      let novaData = new Date(validadeAtual);
-      novaData.setDate(novaData.getDate() + dias);
-      novaDataInput.value = novaData.toISOString().split('T')[0];
+    let atualizarData = () => { 
+        let dias = parseInt(periodoSelect.value); 
+        let novaData = new Date(validadeAtual); 
+        novaData.setDate(novaData.getDate() + dias); 
+        novaDataInput.value = novaData.toISOString().split('T')[0]; 
     };
     periodoSelect.onchange = atualizarData;
     atualizarData();
     modal.classList.add('active');
-  }
-  
-  function fecharModalRenovacao() {
-    let modal = document.getElementById('modalRenovacao');
-    if (modal) modal.classList.remove('active');
-    window.licencaRenovando = null;
-  }
-  
-  function confirmarRenovacao() {
-    let licenca = window.licencaRenovando;
-    if (!licenca) return;
-    let novaData = document.getElementById('novaDataValidade').value;
+}
+
+function fecharModalRenovacao() { 
+    let modal = document.getElementById('modalRenovacao'); 
+    if (modal) modal.classList.remove('active'); 
+    window.licencaRenovando = null; 
+}
+
+function confirmarRenovacao() { 
+    let licenca = window.licencaRenovando; 
+    if (!licenca) return; 
+    let novaData = document.getElementById('novaDataValidade').value; 
     let dias = parseInt(document.getElementById('periodoRenovacao').value);
     
-    openModalConfirm(`Renovar licença por ${dias} dias?`, () => {
-      renovarLicenca(licenca.id, novaData, dias);
-      fecharModalRenovacao();
-      fecharModalConfirmar();
-    });
-  }
-  
-  // ============================================================
-  // PERFIL
-  // ============================================================
-  function carregarPerfil() {
-    let p = JSON.parse(localStorage.getItem('zapmix_admin_perfil') || '{}');
-    document.getElementById('perfilNome').value = p.nome || 'Administrador';
-    document.getElementById('perfilEmail').value = p.email || 'admin@zapmix.com';
-    document.getElementById('perfilTelefone').value = p.telefone || '';
-    document.getElementById('perfilCargo').value = p.cargo || 'Administrador';
-  }
-  
-  function salvarPerfil() {
-    let p = {
-      nome: document.getElementById('perfilNome').value,
-      email: document.getElementById('perfilEmail').value,
-      telefone: document.getElementById('perfilTelefone').value,
-      cargo: document.getElementById('perfilCargo').value
-    };
-    localStorage.setItem('zapmix_admin_perfil', JSON.stringify(p));
-    showToast("Perfil atualizado com sucesso!", "success");
-  }
-  
-  function cancelarEdicaoPerfil() {
-    carregarPerfil();
-  }
-  
-  function alterarSenha() {
-    let atual = document.getElementById('senhaAtual').value;
-    let nova = document.getElementById('novaSenha').value;
-    let confirmar = document.getElementById('confirmarSenha').value;
+    openModalConfirm(`Renovar licença por ${dias} dias?`, async () => { 
+        await renovarLicenca(licenca.id, novaData, dias);
+        fecharModalRenovacao();
+        fecharModalConfirmar();
+    }); 
+}
+
+// ============================================================
+// PERFIL
+// ============================================================
+function carregarPerfil() { 
+    let p = JSON.parse(localStorage.getItem('zapmix_admin_perfil') || '{}'); 
+    document.getElementById('perfilNome').value = p.nome || 'Administrador'; 
+    document.getElementById('perfilEmail').value = p.email || 'admin@zapmix.com'; 
+    document.getElementById('perfilTelefone').value = p.telefone || ''; 
+    document.getElementById('perfilCargo').value = p.cargo || 'Administrador'; 
+}
+
+function salvarPerfil() { 
+    let p = { 
+        nome: document.getElementById('perfilNome').value, 
+        email: document.getElementById('perfilEmail').value, 
+        telefone: document.getElementById('perfilTelefone').value, 
+        cargo: document.getElementById('perfilCargo').value 
+    }; 
+    localStorage.setItem('zapmix_admin_perfil', JSON.stringify(p)); 
+    showToast("Perfil atualizado com sucesso!", "success"); 
+}
+
+function cancelarEdicaoPerfil() { 
+    carregarPerfil(); 
+}
+
+function alterarSenha() { 
+    let atual = document.getElementById('senhaAtual').value; 
+    let nova = document.getElementById('novaSenha').value; 
+    let confirmar = document.getElementById('confirmarSenha').value; 
     
-    if (!atual || !nova || !confirmar) {
-      showToast("Preencha todos os campos", "error");
-      return;
-    }
-    if (nova !== confirmar) {
-      showToast("As senhas não coincidem", "error");
-      return;
-    }
-    if (nova.length < 6) {
-      showToast("A nova senha deve ter no mínimo 6 caracteres", "error");
-      return;
-    }
+    if (!atual || !nova || !confirmar) { 
+        showToast("Preencha todos os campos", "error"); 
+        return; 
+    } 
+    if (nova !== confirmar) { 
+        showToast("As senhas não coincidem", "error"); 
+        return; 
+    } 
+    if (nova.length < 6) { 
+        showToast("A nova senha deve ter no mínimo 6 caracteres", "error"); 
+        return; 
+    } 
     
-    showToast("Senha alterada com sucesso!", "success");
-    document.getElementById('senhaAtual').value = '';
-    document.getElementById('novaSenha').value = '';
-    document.getElementById('confirmarSenha').value = '';
-  }
-  
-  // ============================================================
-  // STATS E GRÁFICOS
-  // ============================================================
-  function atualizarStats() {
-    document.getElementById('statClientes').innerText = clientes.length;
-    document.getElementById('statTotalLicencas').innerText = licencas.length;
-    document.getElementById('statAtivas').innerText = licencas.filter(l => l.status === 'ATIVA').length;
-    document.getElementById('statMaquinas').innerText = licencas.filter(l => l.machine_id).length;
-  }
-  
-  function atualizarGraficos() {
+    showToast("Senha alterada com sucesso!", "success"); 
+    document.getElementById('senhaAtual').value = ''; 
+    document.getElementById('novaSenha').value = ''; 
+    document.getElementById('confirmarSenha').value = ''; 
+}
+
+// ============================================================
+// STATS E GRÁFICOS
+// ============================================================
+function atualizarStats() { 
+    document.getElementById('statClientes').innerText = clientes.length; 
+    document.getElementById('statTotalLicencas').innerText = licencas.length; 
+    document.getElementById('statAtivas').innerText = licencas.filter(l => l.status === 'ATIVA').length; 
+    document.getElementById('statMaquinas').innerText = licencas.filter(l => l.machine_id).length; 
+}
+
+function atualizarGraficos() {
     const hoje = new Date();
     hoje.setHours(0, 0, 0, 0);
     
@@ -1522,37 +1485,37 @@ body.dark-theme .modal-content {
     let expiradas = 0;
     
     licencas.forEach(l => {
-      const dataValidade = new Date(l.validade);
-      dataValidade.setHours(0, 0, 0, 0);
-      
-      if (dataValidade < hoje) {
-        expiradas++;
-      } else if (l.status === 'ATIVA') {
-        ativas++;
-      } else if (l.status === 'BLOQUEADA') {
-        bloqueadas++;
-      } else {
-        expiradas++;
-      }
+        const dataValidade = new Date(l.validade);
+        dataValidade.setHours(0, 0, 0, 0);
+        
+        if (dataValidade < hoje) {
+            expiradas++;
+        } else if (l.status === 'ATIVA') {
+            ativas++;
+        } else if (l.status === 'BLOQUEADA') {
+            bloqueadas++;
+        } else {
+            expiradas++;
+        }
     });
     
     if (statusChart) statusChart.destroy();
     const ctx = document.getElementById('statusChart').getContext('2d');
     statusChart = new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels: ['Ativas', 'Bloqueadas', 'Expiradas'],
-        datasets: [{
-          data: [ativas, bloqueadas, expiradas],
-          backgroundColor: ['#10b981', '#ef4444', '#f59e0b'],
-          borderWidth: 0
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        plugins: { legend: { position: 'bottom' } }
-      }
+        type: 'doughnut',
+        data: {
+            labels: ['Ativas', 'Bloqueadas', 'Expiradas'],
+            datasets: [{
+                data: [ativas, bloqueadas, expiradas],
+                backgroundColor: ['#10b981', '#ef4444', '#f59e0b'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: { legend: { position: 'bottom' } }
+        }
     });
     
     const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
@@ -1562,208 +1525,119 @@ body.dark-theme .modal-content {
     if (activityChart) activityChart.destroy();
     const ctx2 = document.getElementById('activityChart').getContext('2d');
     activityChart = new Chart(ctx2, {
-      type: 'line',
-      data: {
-        labels: meses.slice(0, mesesFiltrados),
-        datasets: [{
-          label: 'Licenças Ativas',
-          data: Array(mesesFiltrados).fill(0).map((_, i) => ativas - (mesesFiltrados - i - 1) * Math.floor(ativas / mesesFiltrados)),
-          borderColor: '#90d105',
-          backgroundColor: 'rgba(144, 209, 5, 0.1)',
-          tension: 0.4,
-          fill: true
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        plugins: { legend: { position: 'bottom' } }
-      }
+        type: 'line',
+        data: {
+            labels: meses.slice(0, mesesFiltrados),
+            datasets: [{
+                label: 'Licenças Ativas',
+                data: Array(mesesFiltrados).fill(0).map((_, i) => ativas - (mesesFiltrados - i - 1) * Math.floor(ativas / mesesFiltrados)),
+                borderColor: '#90d105',
+                backgroundColor: 'rgba(144, 209, 5, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: { legend: { position: 'bottom' } }
+        }
     });
-  }
-  
-  function verificarLicencasPrestesVencer() {
-    const hoje = new Date();
-    hoje.setHours(0, 0, 0, 0);
-    const emBreve = licencas.filter(l => {
-      const validade = new Date(l.validade);
-      validade.setHours(0, 0, 0, 0);
-      const diffDias = Math.ceil((validade - hoje) / (1000 * 60 * 60 * 24));
-      return diffDias <= 7 && diffDias > 0 && l.status === 'ATIVA';
-    });
-    
-    const banner = document.getElementById('avisoVencimento');
-    if (emBreve.length > 0) {
-      banner.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ⚠️ ${emBreve.length} licença(s) vence(m) nos próximos 7 dias! <button onclick="window.mostrarTab('licencas')" style="background: white; color: #ea580c; margin-left: 10px; border: none; padding: 4px 12px; border-radius: 20px; cursor: pointer;">Ver agora →</button>`;
-      banner.style.display = 'block';
-    } else {
-      banner.style.display = 'none';
-    }
-  }
-  
-  function exportarClientes() {
-    const cabecalhos = ['ID', 'Nome', 'Email', 'Telefone', 'Empresa', 'Total Licenças'];
-    const dados = clientes.map(c => [c.id, c.nome, c.email, c.telefone, c.empresa, licencas.filter(l => l.cliente_id === c.id).length]);
-    const csv = [cabecalhos.join(','), ...dados.map(row => row.map(cell => `"${cell}"`).join(','))].join('\n');
-    const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = `clientes_${new Date().toISOString().slice(0,19)}.csv`;
-    link.click();
-    showToast("Clientes exportados!", "success");
-  }
-  
-  function exportarLicencas() {
-    const cabecalhos = ['ID', 'Cliente', 'Chave', 'Status', 'Validade', 'Máquina'];
-    const dados = licencas.map(l => [l.id, l.cliente, l.chave, l.status, l.validade, l.machine_id || 'Livre']);
-    const csv = [cabecalhos.join(','), ...dados.map(row => row.map(cell => `"${cell}"`).join(','))].join('\n');
-    const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = `licencas_${new Date().toISOString().slice(0,19)}.csv`;
-    link.click();
-    showToast("Licenças exportadas!", "success");
-  }
-  
-  // ============================================================
-  // NAVEGAÇÃO
-  // ============================================================
-  function mostrarTab(tab) {
+}
+
+// ============================================================
+// NAVEGAÇÃO
+// ============================================================
+function mostrarTab(tab) {
     document.getElementById('tabClientes').style.display = 'none';
     document.getElementById('tabLicencas').style.display = 'none';
     document.getElementById('tabNovaLicenca').style.display = 'none';
     document.getElementById('tabPerfil').style.display = 'none';
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     
-    if (tab === 'clientes') {
-      document.getElementById('tabClientes').style.display = 'block';
-      document.querySelector('.tab-btn[data-tab="clientes"]').classList.add('active');
-      carregarClientes();
-    } else if (tab === 'licencas') {
-      document.getElementById('tabLicencas').style.display = 'block';
-      document.querySelector('.tab-btn[data-tab="licencas"]').classList.add('active');
-      carregarLicencas();
-    } else if (tab === 'nova-licenca') {
-      document.getElementById('tabNovaLicenca').style.display = 'block';
-      document.querySelector('.tab-btn[data-tab="nova-licenca"]').classList.add('active');
-      carregarClientes();
-    } else if (tab === 'perfil') {
-      document.getElementById('tabPerfil').style.display = 'block';
-      document.querySelector('.tab-btn[data-tab="perfil"]').classList.add('active');
-      carregarPerfil();
+    if (tab === 'clientes') { 
+        document.getElementById('tabClientes').style.display = 'block'; 
+        document.querySelector('.tab-btn:first-child').classList.add('active'); 
+        carregarClientes(); 
+    } else if (tab === 'licencas') { 
+        document.getElementById('tabLicencas').style.display = 'block'; 
+        document.querySelector('.tab-btn:nth-child(2)').classList.add('active'); 
+        carregarLicencas(); 
+    } else if (tab === 'nova-licenca') { 
+        document.getElementById('tabNovaLicenca').style.display = 'block'; 
+        document.querySelector('.tab-btn:nth-child(3)').classList.add('active'); 
+        carregarClientes(); 
+    } else if (tab === 'perfil') { 
+        document.getElementById('tabPerfil').style.display = 'block'; 
+        document.querySelector('.tab-btn:nth-child(4)').classList.add('active'); 
+        carregarPerfil(); 
     }
-  }
-  
-  // ============================================================
-  // MODAL DE CONFIRMAÇÃO
-  // ============================================================
-  function openModalConfirm(msg, cb) {
-    document.getElementById('confirmMessage').innerHTML = `<i class="fas fa-question-circle" style="color:#f59e0b;"></i> ${msg}`;
-    acaoConfirmada = cb;
-    document.getElementById('confirmModal').classList.add('active');
-  }
-  
-  function fecharModalConfirmar() {
-    document.getElementById('confirmModal').classList.remove('active');
-    acaoConfirmada = null;
-  }
-  
-  // ============================================================
-  // EXPOR FUNÇÕES PARA O WINDOW (onclick)
-  // ============================================================
-  window.fazerLogin = fazerLogin;
-  window.logout = logout;
-  window.mostrarTab = mostrarTab;
-  window.editarCliente = editarCliente;
-  window.excluirCliente = excluirCliente;
-  window.copiarChave = copiarChave;
-  window.atualizarStatus = atualizarStatus;
-  window.liberarMaquina = liberarMaquina;
-  window.excluirLicenca = excluirLicenca;
-  window.abrirModalRenovacao = abrirModalRenovacao;
-  window.fecharModalRenovacao = fecharModalRenovacao;
-  window.confirmarRenovacao = confirmarRenovacao;
-  window.ordenarLicencas = ordenarLicencas;
-  window.mudarPagina = mudarPagina;
-  
-  // ============================================================
-  // EVENTOS E INICIALIZAÇÃO
-  // ============================================================
-  document.getElementById('btnLogin').onclick = fazerLogin;
-  document.getElementById('btnLogout').onclick = logout;
-  document.getElementById('btnThemeToggle').onclick = toggleTheme;
-  document.getElementById('btnExportClientes').onclick = exportarClientes;
-  document.getElementById('btnExportLicencas').onclick = exportarLicencas;
-  document.getElementById('btnNovoCliente').onclick = abrirModalCliente;
-  document.getElementById('btnAtualizarLicencas').onclick = () => carregarLicencas();
-  document.getElementById('btnCriarLicenca').onclick = criarLicenca;
-  document.getElementById('btnSalvarPerfil').onclick = salvarPerfil;
-  document.getElementById('btnCancelarPerfil').onclick = cancelarEdicaoPerfil;
-  document.getElementById('btnAlterarSenha').onclick = alterarSenha;
-  
-  document.getElementById('closeModalCliente').onclick = fecharModalCliente;
-  document.getElementById('cancelarModalCliente').onclick = fecharModalCliente;
-  document.getElementById('salvarModalCliente').onclick = salvarCliente;
-  
-  document.getElementById('closeConfirmModal').onclick = fecharModalConfirmar;
-  document.getElementById('cancelConfirmModal').onclick = fecharModalConfirmar;
-  document.getElementById('confirmBtn').onclick = () => {
-    if (acaoConfirmada) acaoConfirmada();
-  };
-  
-  document.getElementById('searchCliente').addEventListener('keyup', () => carregarClientes());
-  document.getElementById('searchLicenca').addEventListener('keyup', () => carregarLicencas());
-  document.getElementById('filterStatusLicenca').addEventListener('change', () => carregarLicencas());
-  document.getElementById('filtroPeriodo').addEventListener('change', () => atualizarGraficos());
-  
-  document.getElementById('sortNome').onclick = () => ordenarClientes('nome');
-  document.getElementById('sortEmail').onclick = () => ordenarClientes('email');
-  document.getElementById('sortCliente').onclick = () => ordenarLicencas('cliente');
-  document.getElementById('sortStatus').onclick = () => ordenarLicencas('status');
-  document.getElementById('sortValidade').onclick = () => ordenarLicencas('validade');
-  
-  document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.onclick = () => mostrarTab(btn.getAttribute('data-tab'));
-  });
-  
-  document.querySelectorAll('.stat-card').forEach((card, idx) => {
-    if (idx === 0) card.onclick = () => mostrarTab('clientes');
-    if (idx === 1 || idx === 2) card.onclick = () => mostrarTab('licencas');
-  });
-  
-  document.addEventListener('keydown', (e) => {
+}
+
+// ============================================================
+// MODAL DE CONFIRMAÇÃO
+// ============================================================
+function openModalConfirm(msg, cb) { 
+    document.getElementById('confirmMessage').innerHTML = `<i class="fas fa-question-circle" style="color:#f59e0b;"></i> ${msg}`; 
+    acaoConfirmada = cb; 
+    document.getElementById('confirmModal').classList.add('active'); 
+}
+
+function fecharModalConfirmar() { 
+    document.getElementById('confirmModal').classList.remove('active'); 
+    acaoConfirmada = null; 
+}
+
+// ============================================================
+// EVENTOS E INICIALIZAÇÃO
+// ============================================================
+document.getElementById('searchCliente')?.addEventListener('keyup', () => carregarClientes());
+document.getElementById('searchLicenca')?.addEventListener('keyup', () => carregarLicencas());
+
+document.addEventListener('keydown', (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-      e.preventDefault();
-      const searchInput = document.querySelector('.search-input input');
-      if (searchInput && searchInput.offsetParent !== null) {
-        searchInput.focus();
-        showToast("Digite sua busca...", "info");
-      }
+        e.preventDefault();
+        const searchInput = document.querySelector('.search-input input');
+        if (searchInput && searchInput.offsetParent !== null) {
+            searchInput.focus();
+            showToast("Digite sua busca...", "info");
+        }
     }
-  });
-  
-  const savedTheme = localStorage.getItem('theme');
-  if (savedTheme === 'dark') {
+});
+
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme === 'dark') {
     document.body.classList.add('dark-theme');
-    const themeIcon = document.querySelector('#btnThemeToggle i');
+    const themeIcon = document.querySelector('.theme-toggle i');
     if (themeIcon) themeIcon.classList.replace('fa-moon', 'fa-sun');
-  }
-  
-  if (getToken()) {
-    document.getElementById('loginOverlay').style.display = 'none';
-    document.getElementById('adminHeader').style.display = 'flex';
-    document.getElementById('adminContent').style.display = 'block';
-    carregarClientes();
-    carregarLicencas();
+}
+
+if (getToken()) { 
+    document.getElementById('loginOverlay').style.display = 'none'; 
+    document.getElementById('adminHeader').style.display = 'flex'; 
+    document.getElementById('adminContent').style.display = 'block'; 
+    carregarClientes(); 
+    carregarLicencas(); 
     mostrarTab('clientes');
-  } else {
-    document.getElementById('loginOverlay').style.display = 'flex';
-  }
-  
-  setInterval(() => {
-    if (getToken()) carregarLicencas();
-  }, 60000);
-})();
+} else { 
+    document.getElementById('loginOverlay').style.display = 'flex'; 
+}
+
+setInterval(() => { 
+    if (getToken()) carregarLicencas(); 
+}, 60000);
+
+document.getElementById('confirmBtn').onclick = () => { 
+    if (acaoConfirmada) {
+        acaoConfirmada();
+        fecharModalConfirmar();
+    }
+};
+
+// Estilo para animação
+const style = document.createElement('style');
+style.textContent = `@keyframes slideUp { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }`;
+document.head.appendChild(style);
 </script>
 </body>
 </html>
