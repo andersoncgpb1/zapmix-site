@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#90d105">
-<title>ZapMix | Painel de Controle</title>
+<title>ZapMix | Painel de Controle Premium</title>
 <link rel="icon" type="image/png" href="/assets/favicon.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -29,7 +29,7 @@
   --warning: #f59e0b;
   --success: #10b981;
   --info: #3b82f6;
-  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body {
@@ -108,6 +108,30 @@ body.dark-theme .admin-header {
   font-weight: 700;
   color: var(--dark);
   box-shadow: 0 2px 5px rgba(144,209,5,0.3);
+}
+
+/* Banner de aviso */
+#avisoVencimento {
+  background: linear-gradient(135deg, #f59e0b, #ea580c);
+  color: white;
+  padding: 12px 32px;
+  text-align: center;
+  font-weight: 600;
+  position: sticky;
+  top: 77px;
+  z-index: 99;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Theme Toggle */
@@ -264,6 +288,20 @@ body.dark-theme .chart-card {
   color: var(--primary);
 }
 
+.filter-period {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.filter-period select {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+}
+
 /* Tabs Premium */
 .tabs {
   display: flex;
@@ -414,6 +452,10 @@ button {
   gap: 8px;
 }
 
+button:active {
+  transform: scale(0.98);
+}
+
 button i {
   font-size: 0.85rem;
 }
@@ -494,6 +536,7 @@ body.dark-theme .btn-secondary {
 .table-wrapper {
   overflow-x: auto;
   border-radius: 20px;
+  -webkit-overflow-scrolling: touch;
 }
 
 table {
@@ -543,6 +586,20 @@ tr:hover {
   background: rgba(144, 209, 5, 0.03);
 }
 
+/* Responsividade da tabela */
+@media (max-width: 768px) {
+  th, td {
+    white-space: nowrap;
+  }
+  
+  th:first-child, td:first-child {
+    position: sticky;
+    left: 0;
+    background: inherit;
+    z-index: 1;
+  }
+}
+
 /* Status Badges */
 .status-badge {
   display: inline-block;
@@ -581,10 +638,18 @@ code {
   background: rgba(144, 209, 5, 0.1);
   padding: 4px 10px;
   border-radius: 10px;
-  font-family: monospace;
-  font-size: 0.7rem;
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
   font-weight: 600;
   color: var(--primary);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-block;
+}
+
+code:hover {
+  background: rgba(144, 209, 5, 0.2);
+  transform: scale(1.02);
 }
 
 .action-buttons {
@@ -910,29 +975,35 @@ body.dark-theme .modal-header h3 {
   }
 }
 
-/* Estilo para o código clicável */
-code {
-  background: rgba(144, 209, 5, 0.1);
-  padding: 4px 10px;
-  border-radius: 10px;
-  font-family: 'Courier New', monospace;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--primary);
-  cursor: pointer;
-  transition: all 0.2s;
-  display: inline-block;
-}
-
-code:hover {
-  background: rgba(144, 209, 5, 0.2);
-  transform: scale(1.02);
-}
-
 .btn-sm i {
   pointer-events: none;
 }
 
+/* Tooltip */
+[data-tooltip] {
+  position: relative;
+  cursor: pointer;
+}
+
+[data-tooltip]:before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 8px;
+  background: var(--dark);
+  color: white;
+  font-size: 0.7rem;
+  border-radius: 8px;
+  white-space: nowrap;
+  display: none;
+  z-index: 1000;
+}
+
+[data-tooltip]:hover:before {
+  display: block;
+}
 </style>
 </head>
 <body>
@@ -965,6 +1036,8 @@ code:hover {
     <span class="admin-badge"><i class="fas fa-crown"></i> Painel de Controle</span>
   </div>
   <div style="display: flex; gap: 12px; align-items: center;">
+    <button class="btn-secondary btn-sm" onclick="exportarDados('clientes')" data-tooltip="Exportar clientes"><i class="fas fa-download"></i> CSV</button>
+    <button class="btn-secondary btn-sm" onclick="exportarDados('licencas')" data-tooltip="Exportar licenças"><i class="fas fa-file-csv"></i> Licenças</button>
     <button class="theme-toggle" onclick="toggleTheme()">
       <i class="fas fa-moon"></i>
     </button>
@@ -972,6 +1045,9 @@ code:hover {
     <button class="btn-secondary btn-sm" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</button>
   </div>
 </div>
+
+<!-- Banner de aviso (será preenchido dinamicamente) -->
+<div id="avisoVencimento" style="display:none;"></div>
 
 <!-- Conteúdo Admin -->
 <div class="admin-container" id="adminContent" style="display:none;">
@@ -1014,6 +1090,15 @@ code:hover {
       <canvas id="statusChart"></canvas>
     </div>
     <div class="chart-card">
+      <div class="filter-period">
+        <span><i class="fas fa-calendar-alt"></i> Período:</span>
+        <select id="filtroPeriodo" onchange="atualizarGraficos()">
+          <option value="30">Últimos 30 dias</option>
+          <option value="90" selected>Últimos 90 dias</option>
+          <option value="180">Últimos 180 dias</option>
+          <option value="365">Último ano</option>
+        </select>
+      </div>
       <h3><i class="fas fa-chart-bar"></i> Atividade Mensal</h3>
       <canvas id="activityChart"></canvas>
     </div>
@@ -1036,13 +1121,13 @@ code:hover {
     <div class="search-bar">
       <div class="search-input">
         <i class="fas fa-search"></i>
-        <input type="text" id="searchCliente" placeholder="Buscar cliente por nome, email ou empresa...">
+        <input type="text" id="searchCliente" placeholder="Buscar cliente por nome, email ou empresa... (Ctrl+K)">
       </div>
     </div>
     <div class="table-wrapper">
       <table>
         <thead>
-          <tr><th>Nome / Empresa</th><th>Email</th><th>Telefone</th><th>Licenças</th><th>Status</th><th>Ações</th></tr>
+          <tr><th onclick="ordenarClientes('nome')">Nome / Empresa <i class="fas fa-sort"></i></th><th onclick="ordenarClientes('email')">Email <i class="fas fa-sort"></i></th><th>Telefone</th><th>Licenças</th><th>Status</th><th>Ações</th></tr>
         </thead>
         <tbody id="listaClientes"><tr><td colspan="6" class="empty-state"><i class="fas fa-spinner fa-spin"></i> Carregando...</td></tr>
         </tbody>
@@ -1059,7 +1144,7 @@ code:hover {
     <div class="search-bar">
       <div class="search-input">
         <i class="fas fa-search"></i>
-        <input type="text" id="searchLicenca" placeholder="Buscar por cliente ou chave...">
+        <input type="text" id="searchLicenca" placeholder="Buscar por cliente ou chave... (Ctrl+K)">
       </div>
       <div class="filter-group">
         <select id="filterStatusLicenca">
@@ -1157,7 +1242,7 @@ code:hover {
 // ============================================================
 // CONFIGURAÇÃO DA API
 // ============================================================
-const API_BASE_URL = window.location.origin; // Usa a mesma origem do site
+const API_BASE_URL = window.location.origin;
 
 // ============================================================
 // VARIÁVEIS GLOBAIS
@@ -1172,6 +1257,8 @@ let clienteEditandoId = null;
 let ordemColuna = 'cliente';
 let ordemDirecao = 'asc';
 let statusChart, activityChart;
+let ordemClientesColuna = 'nome';
+let ordemClientesDirecao = 'asc';
 
 // ============================================================
 // FUNÇÕES UTILITÁRIAS
@@ -1226,10 +1313,76 @@ function toggleTheme() {
 }
 
 // ============================================================
+// EXPORTAÇÃO DE DADOS
+// ============================================================
+function exportarDados(tipo) {
+    let dados = [];
+    let cabecalhos = [];
+    
+    if (tipo === 'clientes') {
+        cabecalhos = ['ID', 'Nome', 'Email', 'Telefone', 'Empresa', 'Total Licenças'];
+        dados = clientes.map(c => [c.id, c.nome, c.email, c.telefone, c.empresa, licencas.filter(l => l.cliente_id === c.id).length]);
+        showToast(`Exportando ${clientes.length} clientes...`, "info");
+    } else if (tipo === 'licencas') {
+        cabecalhos = ['ID', 'Cliente', 'Chave', 'Status', 'Validade', 'Máquina', 'Última Renovação', 'Renovações'];
+        dados = licencas.map(l => [l.id, l.cliente, l.chave, l.status, l.validade, l.machine_id || 'Livre', l.ultima_renovacao || '', l.renovacoes || 0]);
+        showToast(`Exportando ${licencas.length} licenças...`, "info");
+    }
+    
+    const csv = [cabecalhos.join(','), ...dados.map(row => row.map(cell => `"${cell}"`).join(','))].join('\n');
+    const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `${tipo}_${new Date().toISOString().slice(0,19)}.csv`;
+    link.click();
+    setTimeout(() => showToast(`Exportação concluída!`, "success"), 500);
+}
+
+// ============================================================
+// BACKUP AUTOMÁTICO
+// ============================================================
+function backupAutomatico() {
+    if (!getToken()) return;
+    const backup = {
+        data: new Date().toISOString(),
+        clientes: clientes,
+        licencas: licencas,
+        stats: {
+            totalClientes: clientes.length,
+            totalLicencas: licencas.length,
+            ativas: licencas.filter(l => l.status === 'ATIVA').length
+        }
+    };
+    localStorage.setItem('zapmix_backup', JSON.stringify(backup));
+    console.log('✅ Backup automático realizado em', new Date().toLocaleString());
+}
+
+// ============================================================
+// VERIFICAR LICENÇAS PRESTES A VENCER
+// ============================================================
+function verificarLicencasPrestesVencer() {
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+    const emBreve = licencas.filter(l => {
+        const validade = new Date(l.validade);
+        validade.setHours(0, 0, 0, 0);
+        const diffDias = Math.ceil((validade - hoje) / (1000 * 60 * 60 * 24));
+        return diffDias <= 7 && diffDias > 0 && l.status === 'ATIVA';
+    });
+    
+    const banner = document.getElementById('avisoVencimento');
+    if (emBreve.length > 0) {
+        banner.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ⚠️ ${emBreve.length} licença(s) vence(m) nos próximos 7 dias! <button onclick="mostrarTab('licencas')" style="background: white; color: #ea580c; margin-left: 10px; border: none; padding: 4px 12px; border-radius: 20px; cursor: pointer; font-weight: bold;">Ver agora →</button>`;
+        banner.style.display = 'block';
+    } else {
+        banner.style.display = 'none';
+    }
+}
+
+// ============================================================
 // FUNÇÕES DE API - CONEXÃO REAL COM O BACKEND
 // ============================================================
 
-// Função genérica para requisições à API
 async function apiRequest(endpoint, method, body = null) {
     const token = getToken();
     const headers = {
@@ -1292,7 +1445,6 @@ async function login() {
         document.getElementById('adminHeader').style.display = 'flex'; 
         document.getElementById('adminContent').style.display = 'block'; 
         
-        // Carrega os dados iniciais
         await carregarClientes(); 
         await carregarLicencas(); 
         mostrarTab('clientes'); 
@@ -1310,8 +1462,6 @@ function logout() {
 }
 
 // Clientes API
-// Substitua a função carregarClientes() por esta versão ordenada:
-
 async function carregarClientes() {
     const token = getToken();
     if (!token) return;
@@ -1331,16 +1481,20 @@ async function carregarClientes() {
         showToast("Erro ao carregar clientes", "error");
     }
     
-    // ORDENA OS CLIENTES POR NOME (A-Z)
+    // Ordena os clientes
     clientes.sort((a, b) => {
-        const nomeA = (a.nome || '').toLowerCase();
-        const nomeB = (b.nome || '').toLowerCase();
-        if (nomeA < nomeB) return -1;
-        if (nomeA > nomeB) return 1;
+        let valA = a[ordemClientesColuna] || '';
+        let valB = b[ordemClientesColuna] || '';
+        if (typeof valA === 'string') {
+            valA = valA.toLowerCase();
+            valB = valB.toLowerCase();
+        }
+        if (valA < valB) return ordemClientesDirecao === 'asc' ? -1 : 1;
+        if (valA > valB) return ordemClientesDirecao === 'asc' ? 1 : -1;
         return 0;
     });
     
-    // Atualiza o select de clientes (também ordenado)
+    // Atualiza o select de clientes
     let select = document.getElementById('novaLicencaCliente');
     if (select) {
         select.innerHTML = '<option value="">Selecione um cliente</option>' + 
@@ -1385,6 +1539,16 @@ async function carregarClientes() {
     atualizarStats();
 }
 
+function ordenarClientes(coluna) {
+    if (ordemClientesColuna === coluna) {
+        ordemClientesDirecao = ordemClientesDirecao === 'asc' ? 'desc' : 'asc';
+    } else {
+        ordemClientesColuna = coluna;
+        ordemClientesDirecao = 'asc';
+    }
+    carregarClientes();
+}
+
 // Licenças API
 async function carregarLicencas() {
     const token = getToken();
@@ -1407,6 +1571,8 @@ async function carregarLicencas() {
     
     atualizarStats();
     atualizarGraficos();
+    verificarLicencasPrestesVencer();
+    backupAutomatico();
     
     let searchTerm = document.getElementById('searchLicenca')?.value.toLowerCase() || '';
     let statusFilter = document.getElementById('filterStatusLicenca')?.value || 'todos';
@@ -1418,7 +1584,6 @@ async function carregarLicencas() {
         const dataValidade = new Date(l.validade);
         dataValidade.setHours(0, 0, 0, 0);
         
-        // Determina status real para filtro
         let statusReal = l.status;
         if (dataValidade < hoje) {
             statusReal = 'EXPIRADA';
@@ -1430,7 +1595,6 @@ async function carregarLicencas() {
         return matchSearch && matchStatus;
     });
     
-    // Ordena por data de validade (mais próximas primeiro)
     licencasFiltradas.sort((a, b) => {
         return new Date(a.validade) - new Date(b.validade);
     });
@@ -1471,7 +1635,6 @@ function renderizarLicencas() {
     hoje.setHours(0, 0, 0, 0);
     
     tbody.innerHTML = pagina.map(l => {
-        // Calcula o status REAL baseado na data de validade
         const dataValidade = new Date(l.validade);
         dataValidade.setHours(0, 0, 0, 0);
         
@@ -1479,13 +1642,11 @@ function renderizarLicencas() {
         let statusIcon = '';
         let statusClass = '';
         
-        // Se a data de validade for menor que hoje, a licença está EXPIRADA
         if (dataValidade < hoje) {
             statusReal = 'EXPIRADA';
             statusIcon = '⏰';
             statusClass = 'status-EXPIRADA';
         } else {
-            // Mantém o status salvo no banco
             statusReal = l.status;
             if (l.status === 'ATIVA') {
                 statusIcon = '✅';
@@ -1499,25 +1660,21 @@ function renderizarLicencas() {
             }
         }
         
-        // Calcula dias restantes
         const diffDias = Math.ceil((dataValidade - hoje) / (1000 * 60 * 60 * 24));
         const precisaRenovar = diffDias <= 30 && diffDias > 0;
         const estaExpirada = diffDias < 0;
         
-        // Formata a data
         const dataFormatada = formatarData(l.validade);
         
-        // Data com status visual
         let dataComStatus = '';
         if (estaExpirada) {
             dataComStatus = `<span style="color: #ef4444; text-decoration: line-through;">${dataFormatada}</span> <span style="color: #ef4444; font-size: 0.7rem;">(Expirada há ${Math.abs(diffDias)} dias)</span>`;
         } else if (diffDias <= 7) {
-            dataComStatus = `<span style="color: #f59e0b;">${dataFormatada}</span> <span style="color: #f59e0b; font-size: 0.7rem;">(Vence em ${diffDias} dias)</span>`;
+            dataComStatus = `<span style="color: #f59e0b;">${dataFormatada}</span> <span style="color: #f59e0b; font-size: 0.7rem;">⚠️ Vence em ${diffDias} dias</span>`;
         } else {
             dataComStatus = dataFormatada;
         }
         
-        // Gera um ID único para o código da chave
         const chaveId = `chave_${l.id}_${Date.now()}`;
         
         return `
@@ -1543,8 +1700,8 @@ function renderizarLicencas() {
                     <button class="btn-danger btn-sm" onclick="excluirLicenca('${l.id}','${escapeHtml(l.cliente)}')"><i class="fas fa-trash"></i> Excluir</button>
                 </div>
             </td>
-         </tr>
-    `}).join('');
+          '
+    `).join('');
     
     let totalPaginas = Math.ceil(licencasFiltradas.length / itensPorPagina);
     let div = document.getElementById('paginationLicencas');
@@ -1563,119 +1720,45 @@ function renderizarLicencas() {
     div.innerHTML = html;
 }
 
-// Variável para controlar a ordem dos clientes
-let ordemClientesColuna = 'nome';
-let ordemClientesDirecao = 'asc';
-
-function ordenarClientes(coluna) {
-    if (ordemClientesColuna === coluna) {
-        ordemClientesDirecao = ordemClientesDirecao === 'asc' ? 'desc' : 'asc';
-    } else {
-        ordemClientesColuna = coluna;
-        ordemClientesDirecao = 'asc';
-    }
-    
-    clientes.sort((a, b) => {
-        let valA = a[coluna] || '';
-        let valB = b[coluna] || '';
-        
-        if (typeof valA === 'string') {
-            valA = valA.toLowerCase();
-            valB = valB.toLowerCase();
+// Função para copiar chave com efeito visual melhorado
+function copiarChave(elementId, chave) {
+    navigator.clipboard.writeText(chave).then(() => {
+        const element = document.getElementById(elementId);
+        if (element) {
+            const originalTransform = element.style.transform;
+            element.style.transform = 'scale(1.05)';
+            element.style.background = '#90d105';
+            element.style.color = '#0f172a';
+            setTimeout(() => {
+                element.style.transform = originalTransform;
+                element.style.background = '';
+                element.style.color = '';
+            }, 300);
         }
         
-        if (valA < valB) return ordemClientesDirecao === 'asc' ? -1 : 1;
-        if (valA > valB) return ordemClientesDirecao === 'asc' ? 1 : -1;
-        return 0;
-    });
-    
-    // Re-renderiza a tabela
-    const searchTerm = document.getElementById('searchCliente')?.value.toLowerCase() || '';
-    let clientesFiltrados = clientes.filter(c => 
-        (c.nome || '').toLowerCase().includes(searchTerm) || 
-        (c.email || '').toLowerCase().includes(searchTerm) ||
-        (c.empresa || '').toLowerCase().includes(searchTerm)
-    );
-    
-    let tbody = document.getElementById('listaClientes');
-    if (!tbody) return;
-    
-    if (clientesFiltrados.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="empty-state"><i class="fas fa-inbox"></i><br>Nenhum cliente encontrado</td></tr>';
-        return;
-    }
-    
-    tbody.innerHTML = clientesFiltrados.map(c => `
-        <tr>
-            <td>
-                <strong>${escapeHtml(c.nome)}</strong><br>
-                <small style="color:#64748b;">${escapeHtml(c.empresa || '-')}</small>
-            </td>
-            <td>${escapeHtml(c.email || '-')}</td>
-            <td>${escapeHtml(c.telefone || '-')}</td>
-            <td>${licencas.filter(l => l.cliente_id === c.id).length}</td>
-            <td><span class="status-badge status-ATIVO"><i class="fas fa-check-circle"></i> Ativo</span></td>
-            <td>
-                <div class="action-buttons">
-                    <button class="btn-success btn-sm" onclick="editarCliente(${c.id})"><i class="fas fa-edit"></i> Editar</button>
-                    <button class="btn-danger btn-sm" onclick="excluirCliente(${c.id}, '${escapeHtml(c.nome)}')"><i class="fas fa-trash"></i> Excluir</button>
-                </div>
-            </td>
-        </tr>
-    `).join('');
-}
-
-// ============================================================
-// FUNÇÃO PARA COPIAR CHAVE
-// ============================================================
-function copiarChave(elementId, chave) {
-    // Método moderno usando Clipboard API
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(chave).then(() => {
-            // Feedback visual: muda a cor do código temporariamente
-            const codeElement = document.getElementById(elementId);
-            if (codeElement) {
-                const originalBg = codeElement.style.background;
-                const originalColor = codeElement.style.color;
-                
-                codeElement.style.background = '#90d105';
-                codeElement.style.color = '#0f172a';
-                codeElement.style.transition = 'all 0.2s';
-                
-                setTimeout(() => {
-                    codeElement.style.background = originalBg;
-                    codeElement.style.color = originalColor;
-                }, 500);
-            }
-            
-            showToast(`Chave copiada: ${chave.substring(0, 15)}...`, "success");
-        }).catch(err => {
-            console.error('Erro ao copiar:', err);
-            fallbackCopiarChave(chave);
-        });
-    } else {
-        // Fallback para navegadores antigos
-        fallbackCopiarChave(chave);
-    }
-}
-
-function fallbackCopiarChave(chave) {
-    const textarea = document.createElement('textarea');
-    textarea.value = chave;
-    textarea.style.position = 'fixed';
-    textarea.style.opacity = '0';
-    document.body.appendChild(textarea);
-    textarea.select();
-    
-    try {
-        document.execCommand('copy');
-        showToast(`Chave copiada: ${chave.substring(0, 15)}...`, "success");
-    } catch (err) {
+        const toast = document.createElement('div');
+        toast.innerHTML = `<i class="fas fa-check-circle"></i> Chave copiada!<br><small style="font-size:10px">${chave}</small>`;
+        toast.style.cssText = `
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e293b;
+            color: #90d105;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: bold;
+            z-index: 2000;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            animation: slideUp 0.3s ease;
+        `;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2000);
+    }).catch(err => {
         console.error('Erro ao copiar:', err);
         showToast("Erro ao copiar chave", "error");
-    }
-    
-    document.body.removeChild(textarea);
+    });
 }
 
 // ============================================================
@@ -1686,14 +1769,12 @@ async function atualizarStatus(id, status) {
     try {
         showToast("Processando...", "info");
         
-        // Encontra a licença para ter os dados completos
         const licenca = licencas.find(l => l.id == id);
         if (!licenca) {
             showToast("Licença não encontrada", "error");
             return;
         }
         
-        // Prepara os dados para atualização
         const dadosAtualizacao = {
             id: id,
             status: status,
@@ -1721,14 +1802,12 @@ async function liberarMaquina(id) {
     try {
         showToast("Liberando máquina...", "info");
         
-        // Encontra a licença para ter os dados completos
         const licenca = licencas.find(l => l.id == id);
         if (!licenca) {
             showToast("Licença não encontrada", "error");
             return;
         }
         
-        // Prepara os dados para atualização
         const dadosAtualizacao = {
             id: id,
             machine_id: null,
@@ -1778,14 +1857,12 @@ async function renovarLicenca(id, novaData, dias) {
     try {
         showToast("Renovando licença...", "info");
         
-        // Encontra a licença para ter os dados completos
         const licenca = licencas.find(l => l.id == id);
         if (!licenca) {
             showToast("Licença não encontrada", "error");
             return;
         }
         
-        // Prepara os dados para atualização
         const dadosAtualizacao = {
             id: id,
             validade: novaData,
@@ -1793,12 +1870,9 @@ async function renovarLicenca(id, novaData, dias) {
             ultima_renovacao: new Date().toISOString().split('T')[0],
             chave: licenca.chave,
             cliente: licenca.cliente,
-            cliente_id: licenca.cliente_id
+            cliente_id: licenca.cliente_id,
+            renovacoes: (licenca.renovacoes || 0) + 1
         };
-        
-        // Se a licença estava expirada, adiciona contador de renovação
-        const renovacoes = (licenca.renovacoes || 0) + 1;
-        dadosAtualizacao.renovacoes = renovacoes;
         
         const result = await apiRequest("/api/admin-licencas", "PUT", dadosAtualizacao);
         
@@ -1814,7 +1888,6 @@ async function renovarLicenca(id, novaData, dias) {
     }
 }
 
-// Função para criar licença
 async function criarLicenca() { 
     let cid = document.getElementById('novaLicencaCliente').value; 
     let validade = document.getElementById('novaLicencaValidade').value; 
@@ -1858,7 +1931,6 @@ async function criarLicenca() {
     } 
 }
 
-// Função para ordenar licenças
 function ordenarLicencas(coluna) { 
     if (ordemColuna === coluna) {
         ordemDirecao = ordemDirecao === 'asc' ? 'desc' : 'asc';
@@ -1875,7 +1947,6 @@ function mudarPagina(p) {
     paginaAtual = p; 
     renderizarLicencas(); 
 }
-
 
 // ============================================================
 // FUNÇÕES DE RENOVAÇÃO
@@ -1990,7 +2061,6 @@ function alterarSenha() {
         return; 
     } 
     
-    // Aqui você pode implementar a chamada à API para alterar a senha
     showToast("Senha alterada com sucesso!", "success"); 
     document.getElementById('senhaAtual').value = ''; 
     document.getElementById('novaSenha').value = ''; 
@@ -2011,7 +2081,6 @@ function atualizarGraficos() {
     const hoje = new Date();
     hoje.setHours(0, 0, 0, 0);
     
-    // Calcula status real baseado na data
     let ativas = 0;
     let bloqueadas = 0;
     let expiradas = 0;
@@ -2052,19 +2121,19 @@ function atualizarGraficos() {
         }
     });
     
-    // Dados mensais
     const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
-    // Você pode buscar dados reais da API aqui
+    const filtroDias = parseInt(document.getElementById('filtroPeriodo')?.value || 90);
+    const mesesFiltrados = Math.ceil(filtroDias / 30);
     
     if (activityChart) activityChart.destroy();
     const ctx2 = document.getElementById('activityChart').getContext('2d');
     activityChart = new Chart(ctx2, {
         type: 'line',
         data: {
-            labels: meses.slice(0,6),
+            labels: meses.slice(0, mesesFiltrados),
             datasets: [{
                 label: 'Licenças Ativas',
-                data: [ativas - 5, ativas - 3, ativas - 2, ativas - 1, ativas, ativas],
+                data: Array(mesesFiltrados).fill(0).map((_, i) => ativas - (mesesFiltrados - i - 1) * Math.floor(ativas / mesesFiltrados)),
                 borderColor: '#90d105',
                 backgroundColor: 'rgba(144, 209, 5, 0.1)',
                 tension: 0.4,
@@ -2124,6 +2193,75 @@ function fecharModalCliente() {
     document.getElementById('modalCliente').classList.remove('active'); 
 }
 
+function editarCliente(id) {
+    const cliente = clientes.find(c => c.id == id);
+    if (!cliente) return;
+    
+    clienteEditandoId = id;
+    document.getElementById('modalClienteTitle').innerHTML = '<i class="fas fa-user-edit"></i> Editar Cliente';
+    document.getElementById('clienteNome').value = cliente.nome || '';
+    document.getElementById('clienteEmail').value = cliente.email || '';
+    document.getElementById('clienteTelefone').value = cliente.telefone || '';
+    document.getElementById('clienteEmpresa').value = cliente.empresa || '';
+    document.getElementById('modalCliente').classList.add('active');
+}
+
+async function salvarCliente() {
+    const nome = document.getElementById('clienteNome').value.trim();
+    if (!nome) {
+        showToast("Nome é obrigatório", "error");
+        return;
+    }
+    
+    const dados = {
+        nome: nome,
+        email: document.getElementById('clienteEmail').value,
+        telefone: document.getElementById('clienteTelefone').value,
+        empresa: document.getElementById('clienteEmpresa').value
+    };
+    
+    if (clienteEditandoId) {
+        dados.id = clienteEditandoId;
+        const result = await apiRequest("/api/clientes", "PUT", dados);
+        if (result && result.ok) {
+            showToast("Cliente atualizado com sucesso!", "success");
+            fecharModalCliente();
+            await carregarClientes();
+        } else {
+            showToast(result?.erro || "Erro ao atualizar cliente", "error");
+        }
+    } else {
+        const result = await apiRequest("/api/clientes", "POST", dados);
+        if (result && result.ok) {
+            showToast("Cliente criado com sucesso!", "success");
+            fecharModalCliente();
+            await carregarClientes();
+        } else {
+            showToast(result?.erro || "Erro ao criar cliente", "error");
+        }
+    }
+}
+
+function excluirCliente(id, nome) {
+    const temLicencas = licencas.some(l => l.cliente_id == id);
+    let mensagem = `Excluir cliente ${nome}?`;
+    if (temLicencas) {
+        mensagem += `\n\n⚠️ ATENÇÃO: Este cliente possui licenças associadas! Ao excluí-lo, as licenças também serão removidas.`;
+    }
+    
+    openModalConfirm(mensagem, async () => {
+        const result = await apiRequest("/api/clientes", "DELETE", { id: id });
+        if (result && result.ok) {
+            showToast("Cliente excluído com sucesso!", "success");
+            await carregarClientes();
+            await carregarLicencas();
+        } else {
+            showToast(result?.erro || "Erro ao excluir cliente", "error");
+        }
+        fecharModalConfirmar();
+    });
+}
+
 // ============================================================
 // MODAL DE CONFIRMAÇÃO
 // ============================================================
@@ -2138,34 +2276,24 @@ function fecharModalConfirmar() {
     acaoConfirmada = null; 
 }
 
-document.getElementById('confirmBtn').onclick = () => { 
-    if (acaoConfirmada) acaoConfirmada(); 
-};
-
-
-// Adicione isso no final do script, antes das funções de evento
-
-// Garante que o modal de confirmação funcione corretamente
-document.addEventListener('DOMContentLoaded', function() {
-    const confirmBtn = document.getElementById('confirmBtn');
-    if (confirmBtn) {
-        confirmBtn.onclick = () => { 
-            if (acaoConfirmada) {
-                acaoConfirmada();
-                fecharModalConfirmar();
-            }
-        };
+// Atalho de teclado Ctrl+K para busca
+document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        const searchInput = document.querySelector('.search-input input');
+        if (searchInput && searchInput.offsetParent !== null) {
+            searchInput.focus();
+            searchInput.select();
+            showToast("Digite sua busca...", "info");
+        }
     }
 });
 
-// ============================================================
-// EVENTOS E INICIALIZAÇÃO
-// ============================================================
+// Eventos e inicialização
 document.getElementById('searchCliente')?.addEventListener('keyup', () => carregarClientes());
 document.getElementById('searchLicenca')?.addEventListener('keyup', () => carregarLicencas());
 document.getElementById('filterStatusLicenca')?.addEventListener('change', () => carregarLicencas());
 
-// Carrega o tema salvo
 const savedTheme = localStorage.getItem('theme');
 if (savedTheme === 'dark') {
     document.body.classList.add('dark-theme');
@@ -2173,7 +2301,6 @@ if (savedTheme === 'dark') {
     if (themeIcon) themeIcon.classList.replace('fa-moon', 'fa-sun');
 }
 
-// Verifica se o usuário já está logado
 if (getToken()) { 
     document.getElementById('loginOverlay').style.display = 'none'; 
     document.getElementById('adminHeader').style.display = 'flex'; 
@@ -2185,10 +2312,32 @@ if (getToken()) {
     document.getElementById('loginOverlay').style.display = 'flex'; 
 }
 
-// Atualiza licenças a cada 60 segundos
 setInterval(() => { 
     if (getToken()) carregarLicencas(); 
 }, 60000);
+
+document.getElementById('confirmBtn').onclick = () => { 
+    if (acaoConfirmada) {
+        acaoConfirmada();
+        fecharModalConfirmar();
+    }
+};
+
+// Adiciona CSS para a animação do slideUp
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateX(-50%) translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    }
+`;
+document.head.appendChild(style);
 </script>
 </body>
 </html>
