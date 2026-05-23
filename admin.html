@@ -970,11 +970,13 @@ body.dark-theme .workflow-step {
       <label><i class="fas fa-lock"></i> Senha</label>
       <input type="password" id="senha" placeholder="Digite sua senha">
     </div>
-    <button class="btn-primary" onclick="login()"><i class="fas fa-sign-in-alt"></i> Entrar no Painel</button>
+    <button class="btn-primary" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Entrar no Painel</button>
   </div>
 </div>
 
-<button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileMenu()"><i class="fas fa-bars"></i></button>
+<button class="mobile-menu-btn" id="mobileMenuBtn">
+  <i class="fas fa-bars"></i>
+</button>
 <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
 <div class="admin-header" id="adminHeader" style="display:none;">
@@ -987,21 +989,21 @@ body.dark-theme .workflow-step {
   </div>
 
   <div class="tabs">
-    <button class="tab-btn active" data-tab="dashboard" onclick="mostrarTab('dashboard')"><i class="fas fa-chart-pie"></i> Dashboard</button>
-    <button class="tab-btn" data-tab="clientes" onclick="mostrarTab('clientes')"><i class="fas fa-users"></i> Clientes</button>
-    <button class="tab-btn" data-tab="licencas" onclick="mostrarTab('licencas')"><i class="fas fa-key"></i> Licenças</button>
-    <button class="tab-btn" data-tab="nova-licenca" onclick="mostrarTab('nova-licenca')"><i class="fas fa-plus-circle"></i> Nova Licença</button>
-    <button class="tab-btn" data-tab="perfil" onclick="mostrarTab('perfil')"><i class="fas fa-user-cog"></i> Perfil</button>
+    <button class="tab-btn active" data-tab="dashboard"><i class="fas fa-chart-pie"></i> Dashboard</button>
+    <button class="tab-btn" data-tab="clientes"><i class="fas fa-users"></i> Clientes</button>
+    <button class="tab-btn" data-tab="licencas"><i class="fas fa-key"></i> Licenças</button>
+    <button class="tab-btn" data-tab="nova-licenca"><i class="fas fa-plus-circle"></i> Nova Licença</button>
+    <button class="tab-btn" data-tab="perfil"><i class="fas fa-user-cog"></i> Perfil</button>
   </div>
 
   <div class="sidebar-actions">
-    <button class="btn-secondary btn-sm" onclick="exportarDados('clientes')"><i class="fas fa-download"></i> CSV Clientes</button>
-    <button class="btn-secondary btn-sm" onclick="exportarDados('licencas')"><i class="fas fa-file-csv"></i> CSV Licenças</button>
-    <button class="theme-toggle" onclick="toggleTheme()">
+    <button class="btn-secondary btn-sm" id="exportClientesBtn"><i class="fas fa-download"></i> CSV Clientes</button>
+    <button class="btn-secondary btn-sm" id="exportLicencasBtn"><i class="fas fa-file-csv"></i> CSV Licenças</button>
+    <button class="theme-toggle" id="themeToggleBtn">
       <i class="fas fa-moon"></i>
     </button>
     <span id="adminStatus" class="status-badge status-ATIVA"><i class="fas fa-check-circle"></i> Logado</span>
-    <button class="btn-secondary btn-sm" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</button>
+    <button class="btn-secondary btn-sm" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sair</button>
   </div>
 </div>
 
@@ -1015,15 +1017,15 @@ body.dark-theme .workflow-step {
       <div class="workflow-step"><strong>3. Acompanhe no painel</strong><span>Veja status, validade e máquina vinculada.</span></div>
     </div>
     <div class="stats-grid">
-      <div class="stat-card" onclick="mostrarTab('clientes')">
+      <div class="stat-card" data-tab="clientes">
         <div class="stat-info"><h3><i class="fas fa-users"></i> Total de Clientes</h3><div class="stat-number" id="statClientes">0</div></div>
         <div class="stat-icon"><i class="fas fa-users"></i></div>
       </div>
-      <div class="stat-card" onclick="mostrarTab('licencas')">
+      <div class="stat-card" data-tab="licencas">
         <div class="stat-info"><h3><i class="fas fa-key"></i> Total de Licenças</h3><div class="stat-number" id="statTotalLicencas">0</div></div>
         <div class="stat-icon"><i class="fas fa-key"></i></div>
       </div>
-      <div class="stat-card" onclick="mostrarTab('licencas')">
+      <div class="stat-card" data-tab="licencas">
         <div class="stat-info"><h3><i class="fas fa-check-circle"></i> Licenças Ativas</h3><div class="stat-number" id="statAtivas">0</div></div>
         <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
       </div>
@@ -1040,7 +1042,7 @@ body.dark-theme .workflow-step {
       <div class="chart-card">
         <div class="filter-period">
           <span><i class="fas fa-calendar-alt"></i> Período:</span>
-          <select id="filtroPeriodo" onchange="atualizarGraficos()">
+          <select id="filtroPeriodo">
             <option value="30">Últimos 30 dias</option>
             <option value="90" selected>Últimos 90 dias</option>
             <option value="180">Últimos 180 dias</option>
@@ -1056,7 +1058,7 @@ body.dark-theme .workflow-step {
   <div id="tabClientes" class="card" style="display:none;">
     <div class="card-header">
       <h2><i class="fas fa-users"></i> Gerenciar Clientes</h2>
-      <button class="btn-primary" onclick="abrirModalCliente()"><i class="fas fa-plus"></i> Novo Cliente</button>
+      <button class="btn-primary" id="novoClienteBtn"><i class="fas fa-plus"></i> Novo Cliente</button>
     </div>
     <div class="search-bar">
       <div class="search-input"><i class="fas fa-search"></i><input type="text" id="searchCliente" placeholder="Buscar cliente... (Ctrl+K)"></div>
@@ -1064,9 +1066,9 @@ body.dark-theme .workflow-step {
     <div class="table-wrapper">
       <table>
         <thead>
-          <tr><th onclick="ordenarClientes('nome')">Nome / Empresa <i class="fas fa-sort"></i></th><th onclick="ordenarClientes('email')">Email <i class="fas fa-sort"></i></th><th>Telefone</th><th>Licenças</th><th>Status</th><th>Ações</th></tr>
+          <tr><th id="sortNome">Nome / Empresa <i class="fas fa-sort"></i></th><th id="sortEmail">Email <i class="fas fa-sort"></i></th><th>Telefone</th><th>Licenças</th><th>Status</th><th>Ações</th></tr>
         </thead>
-        <tbody id="listaClientes"><tr><td colspan="6" class="empty-state"><i class="fas fa-spinner fa-spin"></i> Carregando...<\/td><\/tr><\/tbody>
+        <tbody id="listaClientes"><tr><td colspan="6" class="empty-state"><i class="fas fa-spinner fa-spin"></i> Carregando...</td></tr></tbody>
       </table>
     </div>
   </div>
@@ -1074,11 +1076,11 @@ body.dark-theme .workflow-step {
   <div id="tabLicencas" class="card" style="display:none;">
     <div class="card-header">
       <h2><i class="fas fa-key"></i> Gerenciar Licenças</h2>
-      <button class="btn-secondary" onclick="carregarLicencas()"><i class="fas fa-sync-alt"></i> Atualizar</button>
+      <button class="btn-secondary" id="atualizarLicencasBtn"><i class="fas fa-sync-alt"></i> Atualizar</button>
     </div>
     <div class="search-bar">
       <div class="search-input"><i class="fas fa-search"></i><input type="text" id="searchLicenca" placeholder="Buscar por cliente ou chave..."></div>
-      <select id="filterStatusLicenca" onchange="carregarLicencas()">
+      <select id="filterStatusLicenca">
         <option value="todos">Todos os status</option>
         <option value="ATIVA">✅ Ativas</option>
         <option value="BLOQUEADA">🔒 Bloqueadas</option>
@@ -1088,7 +1090,7 @@ body.dark-theme .workflow-step {
     <div class="table-wrapper">
       <table>
         <thead>
-          <tr><th onclick="ordenarLicencas('cliente')">Cliente <i class="fas fa-sort"></i></th><th>Chave</th><th onclick="ordenarLicencas('status')">Status <i class="fas fa-sort"></i></th><th onclick="ordenarLicencas('validade')">Validade <i class="fas fa-sort"></i></th><th>Máquina</th><th>Ações</th></tr>
+          <tr><th id="sortCliente">Cliente <i class="fas fa-sort"></i></th><th>Chave</th><th id="sortStatus">Status <i class="fas fa-sort"></i></th><th id="sortValidade">Validade <i class="fas fa-sort"></i></th><th>Máquina</th><th>Ações</th></tr>
         </thead>
         <tbody id="listaLicencas"><tr><td colspan="6" class="empty-state"><i class="fas fa-spinner fa-spin"></i> Carregando...<\/td><\/tr><\/tbody>
       </table>
@@ -1104,7 +1106,7 @@ body.dark-theme .workflow-step {
       <div class="input-group"><label><i class="fas fa-calendar"></i> Data de Validade *</label><input id="novaLicencaValidade" type="date"></div>
       <div class="input-group"><label><i class="fas fa-toggle-on"></i> Status</label><select id="novaLicencaStatus"><option value="ATIVA">✅ ATIVA</option><option value="BLOQUEADA">🔒 BLOQUEADA</option></select></div>
     </div>
-    <button class="btn-primary" onclick="criarLicenca()"><i class="fas fa-plus"></i> Criar Licença</button>
+    <button class="btn-primary" id="criarLicencaBtn"><i class="fas fa-plus"></i> Criar Licença</button>
   </div>
 
   <div id="tabPerfil" class="card" style="display:none;">
@@ -1115,7 +1117,7 @@ body.dark-theme .workflow-step {
       <div class="input-group"><label><i class="fas fa-phone"></i> Telefone</label><input type="tel" id="perfilTelefone" placeholder="(00) 00000-0000"></div>
       <div class="input-group"><label><i class="fas fa-briefcase"></i> Cargo</label><input type="text" id="perfilCargo" placeholder="Administrador"></div>
     </div>
-    <div style="display:flex;gap:12px;justify-content:flex-end;"><button class="btn-secondary" onclick="cancelarEdicaoPerfil()"><i class="fas fa-times"></i> Cancelar</button><button class="btn-primary" onclick="salvarPerfil()"><i class="fas fa-save"></i> Salvar</button></div>
+    <div style="display:flex;gap:12px;justify-content:flex-end;"><button class="btn-secondary" id="cancelarPerfilBtn"><i class="fas fa-times"></i> Cancelar</button><button class="btn-primary" id="salvarPerfilBtn"><i class="fas fa-save"></i> Salvar</button></div>
     <hr style="margin: 28px 0; border: none; height: 1px; background: linear-gradient(90deg, transparent, #e2e8f0, transparent);">
     <div class="card-header"><h2><i class="fas fa-lock"></i> Alterar Senha</h2></div>
     <div class="form-grid">
@@ -1123,28 +1125,28 @@ body.dark-theme .workflow-step {
       <div class="input-group"><label><i class="fas fa-plus-circle"></i> Nova senha</label><input type="password" id="novaSenha" placeholder="Nova senha (mínimo 6 caracteres)"></div>
       <div class="input-group"><label><i class="fas fa-check-circle"></i> Confirmar</label><input type="password" id="confirmarSenha" placeholder="Confirmar nova senha"></div>
     </div>
-    <div style="display:flex;justify-content:flex-end;"><button class="btn-primary" onclick="alterarSenha()"><i class="fas fa-save"></i> Alterar Senha</button></div>
+    <div style="display:flex;justify-content:flex-end;"><button class="btn-primary" id="alterarSenhaBtn"><i class="fas fa-save"></i> Alterar Senha</button></div>
   </div>
 </div>
 
 <div id="modalCliente" class="modal">
   <div class="modal-content">
-    <div class="modal-header"><h3 id="modalClienteTitle"><i class="fas fa-user-plus"></i> Novo Cliente</h3><button class="close-modal" onclick="fecharModalCliente()">&times;</button></div>
+    <div class="modal-header"><h3 id="modalClienteTitle"><i class="fas fa-user-plus"></i> Novo Cliente</h3><button class="close-modal" id="closeModalClienteBtn">&times;</button></div>
     <div class="form-grid" style="grid-template-columns:1fr;">
       <div class="input-group"><label><i class="fas fa-user"></i> Nome *</label><input type="text" id="clienteNome" placeholder="Nome completo"></div>
       <div class="input-group"><label><i class="fas fa-envelope"></i> Email</label><input type="email" id="clienteEmail" placeholder="email@exemplo.com"></div>
       <div class="input-group"><label><i class="fas fa-phone"></i> Telefone</label><input type="tel" id="clienteTelefone" placeholder="(00) 00000-0000"></div>
       <div class="input-group"><label><i class="fas fa-building"></i> Empresa</label><input type="text" id="clienteEmpresa" placeholder="Nome da empresa"></div>
     </div>
-    <div class="modal-buttons"><button class="btn-secondary" onclick="fecharModalCliente()"><i class="fas fa-times"></i> Cancelar</button><button class="btn-primary" onclick="salvarCliente()"><i class="fas fa-save"></i> Salvar</button></div>
+    <div class="modal-buttons"><button class="btn-secondary" id="cancelarModalClienteBtn"><i class="fas fa-times"></i> Cancelar</button><button class="btn-primary" id="salvarModalClienteBtn"><i class="fas fa-save"></i> Salvar</button></div>
   </div>
 </div>
 
 <div id="confirmModal" class="modal">
   <div class="modal-content">
-    <div class="modal-header"><h3><i class="fas fa-exclamation-triangle" style="color:#f59e0b;"></i> Confirmar Ação</h3><button class="close-modal" onclick="fecharModalConfirmar()">&times;</button></div>
+    <div class="modal-header"><h3><i class="fas fa-exclamation-triangle" style="color:#f59e0b;"></i> Confirmar Ação</h3><button class="close-modal" id="closeConfirmModalBtn">&times;</button></div>
     <p id="confirmMessage" style="font-size:1rem; margin:20px 0;">Tem certeza?</p>
-    <div class="modal-buttons"><button class="btn-secondary" onclick="fecharModalConfirmar()"><i class="fas fa-times"></i> Cancelar</button><button class="btn-danger" id="confirmBtn"><i class="fas fa-check"></i> Confirmar</button></div>
+    <div class="modal-buttons"><button class="btn-secondary" id="cancelConfirmModalBtn"><i class="fas fa-times"></i> Cancelar</button><button class="btn-danger" id="confirmBtn"><i class="fas fa-check"></i> Confirmar</button></div>
   </div>
 </div>
 
@@ -1209,7 +1211,7 @@ function gerarChave() {
 
 function toggleTheme() {
     document.body.classList.toggle('dark-theme');
-    const icon = document.querySelector('.theme-toggle i');
+    const icon = document.querySelector('#themeToggleBtn i');
     if (document.body.classList.contains('dark-theme')) {
         icon.classList.remove('fa-moon');
         icon.classList.add('fa-sun');
@@ -1221,9 +1223,6 @@ function toggleTheme() {
     }
 }
 
-// ============================================================
-// EXPORTAÇÃO
-// ============================================================
 function exportarDados(tipo) {
     let dados = [], cabecalhos = [];
     if (tipo === 'clientes') {
@@ -1365,7 +1364,7 @@ async function carregarClientes() {
     let filtrados = clientes.filter(c => (c.nome || '').toLowerCase().includes(searchTerm) || (c.email || '').toLowerCase().includes(searchTerm) || (c.empresa || '').toLowerCase().includes(searchTerm));
     let tbody = document.getElementById('listaClientes');
     if (!tbody) return;
-    if (filtrados.length === 0) { tbody.innerHTML = '<tr><td colspan="6" class="empty-state"><i class="fas fa-inbox"></i><br>Nenhum cliente encontrado</td></tr>'; return; }
+    if (filtrados.length === 0) { tbody.innerHTML = '<tr><td colspan="6" class="empty-state"><i class="fas fa-inbox"></i><br>Nenhum cliente encontrado<\/td><\/tr>'; return; }
     tbody.innerHTML = filtrados.map(c => `
         <tr>
             <td><strong>${escapeHtml(c.nome)}</strong><br><small>${escapeHtml(c.empresa || '-')}</small></td>
@@ -1469,7 +1468,7 @@ function renderizarLicencas() {
     let pagina = sorted.slice(start, start+itensPorPagina);
     let tbody = document.getElementById('listaLicencas');
     if (!tbody) return;
-    if (pagina.length === 0) { tbody.innerHTML = '<tr><td colspan="6" class="empty-state"><i class="fas fa-inbox"></i><br>Nenhuma licença encontrada</td></tr>'; return; }
+    if (pagina.length === 0) { tbody.innerHTML = '<tr><td colspan="6" class="empty-state"><i class="fas fa-inbox"></i><br>Nenhuma licença encontrada<\/td><\/tr>'; return; }
     const hoje = new Date(); hoje.setHours(0,0,0,0);
     tbody.innerHTML = pagina.map(l => {
         const dataVal = new Date(l.validade); dataVal.setHours(0,0,0,0);
@@ -1648,9 +1647,11 @@ function atualizarGraficos() {
 }
 
 // ============================================================
-// NAVEGAÇÃO E MENU MOBILE
+// NAVEGAÇÃO E MENU MOBILE (CORRIGIDO)
 // ============================================================
-function mostrarTab(tab) {
+
+// Função global para mostrar tabs
+window.mostrarTab = function(tab) {
     const tabs = { 'dashboard':'tabDashboard','clientes':'tabClientes','licencas':'tabLicencas','nova-licenca':'tabNovaLicenca','perfil':'tabPerfil' };
     for (let id of Object.values(tabs)) { let el = document.getElementById(id); if (el) el.style.display = 'none'; }
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -1664,9 +1665,10 @@ function mostrarTab(tab) {
     else if (tab === 'nova-licenca') carregarClientes();
     else if (tab === 'perfil') carregarPerfil();
     closeMobileMenu();
-}
+};
 
-function toggleMobileMenu() {
+// Função global para abrir/fechar menu mobile
+window.toggleMobileMenu = function() {
     const sidebar = document.getElementById('adminHeader');
     const backdrop = document.getElementById('sidebarBackdrop');
     const btnIcon = document.querySelector('#mobileMenuBtn i');
@@ -1683,9 +1685,10 @@ function toggleMobileMenu() {
         document.body.classList.add('mobile-menu-active');
         if (btnIcon) { btnIcon.classList.remove('fa-bars'); btnIcon.classList.add('fa-times'); }
     }
-}
+};
 
-function closeMobileMenu() {
+// Função global para fechar menu
+window.closeMobileMenu = function() {
     const sidebar = document.getElementById('adminHeader');
     const backdrop = document.getElementById('sidebarBackdrop');
     const btnIcon = document.querySelector('#mobileMenuBtn i');
@@ -1693,30 +1696,98 @@ function closeMobileMenu() {
     if (backdrop) backdrop.classList.remove('active');
     document.body.classList.remove('mobile-menu-active');
     if (btnIcon) { btnIcon.classList.remove('fa-times'); btnIcon.classList.add('fa-bars'); }
-}
-
-window.addEventListener('resize', () => { if (window.innerWidth > 860) closeMobileMenu(); });
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMobileMenu(); });
-document.getElementById('sidebarBackdrop')?.addEventListener('click', closeMobileMenu);
-document.getElementById('mobileMenuBtn')?.addEventListener('click', toggleMobileMenu);
+};
 
 // ============================================================
-// CONFIRMAÇÃO
+// MODAL DE CONFIRMAÇÃO
 // ============================================================
 function openModalConfirm(msg, cb) { document.getElementById('confirmMessage').innerHTML = `<i class="fas fa-question-circle" style="color:#f59e0b;"></i> ${msg}`; acaoConfirmada = cb; document.getElementById('confirmModal').classList.add('active'); }
 function fecharModalConfirmar() { document.getElementById('confirmModal').classList.remove('active'); acaoConfirmada = null; }
-document.getElementById('confirmBtn').onclick = () => { if (acaoConfirmada) { acaoConfirmada(); fecharModalConfirmar(); } };
 
 // ============================================================
 // EVENTOS E INICIALIZAÇÃO
 // ============================================================
-document.getElementById('searchCliente')?.addEventListener('keyup', () => carregarClientes());
-document.getElementById('searchLicenca')?.addEventListener('keyup', () => carregarLicencas());
-document.addEventListener('keydown', (e) => { if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); let inp = document.querySelector('.search-input input'); if (inp && inp.offsetParent !== null) { inp.focus(); showToast("Digite sua busca...", "info"); } } });
-const savedTheme = localStorage.getItem('theme');
-if (savedTheme === 'dark') { document.body.classList.add('dark-theme'); let icon = document.querySelector('.theme-toggle i'); if (icon) icon.classList.replace('fa-moon','fa-sun'); }
-if (getToken()) { document.getElementById('loginOverlay').style.display = 'none'; document.getElementById('adminHeader').style.display = 'flex'; document.getElementById('adminContent').style.display = 'block'; carregarClientes(); carregarLicencas(); mostrarTab('dashboard'); }
-setInterval(() => { if (getToken()) carregarLicencas(); }, 60000);
+document.addEventListener('DOMContentLoaded', function() {
+    // Login button
+    document.getElementById('loginBtn')?.addEventListener('click', login);
+    document.getElementById('logoutBtn')?.addEventListener('click', logout);
+    document.getElementById('themeToggleBtn')?.addEventListener('click', toggleTheme);
+    document.getElementById('exportClientesBtn')?.addEventListener('click', () => exportarDados('clientes'));
+    document.getElementById('exportLicencasBtn')?.addEventListener('click', () => exportarDados('licencas'));
+    document.getElementById('novoClienteBtn')?.addEventListener('click', abrirModalCliente);
+    document.getElementById('atualizarLicencasBtn')?.addEventListener('click', () => carregarLicencas());
+    document.getElementById('criarLicencaBtn')?.addEventListener('click', criarLicenca);
+    document.getElementById('salvarPerfilBtn')?.addEventListener('click', salvarPerfil);
+    document.getElementById('cancelarPerfilBtn')?.addEventListener('click', cancelarEdicaoPerfil);
+    document.getElementById('alterarSenhaBtn')?.addEventListener('click', alterarSenha);
+    document.getElementById('closeModalClienteBtn')?.addEventListener('click', fecharModalCliente);
+    document.getElementById('cancelarModalClienteBtn')?.addEventListener('click', fecharModalCliente);
+    document.getElementById('salvarModalClienteBtn')?.addEventListener('click', salvarCliente);
+    document.getElementById('closeConfirmModalBtn')?.addEventListener('click', fecharModalConfirmar);
+    document.getElementById('cancelConfirmModalBtn')?.addEventListener('click', fecharModalConfirmar);
+    document.getElementById('confirmBtn')?.addEventListener('click', () => { if (acaoConfirmada) { acaoConfirmada(); fecharModalConfirmar(); } });
+    
+    // Menu mobile
+    const mobileBtn = document.getElementById('mobileMenuBtn');
+    if (mobileBtn) {
+        mobileBtn.addEventListener('click', window.toggleMobileMenu);
+    }
+    const backdrop = document.getElementById('sidebarBackdrop');
+    if (backdrop) {
+        backdrop.addEventListener('click', window.closeMobileMenu);
+    }
+    
+    // Fechar ao redimensionar para desktop
+    window.addEventListener('resize', () => { if (window.innerWidth > 860) window.closeMobileMenu(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') window.closeMobileMenu(); });
+    
+    // Buscas
+    document.getElementById('searchCliente')?.addEventListener('keyup', () => carregarClientes());
+    document.getElementById('searchLicenca')?.addEventListener('keyup', () => carregarLicencas());
+    document.getElementById('filterStatusLicenca')?.addEventListener('change', () => carregarLicencas());
+    document.getElementById('filtroPeriodo')?.addEventListener('change', () => atualizarGraficos());
+    
+    // Ordenação
+    document.getElementById('sortNome')?.addEventListener('click', () => ordenarClientes('nome'));
+    document.getElementById('sortEmail')?.addEventListener('click', () => ordenarClientes('email'));
+    document.getElementById('sortCliente')?.addEventListener('click', () => ordenarLicencas('cliente'));
+    document.getElementById('sortStatus')?.addEventListener('click', () => ordenarLicencas('status'));
+    document.getElementById('sortValidade')?.addEventListener('click', () => ordenarLicencas('validade'));
+    
+    // Tabs
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', function() { window.mostrarTab(this.getAttribute('data-tab')); });
+    });
+    document.querySelectorAll('.stat-card[data-tab]').forEach(card => {
+        card.addEventListener('click', function() { window.mostrarTab(this.getAttribute('data-tab')); });
+    });
+    
+    // Ctrl+K
+    document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+            e.preventDefault();
+            let inp = document.querySelector('.search-input input');
+            if (inp && inp.offsetParent !== null) { inp.focus(); showToast("Digite sua busca...", "info"); }
+        }
+    });
+    
+    // Tema
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') { document.body.classList.add('dark-theme'); let icon = document.querySelector('#themeToggleBtn i'); if (icon) icon.classList.replace('fa-moon','fa-sun'); }
+    
+    // Verificar login
+    if (getToken()) { 
+        document.getElementById('loginOverlay').style.display = 'none'; 
+        document.getElementById('adminHeader').style.display = 'flex'; 
+        document.getElementById('adminContent').style.display = 'block';
+        carregarClientes(); 
+        carregarLicencas(); 
+        window.mostrarTab('dashboard');
+    }
+    
+    // Auto refresh
+    setInterval(() => { if (getToken()) carregarLicencas(); }, 60000);
+});
 </script>
 </body>
 </html>
