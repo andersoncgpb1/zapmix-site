@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>ZapMix — Solução Inteligente para TV</title>
-<link rel="icon" type="image/png" href="/assets/favicon.png">
-<link rel="shortcut icon" href="/assets/favicon.png">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="shortcut icon" href="assets/favicon.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
@@ -21,8 +21,8 @@ html {
 
 body {
   font-family: 'Inter', sans-serif;
-  background: #f1f5f9;
-  background-image: linear-gradient(145deg, #f8fafc 0%, #eef2f6 100%);
+  background: #f8fafc;
+  background-image: linear-gradient(180deg, #ffffff 0%, #f2f6fb 45%, #ffffff 100%);
   color: #1e293b;
   line-height: 1.5;
   overflow-x: hidden;
@@ -169,31 +169,40 @@ body {
 
 /* Hero Section */
 .hero {
-  padding: 180px 0 100px;
-  min-height: 100vh;
+  padding: 170px 0 72px;
+  min-height: 92vh;
   display: flex;
   align-items: center;
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, rgba(15, 23, 42, 0.98) 0%, rgba(15, 23, 42, 0.86) 45%, rgba(15, 23, 42, 0.34) 100%),
+    url('assets/screenshot-dashboard.png') right center / min(760px, 58vw) auto no-repeat;
+  color: #ffffff;
 }
 
 .hero .container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 60px;
-  align-items: center;
+  display: block;
+}
+
+.hero-content {
+  max-width: 680px;
+  position: relative;
+  z-index: 1;
 }
 
 .hero-badge {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: #f1f5f9;
+  background: rgba(255, 255, 255, 0.11);
   padding: 6px 16px;
   border-radius: 40px;
   margin-bottom: 24px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid rgba(255, 255, 255, 0.18);
   font-size: 0.85rem;
   font-weight: 500;
-  color: #475569;
+  color: #dbeafe;
 }
 
 .hero-badge i {
@@ -201,26 +210,27 @@ body {
 }
 
 .hero h1 {
-  font-size: 3.5rem;
+  font-size: clamp(2.6rem, 6vw, 5.4rem);
   font-weight: 800;
   margin-bottom: 24px;
-  line-height: 1.2;
-  letter-spacing: -1px;
-  color: #0f172a;
+  line-height: 1.02;
+  letter-spacing: 0;
+  color: #ffffff;
 }
 
 .gradient-text {
-  background: linear-gradient(135deg, #90d105, #6a9e00);
+  background: linear-gradient(135deg, #bef264, #90d105 45%, #38bdf8);
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
 }
 
 .hero p {
-  font-size: 1.1rem;
-  color: #475569;
+  max-width: 610px;
+  font-size: 1.16rem;
+  color: #cbd5e1;
   margin-bottom: 32px;
-  line-height: 1.6;
+  line-height: 1.7;
 }
 
 .hero-buttons {
@@ -252,9 +262,9 @@ body {
 }
 
 .btn-secondary {
-  background: transparent;
-  border: 2px solid #90d105;
-  color: #90d105;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  color: #ffffff;
   padding: 12px 34px;
   border-radius: 40px;
   font-weight: 600;
@@ -266,13 +276,13 @@ body {
 }
 
 .btn-secondary:hover {
-  background: rgba(144, 209, 5, 0.1);
+  background: rgba(255, 255, 255, 0.14);
   transform: translateY(-3px);
 }
 
 .hero-stats {
   display: flex;
-  gap: 40px;
+  gap: 14px;
   flex-wrap: wrap;
 }
 
@@ -280,17 +290,23 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 168px;
+  padding: 14px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
 }
 
 .stat-icon {
   width: 45px;
   height: 45px;
-  background: #f1f5f9;
+  background: rgba(144, 209, 5, 0.14);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #e2e8f0;
+  border: 1px solid rgba(190, 242, 100, 0.28);
 }
 
 .stat-icon i {
@@ -301,16 +317,17 @@ body {
 .stat-number {
   font-size: 1.5rem;
   font-weight: 800;
-  color: #0f172a;
+  color: #ffffff;
 }
 
 .stat-label {
   font-size: 0.8rem;
-  color: #64748b;
+  color: #cbd5e1;
+  display: block;
 }
 
 .hero-image {
-  position: relative;
+  display: none;
 }
 
 .hero-image img {
@@ -329,6 +346,50 @@ body {
   font-weight: 700;
   letter-spacing: -0.5px;
   color: #0f172a;
+}
+
+.eyebrow {
+  display: block;
+  margin-bottom: 12px;
+  color: #6a9e00;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.trust-strip {
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.trust-strip .container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  padding-top: 24px;
+  padding-bottom: 24px;
+}
+
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #334155;
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+
+.trust-item i {
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: #ecfccb;
+  color: #4d7c0f;
 }
 
 .section-subtitle {
@@ -352,9 +413,9 @@ body {
 
 .feature-card {
   background: #ffffff;
-  padding: 40px 30px;
-  border-radius: 24px;
-  text-align: center;
+  padding: 34px;
+  border-radius: 18px;
+  text-align: left;
   transition: all 0.3s;
   border: 1px solid #e9eef3;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
@@ -369,12 +430,12 @@ body {
 .feature-icon {
   width: 70px;
   height: 70px;
-  background: #f8fafc;
-  border-radius: 20px;
+  background: linear-gradient(135deg, #ecfccb, #f8fafc);
+  border-radius: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 25px;
+  margin: 0 0 25px;
   border: 1px solid #e2e8f0;
 }
 
@@ -393,6 +454,82 @@ body {
   color: #475569;
   font-size: 0.9rem;
   line-height: 1.6;
+}
+
+.production-flow {
+  padding: 100px 0;
+  background: #0f172a;
+  color: #e2e8f0;
+}
+
+.production-flow .section-title {
+  color: #ffffff;
+}
+
+.production-flow .section-subtitle {
+  color: #94a3b8;
+}
+
+.flow-layout {
+  display: grid;
+  grid-template-columns: 0.95fr 1.05fr;
+  gap: 42px;
+  align-items: stretch;
+}
+
+.flow-panel {
+  display: grid;
+  gap: 16px;
+}
+
+.flow-item {
+  display: grid;
+  grid-template-columns: 54px 1fr;
+  gap: 16px;
+  padding: 22px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.flow-item i {
+  width: 54px;
+  height: 54px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  background: rgba(144, 209, 5, 0.14);
+  color: #bef264;
+  font-size: 1.35rem;
+}
+
+.flow-item h3 {
+  color: #ffffff;
+  margin-bottom: 8px;
+  font-size: 1.05rem;
+}
+
+.flow-item p {
+  color: #cbd5e1;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.flow-preview {
+  border-radius: 22px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.32);
+}
+
+.flow-preview img {
+  width: 100%;
+  height: 100%;
+  min-height: 430px;
+  object-fit: cover;
+  display: block;
 }
 
 /* Steps */
@@ -468,9 +605,9 @@ body {
 
 .screen-card {
   background: #f8fafc;
-  padding: 30px;
-  border-radius: 24px;
-  text-align: center;
+  padding: 18px 18px 24px;
+  border-radius: 18px;
+  text-align: left;
   border: 1px solid #e9eef3;
   transition: all 0.3s;
 }
@@ -483,7 +620,10 @@ body {
 
 .screen-card img {
   width: 100%;
-  border-radius: 16px;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: top center;
+  border-radius: 14px;
   margin-bottom: 20px;
   border: 1px solid #e2e8f0;
   background: #ffffff;
@@ -493,6 +633,12 @@ body {
   margin-bottom: 10px;
   font-size: 1.2rem;
   color: #0f172a;
+}
+
+.screen-card p {
+  color: #64748b;
+  font-size: 0.9rem;
+  line-height: 1.6;
 }
 
 .screen-card code {
@@ -601,7 +747,9 @@ body {
 .cta {
   padding: 100px 0;
   text-align: center;
-  background: #0f172a;
+  background:
+    linear-gradient(90deg, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.82)),
+    url('assets/screenshot-vmix.png') center / cover no-repeat;
   position: relative;
 }
 
@@ -697,11 +845,11 @@ body {
     top: 15px;
     padding: 6px 20px;
   }
-  
+
   .menu-toggle {
     display: flex;
   }
-  
+
   .nav {
     position: fixed;
     top: 0;
@@ -718,66 +866,86 @@ body {
     z-index: 1000;
     box-shadow: -10px 0 40px rgba(0, 0, 0, 0.1);
   }
-  
+
   .nav.active {
     right: 0;
   }
-  
+
   .nav-link {
     font-size: 1.2rem;
     color: #1e293b;
   }
-  
+
   .menu-toggle.active span:nth-child(1) {
     transform: translateY(9px) rotate(45deg);
   }
-  
+
   .menu-toggle.active span:nth-child(2) {
     opacity: 0;
   }
-  
+
   .menu-toggle.active span:nth-child(3) {
     transform: translateY(-9px) rotate(-45deg);
   }
-  
+
   .hero .container {
-    grid-template-columns: 1fr;
     text-align: center;
-    gap: 40px;
   }
-  
+
+  .hero {
+    min-height: auto;
+    padding: 150px 0 70px;
+    background:
+      linear-gradient(180deg, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.86)),
+      url('assets/screenshot-dashboard.png') center bottom / 920px auto no-repeat;
+  }
+
+  .hero-content {
+    max-width: none;
+  }
+
   .hero h1 {
     font-size: 2.5rem;
   }
-  
+
   .hero-buttons {
     justify-content: center;
   }
-  
+
   .hero-stats {
     justify-content: center;
   }
-  
+
   .steps {
     grid-template-columns: 1fr;
   }
-  
+
+  .trust-strip .container,
+  .flow-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .trust-item {
+    justify-content: center;
+    text-align: left;
+  }
+
   .step:not(:last-child)::after {
     display: none;
   }
-  
+
   .screens-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .testimonials-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .faq-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .section-title {
     font-size: 2rem;
   }
@@ -787,27 +955,48 @@ body {
   .container {
     padding: 0 20px;
   }
-  
+
   .hero h1 {
     font-size: 1.8rem;
   }
-  
+
+  .hero {
+    padding-top: 132px;
+  }
+
+  .hero p {
+    font-size: 1rem;
+  }
+
+  .hero-stats {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
   .hero-buttons {
     flex-direction: column;
     gap: 15px;
   }
-  
+
   .btn-primary, .btn-secondary {
     width: 100%;
     justify-content: center;
   }
-  
+
   .section-title {
     font-size: 1.6rem;
   }
-  
+
   .features-grid {
     grid-template-columns: 1fr;
+  }
+
+  .flow-item {
+    grid-template-columns: 1fr;
+  }
+
+  .flow-preview img {
+    min-height: 260px;
   }
 }
 
@@ -854,19 +1043,20 @@ body {
 <header class="header" id="header">
   <div class="container">
     <div class="logo">
-      <img src="/assets/logo.png" alt="ZapMix" class="logo-img" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%2390d105\'/%3E%3Ctext x=\'50\' y=\'67\' font-size=\'40\' text-anchor=\'middle\' fill=\'%230f172a\' font-weight=\'bold\'%3EZM%3C/text%3E%3C/svg%3E'">
+      <img src="assets/logo.png" alt="ZapMix" class="logo-img" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%2390d105\'/%3E%3Ctext x=\'50\' y=\'67\' font-size=\'40\' text-anchor=\'middle\' fill=\'%230f172a\' font-weight=\'bold\'%3EZM%3C/text%3E%3C/svg%3E'">
       <span>ZapMix</span>
     </div>
-    
+
     <button class="menu-toggle" id="menuToggle" aria-label="Menu">
       <span></span>
       <span></span>
       <span></span>
     </button>
-    
+
     <nav class="nav" id="nav">
       <a href="#home" class="nav-link">Início</a>
       <a href="#features" class="nav-link">Recursos</a>
+      <a href="#telas" class="nav-link">Telas</a>
       <a href="#como-funciona" class="nav-link">Como funciona</a>
       <a href="#download" class="btn-download-header">📥 Download</a>
     </nav>
@@ -880,11 +1070,12 @@ body {
   <section id="home" class="hero">
     <div class="container">
       <div class="hero-content">
-        <h1>Transforme sua <span class="gradient-text">produção ao vivo</span> com WhatsApp</h1>
-        <p>Integre o WhatsApp com o vMix, crie enquetes interativas e exiba mensagens, fotos, vídeos e áudios em tempo real com tecnologia de ponta.</p>
+        <div class="hero-badge"><i class="fas fa-bolt"></i> Controle ao vivo para produções de TV</div>
+        <h1>Leve o WhatsApp para a sua <span class="gradient-text">produção ao vivo</span></h1>
+        <p>O ZapMix transforma mensagens, mídias e enquetes do WhatsApp em telas profissionais para o Web Browser do vMix, navegador do OBS e transmissões ao vivo, com operação simples para a equipe técnica.</p>
         <div class="hero-buttons">
-          <a href="#download" class="btn-primary"><i class="fas fa-download"></i> Começar Agora</a>
-          <a href="#como-funciona" class="btn-secondary"><i class="fas fa-play"></i> Ver Demonstração</a>
+          <a href="#download" class="btn-primary"><i class="fas fa-download"></i> Baixar ZapMix</a>
+          <a href="#telas" class="btn-secondary"><i class="fas fa-desktop"></i> Ver telas</a>
         </div>
         <div class="hero-stats">
           <div class="stat">
@@ -902,7 +1093,7 @@ body {
             </div>
             <div class="stat-info">
               <span class="stat-number">4.9/5</span>
-              <span class="stat-label">Avaliações</span>
+              <span class="stat-label">Experiência</span>
             </div>
           </div>
           <div class="stat">
@@ -917,58 +1108,104 @@ body {
         </div>
       </div>
       <div class="hero-image">
-        <img src="/assets/screenshot-dashboard.png" alt="ZapMix Dashboard" onerror="this.style.display='none'">
+        <img src="assets/screenshot-dashboard.png" alt="ZapMix Dashboard" onerror="this.style.display='none'">
       </div>
+    </div>
+  </section>
+
+  <section class="trust-strip" aria-label="Destaques do ZapMix">
+    <div class="container">
+      <div class="trust-item"><i class="fas fa-qrcode"></i> Conexão por QR Code</div>
+      <div class="trust-item"><i class="fas fa-layer-group"></i> Overlays para vMix</div>
+      <div class="trust-item"><i class="fas fa-display"></i> Navegador do OBS</div>
+      <div class="trust-item"><i class="fas fa-photo-film"></i> Fotos, vídeos e áudios</div>
     </div>
   </section>
 
   <!-- Features -->
   <section id="features" class="features">
     <div class="container">
+      <span class="eyebrow">Recursos</span>
       <h2 class="section-title">Recursos Exclusivos</h2>
-      <p class="section-subtitle">Tudo que você precisa para uma produção profissional</p>
+      <p class="section-subtitle">Tudo que você precisa para transformar participação do público em conteúdo de tela.</p>
       <div class="features-grid">
         <div class="feature-card">
           <div class="feature-icon">
             <i class="fab fa-whatsapp"></i>
           </div>
           <h3>WhatsApp Integrado</h3>
-          <p>Receba mensagens, fotos, vídeos e áudios em tempo real diretamente no seu fluxo de produção</p>
+          <p>Receba mensagens, fotos, vídeos e áudios em tempo real diretamente no seu fluxo de produção.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">
             <i class="fas fa-chart-bar"></i>
           </div>
           <h3>Enquete Interativa</h3>
-          <p>Crie enquetes personalizadas com até 6 opções e resultados em tempo real</p>
+          <p>Crie enquetes personalizadas com até 6 opções, palavras-chave e resultado animado em tempo real.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">
             <i class="fas fa-tv"></i>
           </div>
-          <h3>Compatível com vMix</h3>
-          <p>Telas otimizadas para exibição ao vivo com integração perfeita</p>
+          <h3>Compatível com vMix e OBS</h3>
+          <p>Telas otimizadas para Web Browser do vMix e navegador do OBS, com leitura limpa para transmissão e telão.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">
             <i class="fas fa-video"></i>
           </div>
           <h3>Suporte a Mídias</h3>
-          <p>Vídeos, áudios e imagens enviados pelo WhatsApp com reprodução automática</p>
+          <p>Organize vídeos, áudios e imagens enviados pelo WhatsApp sem improviso na hora do ao vivo.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">
             <i class="fas fa-mobile-alt"></i>
           </div>
           <h3>Conexão Instantânea</h3>
-          <p>Conecte com QR Code em segundos, sem configurações complexas</p>
+          <p>Conecte com QR Code em segundos, sem configuração complexa para a operação do estúdio.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">
             <i class="fas fa-broadcast-tower"></i>
           </div>
-          <h3>NDI Integration</h3>
-          <p>Saída NDI nativa para integração profissional com qualquer software</p>
+          <h3>Telas via navegador</h3>
+          <p>Integre o ZapMix usando URLs locais no vMix ou OBS, evitando travamentos e mantendo a operação mais estável.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="production-flow">
+    <div class="container">
+      <span class="eyebrow">Fluxo de produção</span>
+      <h2 class="section-title">Do WhatsApp para o ar, sem bagunça</h2>
+      <p class="section-subtitle">O operador controla o que entra, aprova o conteúdo e entrega a tela pronta para o diretor.</p>
+      <div class="flow-layout">
+        <div class="flow-panel">
+          <div class="flow-item">
+            <i class="fas fa-inbox"></i>
+            <div>
+              <h3>Receba e filtre mensagens</h3>
+              <p>Centralize o conteúdo recebido e mantenha o controle editorial antes de qualquer coisa aparecer na tela.</p>
+            </div>
+          </div>
+          <div class="flow-item">
+            <i class="fas fa-check-double"></i>
+            <div>
+              <h3>Aprove com segurança</h3>
+              <p>Separe mensagens aprovadas, destaque mídias e evite exposição acidental durante transmissões ao vivo.</p>
+            </div>
+          </div>
+          <div class="flow-item">
+            <i class="fas fa-broadcast-tower"></i>
+            <div>
+              <h3>Exiba no vMix ou OBS</h3>
+              <p>Use telas de exibidor, enquete e dashboard via navegador com visual pronto para broadcast e resposta rápida.</p>
+            </div>
+          </div>
+        </div>
+        <div class="flow-preview">
+          <img src="assets/screenshot-vmix.png" alt="ZapMix integrado ao vMix" onerror="this.style.display='none'">
         </div>
       </div>
     </div>
@@ -977,6 +1214,7 @@ body {
   <!-- Como funciona -->
   <section id="como-funciona" class="how-it-works">
     <div class="container">
+      <span class="eyebrow">Comece rápido</span>
       <h2 class="section-title">Como funciona</h2>
       <p class="section-subtitle">Três passos para revolucionar sua produção</p>
       <div class="steps">
@@ -995,29 +1233,42 @@ body {
         <div class="step">
           <div class="step-number">3</div>
           <i class="fas fa-tv"></i>
-          <h3>Integre ao vMix</h3>
-          <p>Adicione as URLs no Web Browser do vMix ou receba via NDI</p>
+          <h3>Integre ao vMix ou OBS</h3>
+          <p>Adicione as URLs no Web Browser do vMix ou no navegador do OBS</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Telas para vMix -->
-  <section class="screens">
+  <!-- Telas para vMix e OBS -->
+  <section id="telas" class="screens">
     <div class="container">
+      <span class="eyebrow">Interfaces</span>
       <h2 class="section-title">Telas otimizadas</h2>
-      <p class="section-subtitle">Layouts profissionais prontos para sua produção</p>
+      <p class="section-subtitle">Layouts profissionais prontos para operação, monitoramento e exibição ao vivo.</p>
       <div class="screens-grid">
         <div class="screen-card">
-          <img src="/assets/screen-enquete.png" alt="Tela da Enquete" onerror="this.style.display='none'">
-          <h4>📊 Tela de configuração da Enquete</h4>
-          <p>Exibe as opções com barras de porcentagem animadas ao vivo</p>
-          <code>/enquete.html</code>
+          <img src="assets/screenshot-dashboard.png" alt="Dashboard do ZapMix" onerror="this.style.display='none'">
+          <h4><i class="fas fa-gauge-high"></i> Dashboard de operação</h4>
+          <p>Acompanhe conexão, mensagens, enquetes e mídias em uma central simples para o operador.</p>
+          <code>/dashboard</code>
         </div>
         <div class="screen-card">
-          <img src="/assets/screen-gt.png" alt="Tela do GT" onerror="this.style.display='none'">
-          <h4>🎙️ Tela do Exibidor de Mensagens</h4>
-          <p>Exibe mensagem, foto e mídias em destaque com transições suaves</p>
+          <img src="assets/screenshot-vmix.png" alt="ZapMix no vMix" onerror="this.style.display='none'">
+          <h4><i class="fas fa-video"></i> Integração com vMix e OBS</h4>
+          <p>Use as telas no Web Browser do vMix ou no navegador do OBS com URLs locais do ZapMix.</p>
+          <code>vMix / OBS</code>
+        </div>
+        <div class="screen-card">
+          <img src="assets/screen-enquete.png" alt="Tela da Enquete" onerror="this.style.display='none'">
+          <h4><i class="fas fa-chart-simple"></i> Tela da enquete</h4>
+          <p>Exibe opções, votos e barras de porcentagem animadas com atualização em tempo real.</p>
+          <code>/exibidor-enquete.html</code>
+        </div>
+        <div class="screen-card">
+          <img src="assets/screen-gt.png" alt="Tela do GT" onerror="this.style.display='none'">
+          <h4><i class="fas fa-message"></i> Exibidor de mensagens</h4>
+          <p>Mostra mensagem, nome, foto e mídia em destaque com transições suaves para o ar.</p>
           <code>/exibidor.html</code>
         </div>
       </div>
@@ -1027,6 +1278,7 @@ body {
   <!-- FAQ -->
   <section class="faq">
     <div class="container">
+      <span class="eyebrow">FAQ</span>
       <h2 class="section-title">Perguntas Frequentes</h2>
       <p class="section-subtitle">Tire suas dúvidas sobre o ZapMix</p>
       <div class="faq-grid">
@@ -1035,12 +1287,12 @@ body {
           <p>Não! O ZapMix é um executável autossuficiente para Windows.</p>
         </div>
         <div class="faq-item">
-          <h4>Funciona com vMix?</h4>
-          <p>Sim! O ZapMix foi desenvolvido especialmente para vMix e outras plataformas.</p>
+          <h4>Funciona com vMix e OBS?</h4>
+          <p>Sim! Use as telas pelo Web Browser do vMix ou pela fonte Navegador do OBS.</p>
         </div>
         <div class="faq-item">
-          <h4>O que é o suporte a NDI?</h4>
-          <p>O ZapMix possui saída NDI nativa, capturando o sinal diretamente em softwares compatíveis.</p>
+          <h4>Por que usar via navegador?</h4>
+          <p>O uso por Web Browser no vMix e navegador no OBS mantém a integração mais simples, leve e estável.</p>
         </div>
         <div class="faq-item">
           <h4>Precisa de internet?</h4>
@@ -1061,8 +1313,8 @@ body {
   <!-- CTA Final -->
   <section id="download" class="cta">
     <div class="container">
-      <h2>Pronto para transformar sua produção?</h2>
-      <p>Junte-se a mais de 500 produtores que já utilizam o ZapMix</p>
+      <h2>Pronto para colocar o público no ar?</h2>
+      <p>Baixe o ZapMix e comece a operar WhatsApp, enquetes e telas para vMix ou OBS em poucos minutos.</p>
       <a href="https://github.com/andersoncgpb1/zapmix/releases/" class="btn-primary" style="font-size: 1.1rem; padding: 16px 42px; background: #ffffff; color: #0f172a;">
         <i class="fas fa-download"></i> Baixar ZapMix
       </a>
@@ -1074,7 +1326,7 @@ body {
   <div class="container">
     <div class="footer-content">
       <div class="footer-logo">
-        <img src="/assets/logo.png" alt="ZapMix" class="footer-logo-img" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%2390d105\'/%3E%3Ctext x=\'50\' y=\'67\' font-size=\'40\' text-anchor=\'middle\' fill=\'%230f172a\' font-weight=\'bold\'%3EZM%3C/text%3E%3C/svg%3E'">
+        <img src="assets/logo.png" alt="ZapMix" class="footer-logo-img" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%2390d105\'/%3E%3Ctext x=\'50\' y=\'67\' font-size=\'40\' text-anchor=\'middle\' fill=\'%230f172a\' font-weight=\'bold\'%3EZM%3C/text%3E%3C/svg%3E'">
         <p>Solução profissional para integração do WhatsApp para TV.</p>
       </div>
       <div class="footer-links">
@@ -1163,7 +1415,7 @@ window.addEventListener('scroll', () => {
       current = section.getAttribute('id');
     }
   });
-  
+
   navLinks.forEach(link => {
     link.classList.remove('active');
     if (link.getAttribute('href') === `#${current}`) {
