@@ -1019,6 +1019,53 @@ body {
   visibility: visible;
 }
 
+.back-to-top {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  width: 48px;
+  height: 48px;
+  border: 0;
+  border-radius: 50%;
+  background: #90d105;
+  color: #0f172a;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 16px 34px rgba(15, 23, 42, 0.18);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(14px);
+  transition: all 0.25s ease;
+  z-index: 950;
+}
+
+.back-to-top.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.back-to-top:hover {
+  background: #a0e015;
+  transform: translateY(-3px);
+}
+
+.back-to-top:focus-visible {
+  outline: 3px solid rgba(144, 209, 5, 0.35);
+  outline-offset: 4px;
+}
+
+@media (max-width: 480px) {
+  .back-to-top {
+    right: 16px;
+    bottom: 16px;
+    width: 44px;
+    height: 44px;
+  }
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
@@ -1367,12 +1414,17 @@ body {
   </div>
 </footer>
 
+<button class="back-to-top" id="backToTop" type="button" aria-label="Voltar ao topo">
+  <i class="fas fa-arrow-up"></i>
+</button>
+
 <script>
 // Menu Mobile
 const menuToggle = document.getElementById('menuToggle');
 const nav = document.getElementById('nav');
 const menuOverlay = document.getElementById('menuOverlay');
 const navLinks = document.querySelectorAll('.nav-link');
+const backToTop = document.getElementById('backToTop');
 
 function closeMenu() {
   nav.classList.remove('active');
@@ -1410,6 +1462,12 @@ window.addEventListener('scroll', () => {
   } else {
     header.classList.remove('header-scrolled');
   }
+
+  backToTop.classList.toggle('show', window.scrollY > 500);
+});
+
+backToTop.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
 // Smooth scroll
