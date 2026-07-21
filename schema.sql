@@ -1,5 +1,18 @@
 -- schema.sql - Database schema for ZapMix
 
+-- Tabela de Usuários Admin
+CREATE TABLE IF NOT EXISTS usuarios_admin (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(100) UNIQUE NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    senha_hash VARCHAR(255) NOT NULL,
+    ativo TINYINT(1) DEFAULT 1,
+    ultimo_acesso TIMESTAMP NULL,
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_username (username),
+    INDEX idx_ativo (ativo)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Tabela de Clientes
 CREATE TABLE IF NOT EXISTS clientes (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -101,7 +114,12 @@ CREATE TABLE IF NOT EXISTS logs (
     INDEX idx_data (data)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Inserir admin padrão (username: admin, password: changeme)
+INSERT IGNORE INTO usuarios_admin (username, email, senha_hash, ativo) 
+VALUES ('admin', 'admin@zapmix.local', '$2y$10$e0N2o6vWv9V4GkJgB1q4ee4Gqz6iQq8GgS0bQf0h3K9QW7u1aHk2e', 1);
+
 -- Inserir enquete padrão
 INSERT IGNORE INTO polls (cliente_id, question, options, results) 
 VALUES (NULL, 'Qual é sua opinião?', '["Opção A", "Opção B", "Opção C"]', '[0, 0, 0]');
+
 
