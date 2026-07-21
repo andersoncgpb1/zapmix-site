@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom utilities for ZapMix can go here */
+
+:root {
+  --brand-1: #90d105;
+  --brand-2: #0f172a;
+}
+
+/* Example custom class to match demo colors */
+.btn-primary {
+  @apply bg-[var(--brand-1)] text-[var(--brand-2)] font-bold rounded-full px-6 py-3;
+}

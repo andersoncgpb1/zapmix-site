@@ -5,10 +5,14 @@
   "main": "index.js",
   "scripts": {
     "dev": "vercel dev",
-    "deploy": "vercel deploy --prod"
+    "deploy": "vercel deploy --prod",
+    "build:css": "npx tailwindcss -i ./assets/tailwind-input.css -o ./assets/tailwind.css --minify"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.0",
     "crypto": "^1.0.1"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.5.0"
   }
 }
