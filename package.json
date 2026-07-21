@@ -2,17 +2,8 @@
   "name": "zapmix-site",
   "version": "1.0.0",
   "description": "ZapMix - Gestão Inteligente para TV",
-  "main": "index.js",
+  "main": "index.php",
   "scripts": {
-    "dev": "vercel dev",
-    "deploy": "vercel deploy --prod",
-    "build:css": "npx tailwindcss -i ./assets/tailwind-input.css -o ./assets/tailwind.css --minify"
-  },
-  "dependencies": {
-    "@supabase/supabase-js": "^2.39.0",
-    "crypto": "^1.0.1"
-  },
-  "devDependencies": {
-    "tailwindcss": "^3.5.0"
+    "build:css": "npx tailwindcss@4 -i ./assets/tailwind-input.css -o ./assets/tailwind.css --minify"
   }
 }
