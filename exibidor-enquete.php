@@ -1,8 +1,32 @@
 <?php
-// Simple enquete exibidor that reads a poll payload from data/poll.json
+// Poll display with results
 require_once __DIR__ . '/config.php';
-$pollPath = DATA_DIR . '/poll.json';
-$poll = file_exists($pollPath) ? json_decode(file_get_contents($pollPath), true) : null;
+
+$poll = null;
+$use_db = defined('USE_DATABASE') && USE_DATABASE;
+
+if ($use_db) {
+    try {
+        require_once __DIR__ . '/db.php';
+        $poll_data = Database::fetchOne('SELECT question, options, results FROM polls WHERE id = 1');
+        if ($poll_data) {
+            $poll = [
+                'question' => $poll_data['question'],
+                'options' => json_decode($poll_data['options'], true),
+                'results' => json_decode($poll_data['results'], true)
+            ];
+        }
+    } catch (Exception $e) {
+        // Fall back to JSON if DB fails
+        $use_db = false;
+    }
+}
+
+if (!$use_db) {
+    $pollPath = DATA_DIR . '/poll.json';
+    $poll = file_exists($pollPath) ? json_decode(file_get_contents($pollPath), true) : null;
+}
+
 $results = $poll['results'] ?? [];
 ?>
 <!doctype html>

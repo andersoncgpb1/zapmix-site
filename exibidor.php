@@ -1,11 +1,30 @@
 <?php
-// Simple broadcast-friendly exibidor: shows most recent approved message
+// Broadcast display for approved messages
 require_once __DIR__ . '/config.php';
-function load_messages(){ $p = DATA_DIR . '/messages.json'; if(!file_exists($p)) return []; $arr = json_decode(file_get_contents($p), true); return is_array($arr)?$arr:[]; }
-$messages = load_messages();
-$approved = array_values(array_filter($messages, function($m){ return !empty($m['approved']); }));
-usort($approved, function($a,$b){ return strtotime($b['approved_at'] ?? $b['created_at']) - strtotime($a['approved_at'] ?? $a['created_at']); });
-$show = $approved[0] ?? null;
+
+// Try database first, fall back to JSON
+$show = null;
+$use_db = defined('USE_DATABASE') && USE_DATABASE;
+
+if ($use_db) {
+    try {
+        require_once __DIR__ . '/db.php';
+        $show = Database::fetchOne(
+            'SELECT id, name, text, media, approved, approved_at FROM messages WHERE approved = 1 ORDER BY approved_at DESC, created_at DESC LIMIT 1'
+        );
+    } catch (Exception $e) {
+        // Fall back to JSON if DB fails
+        $use_db = false;
+    }
+}
+
+if (!$use_db) {
+    function load_messages() { $p = DATA_DIR . '/messages.json'; if(!file_exists($p)) return []; $arr = json_decode(file_get_contents($p), true); return is_array($arr)?$arr:[]; }
+    $messages = load_messages();
+    $approved = array_values(array_filter($messages, function($m){ return !empty($m['approved']); }));
+    usort($approved, function($a,$b){ return strtotime($b['approved_at'] ?? $b['created_at']) - strtotime($a['approved_at'] ?? $a['created_at']); });
+    $show = $approved[0] ?? null;
+}
 ?>
 <!doctype html>
 <html>
